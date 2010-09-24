@@ -1,0 +1,36 @@
+# fqdn of the remote machine
+sp_g_ssh_fqdn="f.q.d.n"
+
+# machine id
+sp_g_ssh_mid="template"
+
+# remote username
+sp_g_ssh_user="${USER}"
+
+# a common ssh port
+sp_g_ssh_port=22
+sp_g_ssh_copts="-o TCPKeepAlive=no -o ServerAliveInterval=30"
+
+# options for ssh logins
+sp_g_ssh_opts="-XC ${sp_g_ssh_copts} -p ${sp_g_ssh_port}"
+
+# options for scp operations
+sp_g_scp_opts="-r -C -P ${sp_g_ssh_port}"
+
+# remote destination directory for scp
+sp_p_scp_remote="/home/${sp_g_ssh_user}"
+
+# local destination for pop
+sp_p_scp_local="${HOME}/xfer/${sp_g_ssh_mid}"
+
+# if not null then create a proxy tunnel
+sp_g_ssh_proxy="-L63128:localhost:3128"
+
+# sshmount remote directory
+sp_p_sshfs_remote="/"
+
+# local directory where the above remote dir is mounted
+sp_p_sshfs_local="${sp_p_remote}/${sp_g_ssh_mid}"
+
+# sshmount options
+sp_g_sshfs_opts="-C ${sp_g_ssh_copts} -o rw -o follow_symlinks -o Port=${sp_g_ssh_port}"

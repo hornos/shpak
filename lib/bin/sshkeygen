@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# header ------------------------------------------------------------------------
+. $(dirname ${0})/../lib/h.sh
+sp_f_load ssh
+
+# options -----------------------------------------------------------------------
+_m="default"
+while getopts fhm: o; do
+  case "$o" in
+    m) _m=$OPTARG;;
+    h) echo "Usage: ${sp_g_bn} [-m host]"; exit 1;;
+  esac
+done
+
+# main --------------------------------------------------------------------------
+sp_f_ptt "${sp_g_bn}"
+sp_f_${sp_g_bn} "${_m}"
