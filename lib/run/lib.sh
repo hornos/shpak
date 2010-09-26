@@ -105,7 +105,7 @@ function sp_f_runprg() {
   # options ---------------------------------------------------------------------
   local _prg=${1:-vasp}
   local _guide=${2:-vasp.guide}
-  local _sched=${3}
+  _sched=${3}
 
   if ! test -z ${QUEUE_MAIL_TO} && ! test -z "${_sched}" ; then
     sp_f_load queue/${_sched}
@@ -254,14 +254,15 @@ function sp_f_runprg() {
 
 function sp_f_run_mail() {
   local _act=${1:-Started}
-  # send mail
-#  if ! test -z "${QUEUE_MAIL_TO}" && ! test -z "${sched}"; then
+
   if ! test -z "${QUEUE_MAIL_TO}" ; then
     local _sub="${_act}"
     local _msg="${_act}"
-#    _sub=$(sp_f_run_mail_sub)
-#    _msg=$(sp_f_run_mail_msg)
-#    _sub="${_sub} ${_act}"
+    if ! test -z "${_sched}" ; then
+      _sub=$(sp_f_queue_mail_sub)
+      _msg=$(sp_f_queue_mail_msg)
+      _sub="${_sub} ${_act}"
+    fi
     sp_f_mail "${_sub}" "${_msg}" "${QUEUE_MAIL_TO}"
   fi
 }

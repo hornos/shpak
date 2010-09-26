@@ -1,0 +1,19 @@
+#!/bin/bash
+# mcedit TAB: 4 with spaces
+
+### BEGIN HEADER
+. $(dirname ${0})/../lib/h.sh
+# load libraries
+sp_f_load queue
+### END HEADER
+
+_ji="start.job"
+while getopts hj: opt; do
+  case "$opt" in
+    j) _ji=$OPTARG;;
+    h) echo "Usage: $(basename $0) [-j jobinfo]"; exit 1;;
+  esac
+done
+
+sp_f_ptt "${sp_g_bn}"
+sp_f_${sp_g_bn} "${_ji}"
