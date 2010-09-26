@@ -60,11 +60,11 @@ function sp_f_sge() {
 }
 
 
-function sp_f_queue_mail_sub() {
+function sp_f_qmail_sub() {
   echo "Job ${JOB_ID} (${JOB_NAME})"
 }
 
-function sp_f_queue_mail_msg() {
+function sp_f_qmail_msg() {
   local _m=""
   _msg=$(date)
   if ! test -z "${NSLOTS}" ; then

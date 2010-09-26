@@ -259,8 +259,8 @@ function sp_f_run_mail() {
     local _sub="${_act}"
     local _msg="${_act}"
     if ! test -z "${_sched}" ; then
-      _sub=$(sp_f_queue_mail_sub)
-      _msg=$(sp_f_queue_mail_msg)
+      _sub=$(sp_f_qmail_sub)
+      _msg=$(sp_f_qmail_msg)
       _sub="${_sub} ${_act}"
     fi
     sp_f_mail "${_sub}" "${_msg}" "${QUEUE_MAIL_TO}"
