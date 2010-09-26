@@ -1,5 +1,5 @@
 # common ------------------------------------------------------------------------
-function sp_f_sshinit() {
+function sp_f_ssh_init() {
   local _p_host="${sp_p_hosts}/${_host}"
 
   if ! test -r "${_p_host}" ; then
@@ -17,7 +17,7 @@ function sp_f_sshlogin() {
   local _host="${1:-default}"
   local _force="${2:-false}"
 
-  sp_f_sshinit "${_host}"
+  sp_f_ssh_init "${_host}"
 
   # lock --------------------------------
   local _lck="${_host}.${sp_g_bn}"
@@ -38,7 +38,7 @@ function sp_f_sshlogin() {
   fi
 
   # ssh key -----------------------------
-  local _p_key="${sp_p_keys}/${_host}${sp_g_key_ext}"
+  local _p_key="${sp_p_keys}/${_host}${sp_s_key}"
   if test -r "${_p_key}" ; then
     _opts="${_opts} -i ${_p_key}"
   else
@@ -49,7 +49,7 @@ function sp_f_sshlogin() {
   sp_f_stt "Login to ${_url}"
 
   # ssh ---------------------------------
-  ${sp_p_ssh} ${_opts} ${_url}
+  ${sp_b_ssh} ${_opts} ${_url}
   local _r=$?
   if ${_proxy} ; then
     sp_f_rmlck "${_lck}"
@@ -71,7 +71,7 @@ function sp_f_sshtx() {
   fi
 
   # init --------------------------------
-  sp_f_sshinit "${_host}"
+  sp_f_ssh_init "${_host}"
 
   local _dst="${sp_p_scp_local}"
   local _src_url="${sp_g_ssh_user}@${sp_g_ssh_fqdn}:${sp_p_scp_remote}"
@@ -108,7 +108,7 @@ function sp_f_sshtx() {
   esac
 
   # ssh key -----------------------------
-  local _p_key="${sp_p_keys}/${_host}${sp_g_key_ext}"
+  local _p_key="${sp_p_keys}/${_host}${sp_s_key}"
   if test -r "${_p_key}" ; then
     _opts="${_opts} -i ${_p_key}"
   else
@@ -129,23 +129,23 @@ function sp_f_sshtx() {
   case ${_mode} in
     1)
       if ${_push} ; then
-        ${sp_p_scp} ${_opts} "${_src}" ${_url}
+        ${sp_b_scp} ${_opts} "${_src}" ${_url}
       else
-        ${sp_p_scp} ${_opts} ${_url} "${_dst}"
+        ${sp_b_scp} ${_opts} ${_url} "${_dst}"
       fi
     ;;
     2)
       if ${_push} ; then
-        ${sp_p_tar} cvf - "${_src}" | ${sp_p_ssh} ${_opts} ${_url} "(cd \"${sp_p_scp_remote}\";tar xvf -)"
+        ${sp_b_tar} cvf - "${_src}" | ${sp_b_ssh} ${_opts} ${_url} "(cd \"${sp_p_scp_remote}\";tar xvf -)"
       else
-        ${sp_p_ssh} ${_opts} ${_url} "(cd \"${sp_p_scp_remote}\";tar cvf - \"${_src}\")" | (cd "${_dst}"; ${sp_p_tar} xvf -)
+        ${sp_b_ssh} ${_opts} ${_url} "(cd \"${sp_p_scp_remote}\";tar cvf - \"${_src}\")" | (cd "${_dst}"; ${sp_b_tar} xvf -)
       fi
     ;;
     3)
       if ${_push} ; then
-        ${sp_p_rsync} -a -z -v --partial --progress -e "${sp_p_ssh} ${_opts}" "${_src}" ${_url}
+        ${sp_b_rsync} -a -z -v --partial --progress -e "${sp_b_ssh} ${_opts}" "${_src}" ${_url}
       else
-        ${sp_p_rsync} -a -z -v --partial --progress -e "${sp_p_ssh} ${_opts}" ${_url} "${_dst}"
+        ${sp_b_rsync} -a -z -v --partial --progress -e "${sp_b_ssh} ${_opts}" ${_url} "${_dst}"
       fi
     ;;
   esac
@@ -178,13 +178,13 @@ function sp_f_sshkeygen() {
   local _mode="${2:-rsa}"
   local _size="${3:-2048}"
 
-  sp_f_sshinit "${_host}"
+  sp_f_ssh_init "${_host}"
 
   cd "${sp_p_keys}"
   local _key="${_host}.id_${_mode}"
-  local _lnk="${_host}${sp_g_key_ext}"
+  local _lnk="${_host}${sp_s_key}"
 
-  ${sp_p_sshkey} -b ${_size} -t "${_mode}" -f "${_key}"
+  ${sp_b_sshkey} -b ${_size} -t "${_mode}" -f "${_key}"
   local _r=$?
 
   if test ${_r} -eq 0 ; then
@@ -200,7 +200,7 @@ function sp_f_sshkeygen() {
 function sp_f_sshinfo() {
   local _host="${1:-default}"
 
-  sp_f_sshinit "${_host}"
+  sp_f_ssh_init "${_host}"
 
   sp_f_stt "${_host} (${sp_g_ssh_fqdn})"
   echo "ssh url    : ${sp_g_ssh_user}@${sp_g_ssh_fqdn}"
@@ -225,14 +225,14 @@ function sp_f_sshmnt() {
   local _force="${2:-false}"
   local _mnt="${3:-true}"
 
-  sp_f_sshinit "${_host}"
+  sp_f_ssh_init "${_host}"
 
   local _dst="${sp_p_sshfs_local}"
 
   if ${_mnt} ; then
     local _opts="${sp_g_sshfs_opts}"
     # ssh key -----------------------------
-    local _p_key="${sp_p_keys}/${_host}${sp_g_key_ext}"
+    local _p_key="${sp_p_keys}/${_host}${sp_s_key}"
     if test -r "${_p_key}" ; then
       _opts="${_opts} -o IdentityFile=${_p_key}"
     else
@@ -243,10 +243,10 @@ function sp_f_sshmnt() {
     sp_f_mkdir "${_dst}"
 
     sp_f_stt "${_dst} -> ${_url}"
-    ${sp_p_sshmnt} ${_url} ${_dst} ${_opts}
+    ${sp_b_sshmnt} ${_url} ${_dst} ${_opts}
   else
     sp_f_stt "${_dst}"
-    ${sp_p_sshumnt} ${_dst}
+    ${sp_b_sshumnt} ${_dst}
   fi
 
   return $?

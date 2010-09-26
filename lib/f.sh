@@ -15,9 +15,9 @@ function sp_f_wrn() {
 
 
 function sp_f_inarr() {
-  local k
-  for k in ${2} ; do
-    if test "${k}" = "${1}" ; then
+  local _k
+  for _k in ${2} ; do
+    if test "${_k}" = "${1}" ; then
       return 1
     fi
   done
@@ -34,7 +34,7 @@ function sp_f_load() {
     if ${_isex} ; then exit 1; else return 1; fi
   fi
 
-  local _p_lib="${sp_p_lib}/${_lib}/lib${sp_g_lib_ext}"
+  local _p_lib="${sp_p_lib}/${_lib}/lib${sp_s_lib}"
 
   # check path
   if ! test -r "${_p_lib}" ; then
@@ -50,11 +50,11 @@ function sp_f_load() {
   fi
 
   # load the library config
-  local _p_cfg="${sp_p_lib}/${_lib}/${OSTYPE}${sp_g_cfg_ext}"
+  local _p_cfg="${sp_p_lib}/${_lib}/${OSTYPE}${sp_s_cfg}"
   if test -r ${_p_cfg} ; then
     . "${_p_cfg}"
   else
-    _p_cfg="${sp_p_lib}/${_lib}/lib${sp_g_cfg_ext}"
+    _p_cfg="${sp_p_lib}/${_lib}/lib${sp_s_cfg}"
     if ! test -r ${_p_cfg} ; then
       sp_f_wrn "file ${_p_cfg} not found"
     fi
@@ -78,7 +78,7 @@ function sp_f_lck() {
   if test -z "${1}" ; then return 1; fi
 
   local _lck="${1}"
-  local _p_lck="${sp_p_lck}/${_lck}${sp_g_lck_ext}"
+  local _p_lck="${sp_p_lck}/${_lck}${sp_s_lck}"
   if test -w "${_p_lck}" ; then 
     return 0
   fi
@@ -93,7 +93,7 @@ function sp_f_mklck() {
   if test -z "${1}" ; then return 1; fi
 
   local _lck="${1}"
-  local _p_lck="${sp_p_lck}/${_lck}${sp_g_lck_ext}"
+  local _p_lck="${sp_p_lck}/${_lck}${sp_s_lck}"
   if sp_f_lck "${_lck}" ; then
     return 2
   fi
@@ -113,7 +113,7 @@ function sp_f_rmlck() {
   if test -z "${1}" ; then return 1; fi
 
   local _lck="${1}"
-  local _p_lck="${sp_p_lck}/${_lck}${sp_g_lck_ext}"
+  local _p_lck="${sp_p_lck}/${_lck}${sp_s_lck}"
 
   if sp_f_lck "${_lck}" ; then
     rm -f "${_p_lck}"

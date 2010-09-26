@@ -12,10 +12,10 @@ sp_p_keys="${sp_p_user}/keys"
 sp_p_lck="${sp_p_user}/lock"
 sp_p_remote="${sp_p_user}/remote"
 
-sp_g_lib_ext=".sh"
-sp_g_cfg_ext=".cfg"
-sp_g_lck_ext=".lck"
-sp_g_key_ext=".key"
+sp_s_lib=".sh"
+sp_s_cfg=".cfg"
+sp_s_lck=".lck"
+sp_s_key=".key"
 
 # common functions --------------------------------------------------------------
 sp_p_f="${sp_p_lib}/f.sh"
