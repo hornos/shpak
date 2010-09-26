@@ -10,7 +10,7 @@ function sp_f_jobsub() {
   fi
 
 # read queue info ---------------------------------------------------------------
-  local _p_qi="${sh_p_queues}/${QUEUE:-default}"
+  local _p_qi="${sp_p_queues}/${QUEUE:-default}"
   if test -r "${_p_qi}" ; then
     . ${_p_qi}
   else
@@ -35,9 +35,9 @@ function sp_f_jobsub() {
   local _sckts=${SCKTS:-2}
   local _thrds=${THRDS:-1}
 
-  local _sockets=$((nodes*sckts))
-  local _tasks=$((sckts*cores))
-  local _slots=$((nodes*tasks))
+  local _sockets=$((_nodes*_sckts))
+  local _tasks=$((_sckts*_cores))
+  local _slots=$((_nodes*_tasks))
   local _threads=${_cores}
 
   if test ${_thrds} -gt 1 ; then
@@ -99,11 +99,9 @@ function sp_f_jobsub() {
   echo "${COMMAND}"                         >> "${_p_qbat}"
 
 # submission --------------------------------------------------------------------
-  echo
-  echo "Shellpack: $SCHED"
-  prnsln
+  sp_f_stt "Scheduler: ${_sched}"
   cat "${_p_qbat}"
-  prnsln
+  sp_f_sln
   echo
 
   sp_f_yesno "Submit?"
