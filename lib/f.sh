@@ -10,7 +10,9 @@ function sp_f_err() {
 
 
 function sp_f_wrn() {
-  echo -e "$(basename "${0}"): Warning ($*)" >&2
+  if ${sp_g_debug} ; then
+    echo -e "$(basename "${0}"): Warning ($*)" >&2
+  fi
 }
 
 

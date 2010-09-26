@@ -1,0 +1,21 @@
+#!/bin/bash
+
+### BEGIN HEADER
+. $(dirname ${0})/../lib/h.sh
+# load libraries
+sp_f_load run
+### END HEADER
+
+prg="vasp"
+guide="vasp.guide"
+while getopts hp:g:s: opt; do
+  case "$opt" in
+    p) prg=$OPTARG; guide="${prg}.guide";;
+    g) guide=$OPTARG;;
+    s) sched=$OPTARG;;
+    h) echo "Usage: $(basename $0) -p program [-g guide] [-s scheduler]"; exit 1;;
+  esac
+done
+
+sp_f_ptt "${sp_g_bn}"
+sp_f_${sp_g_bn} "${prg}" "${guide}" "${sched}"

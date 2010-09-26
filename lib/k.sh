@@ -16,6 +16,8 @@ sp_s_lib=".sh"
 sp_s_cfg=".cfg"
 sp_s_lck=".lck"
 
+sp_g_debug=false
+
 # common functions --------------------------------------------------------------
 sp_p_f="${sp_p_lib}/f.sh"
 if ! test -r "${sp_p_f}" ; then
