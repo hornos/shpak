@@ -50,15 +50,18 @@ function sp_f_load() {
   fi
 
   # load the library config
-  local _p_cfg="${sp_p_lib}/${_lib}/${OSTYPE}${sp_s_cfg}"
+  local _p_cfg="${sp_p_lib}/${_lib}/lib${sp_s_cfg}"
   if test -r ${_p_cfg} ; then
     . "${_p_cfg}"
   else
-    _p_cfg="${sp_p_lib}/${_lib}/lib${sp_s_cfg}"
-    if ! test -r ${_p_cfg} ; then
-      sp_f_wrn "file ${_p_cfg} not found"
-    fi
+    sp_f_wrn "file ${_p_cfg} not found"
+  fi
+
+  _p_cfg="${sp_p_lib}/${_lib}/${OSTYPE}${sp_s_cfg}"
+  if test -r ${_p_cfg} ; then
     . "${_p_cfg}"
+  else
+    sp_f_wrn "file ${_p_cfg} not found"
   fi
 
   # load the library

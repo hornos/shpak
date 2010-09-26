@@ -15,7 +15,6 @@ sp_p_remote="${sp_p_user}/remote"
 sp_s_lib=".sh"
 sp_s_cfg=".cfg"
 sp_s_lck=".lck"
-sp_s_key=".key"
 
 # common functions --------------------------------------------------------------
 sp_p_f="${sp_p_lib}/f.sh"

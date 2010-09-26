@@ -62,6 +62,7 @@ function sp_f_sshtx() {
   local _host="${1:-default}"
   local _m="${2:-1}"
   local _src="${3}"
+  local _r=0
 
   # mode select -------------------------
   local _push=true
@@ -118,12 +119,16 @@ function sp_f_sshtx() {
   # title -------------------------------
   local _dtxt="\n From: ${_src}\n   To: ${_url}"
   if ! ${_push} ; then
-    _dtxt="\n From: ${_url}\n   To: ${_dst}"
+    _dtxt="\n From: ${_src_url}\n   To: ${_dst}"
   fi
-  sp_f_stt "Transfer (${_mtxt}) ${_dtxt}"
+  sp_f_stt "Transfer (${_mtxt})\n${_dtxt}\n"
 
+  echo ""
   sp_f_yesno "Start?"
-  if test $? -gt 0 ; then return $?; fi
+  _r=$?
+  echo ""
+  sp_f_sln
+  if test ${_r} -gt 0 ; then return ${_r}; fi
 
   # transfer ----------------------------
   case ${_mode} in
@@ -149,8 +154,11 @@ function sp_f_sshtx() {
       fi
     ;;
   esac
+  _r=$?
+  sp_f_sln
+  echo ""
 
-  return $?
+  return ${_r}
 } # end sp_f_sshtx
 
 
@@ -182,17 +190,24 @@ function sp_f_sshkeygen() {
 
   cd "${sp_p_keys}"
   local _key="${_host}.id_${_mode}"
-  local _lnk="${_host}${sp_s_key}"
+  local _key_lnk="${_host}${sp_s_key}"
 
+  local _pkey="${_key}.pub"
+  local _pkey_lnk="${_host}${sp_s_pkey}"
+
+  echo ""
   ${sp_b_sshkey} -b ${_size} -t "${_mode}" -f "${_key}"
   local _r=$?
 
   if test ${_r} -eq 0 ; then
     chmod go-rwx "${_key}"
-    chmod go-rwx "${_key}.pub"
-    sp_f_mklnk "${_key}" "${_lnk}"
+    sp_f_mklnk "${_key}" "${_key_lnk}"
+
+    chmod go-rwx "${_pkey}"
+    sp_f_mklnk "${_pkey}" "${_pkey_lnk}"
   fi
 
+  echo ""
   return ${_r}
 } # end sp_f_sshkeygen
 
@@ -215,6 +230,16 @@ function sp_f_sshinfo() {
   echo "sshfs mnt  : ${sp_p_sshfs_local} -> ${sp_g_ssh_user}@${sp_g_ssh_fqdn}:${sp_p_sshfs_remote}"
   echo "sshfs opts : ${sp_g_sshfs_opts}"
   echo ""
+
+  # ssh key -----------------------------
+  local _p_pkey="${sp_p_keys}/${_host}${sp_s_pkey}"
+
+  if test -r "${_p_pkey}" ; then
+    ${sp_b_sshkey} -v -l -f "${_p_pkey}"
+  else
+    sp_f_wrn "key ${_p_pkey} not found"
+  fi
+
   return 0
 }
 
