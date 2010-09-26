@@ -7,7 +7,7 @@ function sp_f_vasp_prepare() {
   # prepare inputs --------------------------------------------------------------
   _if="${INPUTDIR}/${_inp}${sp_s_vcsfx}"
   if test -f "${_if}" ; then
-    sp_f_run_cpzmv "${_if}" "${WORKDIR}" INCAR
+    sp_f_zcpzmv "${_if}" "${WORKDIR}" INCAR
   else
     sp_f_err "file ${_if} not found"
     return 21
@@ -15,7 +15,7 @@ function sp_f_vasp_prepare() {
 
   _if="${INPUTDIR}/${_inp}${sp_s_vgsfx}"
   if test -f "${_if}" ; then
-    sp_f_run_cpzmv "${_if}" "${WORKDIR}" POSCAR
+    sp_f_zcpzmv "${_if}" "${WORKDIR}" POSCAR
   else
     sp_f_err "file ${_if} not found"
     return 22
@@ -23,7 +23,7 @@ function sp_f_vasp_prepare() {
 
   _if="${INPUTDIR}/${_inp}${sp_s_vksfx}"
   if test -f "${_if}" ; then
-    sp_f_run_cpzmv "${_if}" "${WORKDIR}" KPOINTS
+    sp_f_zcpzmv "${_if}" "${WORKDIR}" KPOINTS
   else
     sp_f_err "file ${_if} not found"
     return 23
@@ -32,7 +32,7 @@ function sp_f_vasp_prepare() {
   if test "${GW}" = "on" ; then
     _if="${INPUTDIR}/${_inp}${sp_s_vqsfx}"
     if test -f "${_if}" ; then
-      sp_f_run_cpzmv "${_if}" "${WORKDIR}" QPOINTS
+      sp_f_zcpzmv "${_if}" "${WORKDIR}" QPOINTS
     else
       sp_f_err "file ${_if} not found"
       return 24
@@ -50,12 +50,12 @@ function sp_f_vasp_prepare() {
   if ! test -z "${LIBS}" ; then
     for _lib in ${LIBS}; do
       # build potcar
-      _p_lib="${LIBDIR}/${_lib}/POTCAR${sp_s_rczsfx}"
+      _p_lib="${LIBDIR}/${_lib}/POTCAR${sp_s_z}"
       if ! test -f "${_p_lib}" ; then
         sp_f_err "projectorfile ${_p_lib} not found"
         return 31
       fi
-      sp_f_run_cpzmv "${_p_lib}" "${WORKDIR}"
+      sp_f_zcpzmv "${_p_lib}" "${WORKDIR}"
       _t_p_lib="${WORKDIR}/POTCAR"
       if ! test -f "${_t_p_lib}" ; then
         sp_f_err "projectorfile ${_t_p_lib} not found"
@@ -66,12 +66,12 @@ function sp_f_vasp_prepare() {
 
       # build potsic for GW calcs
       if test "${GW}" = "on" ; then
-        _p_lib="${LIBDIR}/${_lib}/POTSIC${sp_s_rczsfx}"
+        _p_lib="${LIBDIR}/${_lib}/POTSIC${sp_s_z}"
         if ! test -f "${_p_lib}" ; then
           sp_f_err "projectorfile ${_p_lib} not found"
           return 33
         fi
-        sp_f_run_cpzmv "${_p_lib}" "${WORKDIR}"
+        sp_f_zcpzmv "${_p_lib}" "${WORKDIR}"
         _t_p_lib="${WORKDIR}/POTSIC"
         if ! test -f "${_t_p_lib}" ; then
           sp_f_err "projectorfile ${_t_p_lib} not found"
@@ -100,9 +100,9 @@ function sp_f_vasp_prepare() {
       sp_f_err "file ${_p_oin} not found"
       return 35
     fi
-    _oout=${_oin##${pfx}.}
-    _oout=${_oout%%${sp_s_rzsfx}}
-    sp_f_run_cpzmv "${_p_oin}" "${WORKDIR}" "${_oout}"
+    _oout=${_oin##${_pfx}.}
+    _oout=${_oout%%${sp_s_z}}
+    sp_f_zcpzmv "${_p_oin}" "${WORKDIR}" "${_oout}"
   done
 
   return 0

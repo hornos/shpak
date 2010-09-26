@@ -2,41 +2,6 @@
 sp_f_load z
 sp_f_load mail
 
-function sp_f_run_cpzmv() {
- local _src="${1}"
- local _dir="${2}"
- local _dst="${3}"
- local _src_bn=""
- _src_bn=$(basename ${_src})
- local _src_ne=${_src_bn%%${sp_s_comp}}
-
- # copy ---------------------------------
- cp "${_src}" "${_dir}"
- if test $? -gt 0 ; then
-   sp_f_err "file $src can't be copied"
-   return 10
- fi
-
- # uncompress ---------------------------
- if test "${_src_bn}" != "${_src_ne}" ; then
-   ${sp_b_ucomp} "${_dir}/${_src_bn}"
- fi
-
- # rename -------------------------------
- local _p_src_ne="${_dir}/${_src_ne}"
- local _p_dst="${_dir}/${_dst}"
- if ! test -z "${_dst}" && ! test -f "${_p_dst}" ; then
-   mv "${_p_src_ne}" "${_p_dst}"
-   if test $? -gt 0 ; then
-     sp_f_err "file ${_p_src_ne} can't be renamed"
-     return 11
-   fi
-   chmod u+w "${_p_dst}"
- else
-   chmod u+w "${_p_src_ne}"
- fi
- return 0
-}
 
 
 function sp_f_run_ird() {
@@ -71,11 +36,11 @@ function sp_f_run_fsave() {
   local _rs="${1}"
   local _inp="${2}"
   if ! test -z "${_inp}" ; then
-    inp="${_inp}."
+    _inp="${_inp}."
   fi
 
-  local _p_dst="${RESULTDIR}/${_inp}${_rs}${sp_s_comp}"
-  local _p_sav="${RESULTDIR}/${_inp}${_rs}.old${sp_s_comp}"
+  local _p_dst="${RESULTDIR}/${_inp}${_rs}${sp_s_z}"
+  local _p_sav="${RESULTDIR}/${_inp}${_rs}.old${sp_s_z}"
 
   if test -f "${_p_dst}" ; then
     mv -f "${_p_dst}" "${_p_sav}"
@@ -85,8 +50,8 @@ function sp_f_run_fsave() {
     fi
   fi
 
-  local _crs="${_rs}${sp_s_comp}"
-  ${sp_b_comp} "${_rs}"
+  local _crs="${_rs}${sp_s_z}"
+  ${sp_b_z} "${_rs}"
   cp -f "${_crs}" "${_p_dst}"
   if test $? -gt 0 ; then
     sp_f_err "file ${_crs} can't be copied"
@@ -226,7 +191,7 @@ function sp_f_runprg() {
 # start program -----------------------------------------------------------------
   sp_f_run_mail "Started"
 
-  sp_f_stt "Running"
+  sp_f_stt "Running: ${_prg}"
   echo "${_program}"
 
   sp_f_run_ird ${MAININPUT}
@@ -282,7 +247,9 @@ function sp_f_runprg() {
 
   sp_f_run_clean
   sp_f_run_mail "Completed"
+  echo ""
   sp_f_dln
+  echo ""
 }
 
 function sp_f_run_mail() {
@@ -290,11 +257,11 @@ function sp_f_run_mail() {
   # send mail
 #  if ! test -z "${QUEUE_MAIL_TO}" && ! test -z "${sched}"; then
   if ! test -z "${QUEUE_MAIL_TO}" ; then
-    local _sub=""
-    local _msg=""
-    _sub=$(sp_f_run_mail_sub)
-    _msg=$(sp_f_run_mail_msg)
-    _sub="${_sub} ${_act}"
+    local _sub="${_act}"
+    local _msg="${_act}"
+#    _sub=$(sp_f_run_mail_sub)
+#    _msg=$(sp_f_run_mail_msg)
+#    _sub="${_sub} ${_act}"
     sp_f_mail "${_sub}" "${_msg}" "${QUEUE_MAIL_TO}"
   fi
 }
