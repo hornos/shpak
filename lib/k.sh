@@ -26,5 +26,5 @@ fi
 . "${sp_p_f}"
 
 # create directories ------------------------------------------------------------
-sp_f_dir_create "${sp_p_lck}"
-sp_f_dir_create "${sp_p_keys}"
+sp_f_mkdir "${sp_p_lck}"
+sp_f_mkdir "${sp_p_keys}"

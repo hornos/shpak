@@ -22,18 +22,18 @@ function sp_f_sshlogin() {
   # lock --------------------------------
   local _lck="${_host}.${sp_g_bn}"
   if ${_force} ; then
-    sp_f_lck_delete "${_lck}"
+    sp_f_rmlck "${_lck}"
   fi
 
   # proxy -------------------------------
   local _proxy=false
   local _opts="${sp_g_ssh_opts}"
   if ! test -z "${sp_g_ssh_proxy}" ; then
-    if sp_f_lck_create "${_lck}" ; then
+    if sp_f_mklck "${_lck}" ; then
       _proxy=true
       _opts="${_opts} ${sp_g_ssh_proxy}"
     else
-      sp_f_warn "active proxies: ${sp_g_ssh_proxy}"
+      sp_f_wrn "active proxies: ${sp_g_ssh_proxy}"
     fi
   fi
 
@@ -42,7 +42,7 @@ function sp_f_sshlogin() {
   if test -r "${_p_key}" ; then
     _opts="${_opts} -i ${_p_key}"
   else
-    sp_f_warn "key ${_p_key} not found"
+    sp_f_wrn "key ${_p_key} not found"
   fi
 
   local _url="${sp_g_ssh_user}@${sp_g_ssh_fqdn}"
@@ -52,7 +52,7 @@ function sp_f_sshlogin() {
   ${sp_p_ssh} ${_opts} ${_url}
   local _r=$?
   if ${_proxy} ; then
-    sp_f_lck_delete "${_lck}"
+    sp_f_rmlck "${_lck}"
   fi
   return ${_r}
 } # end sp_f_sshlogin
@@ -82,7 +82,7 @@ function sp_f_sshtx() {
     fi
   else
     local _src_url="${_src_url}/${_src}"
-    sp_f_dir_create "${sp_p_scp_local}"
+    sp_f_mkdir "${sp_p_scp_local}"
   fi
 
   # mode --------------------------------
@@ -112,7 +112,7 @@ function sp_f_sshtx() {
   if test -r "${_p_key}" ; then
     _opts="${_opts} -i ${_p_key}"
   else
-    sp_f_warn "key ${_p_key} not found"
+    sp_f_wrn "key ${_p_key} not found"
   fi
 
   # title -------------------------------
@@ -190,7 +190,7 @@ function sp_f_sshkeygen() {
   if test ${_r} -eq 0 ; then
     chmod go-rwx "${_key}"
     chmod go-rwx "${_key}.pub"
-    sp_f_lnk_create "${_key}" "${_lnk}"
+    sp_f_mklnk "${_key}" "${_lnk}"
   fi
 
   return ${_r}
@@ -236,11 +236,11 @@ function sp_f_sshmnt() {
     if test -r "${_p_key}" ; then
       _opts="${_opts} -o IdentityFile=${_p_key}"
     else
-      sp_f_warn "key ${_p_key} not found"
+      sp_f_wrn "key ${_p_key} not found"
     fi
     local _url="${sp_g_ssh_user}@${sp_g_ssh_fqdn}:${sp_p_sshfs_remote}"
 
-    sp_f_dir_create "${_dst}"
+    sp_f_mkdir "${_dst}"
 
     sp_f_stt "${_dst} -> ${_url}"
     ${sp_p_sshmnt} ${_url} ${_dst} ${_opts}

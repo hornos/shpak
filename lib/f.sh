@@ -9,7 +9,7 @@ function sp_f_err() {
 }
 
 
-function sp_f_warn() {
+function sp_f_wrn() {
   echo -e "$(basename "${0}"): Warning ($*)" >&2
 }
 
@@ -56,7 +56,7 @@ function sp_f_load() {
   else
     _p_cfg="${sp_p_lib}/${_lib}/lib${sp_g_cfg_ext}"
     if ! test -r ${_p_cfg} ; then
-      sp_f_warn "file ${_p_cfg} not found"
+      sp_f_wrn "file ${_p_cfg} not found"
     fi
     . "${_p_cfg}"
   fi
@@ -89,7 +89,7 @@ function sp_f_lck() {
 # if sp_f_lock_create LOCK ; then
 #   this part runs when LOCK is created
 # fi
-function sp_f_lck_create() {
+function sp_f_mklck() {
   if test -z "${1}" ; then return 1; fi
 
   local _lck="${1}"
@@ -109,7 +109,7 @@ function sp_f_lck_create() {
 # if sp_f_lock_delete LOCK ; then
 #   this part runs when LOCK is deleted
 # fi
-function sp_f_lck_delete() {
+function sp_f_rmlck() {
   if test -z "${1}" ; then return 1; fi
 
   local _lck="${1}"
@@ -125,7 +125,7 @@ function sp_f_lck_delete() {
 
 
 # directory handling ------------------------------------------------------------
-function sp_f_dir_create() {
+function sp_f_mkdir() {
   if test -z "${1}" ; then return 1; fi
 
   local _dir="${1}"
@@ -141,7 +141,7 @@ function sp_f_dir_create() {
 }
 
 
-function sp_f_dir_delete() {
+function sp_f_rmdir() {
   if test -z "${1}" ; then return 1; fi
 
   local _dir="${1}"
@@ -158,7 +158,7 @@ function sp_f_dir_delete() {
 
 
 # link handling -----------------------------------------------------------------
-function sp_f_lnk_create() {
+function sp_f_mklnk() {
   if test -z "${1}" || test -z "${2}" ; then
     return 1
   fi
@@ -173,7 +173,7 @@ function sp_f_lnk_create() {
 }
 
 
-function sp_f_lnk_delete() {
+function sp_f_rmlnk() {
   if test -z "${1}" ; then
     return 1
   fi
