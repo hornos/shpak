@@ -6,16 +6,17 @@
 sp_f_load run
 ### END HEADER
 
-prg="vasp"
-guide="vasp.guide"
+_p="vasp"
+_g="vasp.guide"
+_s=""
 while getopts hp:g:s: opt; do
   case "$opt" in
-    p) prg=$OPTARG; guide="${prg}.guide";;
-    g) guide=$OPTARG;;
-    s) sched=$OPTARG;;
+    p) _p=$OPTARG; g="${_p}.guide";;
+    g) _g=$OPTARG;;
+    s) _s=$OPTARG;;
     h) echo "Usage: $(basename $0) -p program [-g guide] [-s scheduler]"; exit 1;;
   esac
 done
 
 sp_f_ptt "${sp_g_bn}"
-sp_f_${sp_g_bn} "${prg}" "${guide}" "${sched}"
+sp_f_${sp_g_bn} "${_p}" "${_g}" "${_s}"

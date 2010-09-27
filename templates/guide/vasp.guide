@@ -1,0 +1,27 @@
+# for batch scheduler comment out
+TMPDIR=/tmp
+
+INPUTDIR="${PWD}"
+WORKDIR="${TMPDIR}/vasp-${USER}-${HOSTNAME}-$$"
+RESULTDIR="${INPUTDIR}"
+
+PRGBIN="/path/to/vasp.mpi"
+PARAMS=""
+LIBDIR="/path/to/projectors"
+LIBS="A B"
+
+MAININPUT="AB"
+OTHERINPUTS=""
+# for ISTART > 0
+# OTHERINPUTS="AB.WAVECAR.gz"
+
+# for GW comment out
+# GW="on"
+
+ONERR="keep"
+
+RESULTS="*"
+
+PRERUN="mpirun ${HYBMPI_MPIRUN_OPTS}"
+
+# LD_LIBRARY_PATH=

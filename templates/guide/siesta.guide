@@ -1,0 +1,27 @@
+# for batch scheduler comment out
+TMPDIR=/tmp
+
+INPUTDIR="${PWD}"
+WORKDIR="${TMPDIR}/siesta-${USER}-${HOSTNAME}-$$"
+RESULTDIR="${INPUTDIR}"
+
+PRGBIN="/path/to/siesta.mpi"
+PARAMS=""
+
+LIBDIR="/path/to/pseudos"
+LIBS="A.psf.gz B.psf.gz"
+
+MAININPUT="<input.fdf"
+PREFIX=`if test "${MAININPUT:0:1}" = "<" ; then _input=${MAININPUT:1}; else _input=${MAININPUT}; fi; grep -i systemlabel ${_input} | awk '{print $2}';`
+OTHERINPUTS=""
+# UseSaveData  .true.
+# OTHERINPUTS="${PREFIX}.DM.gz ${PREFIX}.XV.gz ${PREFIX}.CG.gz"
+
+ONERR="clean"
+
+RESULTS="*out* ${PREFIX}.*"
+
+PRERUN="mpirun ${HYBMPI_MPIRUN_OPTS}"
+
+# LD_LIBRARY_PATH=
+

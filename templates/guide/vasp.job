@@ -1,0 +1,10 @@
+NAME=test
+TIME=00:30:00
+MEMORY=500
+NODES=1
+SCKTS=2
+CORES=2
+THRDS=2
+HYBMPI="on"
+QUEUE=sge.q
+COMMAND="runprg -p vasp -g vasp.guide"
