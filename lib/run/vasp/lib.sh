@@ -2,39 +2,39 @@
 function sp_f_vasp_prepare() {
   local _inp=""
   _inp=$(sp_f_run_inm ${MAININPUT})
-  local _if=""
+  local _p_if=""
 
   # prepare inputs --------------------------------------------------------------
-  _if="${INPUTDIR}/${_inp}${sp_s_vcsfx}"
-  if test -f "${_if}" ; then
-    sp_f_zcpzmv "${_if}" "${WORKDIR}" INCAR
+  _p_if="${INPUTDIR}/${_inp}${sp_s_vcntl}"
+  if test -f "${_p_if}" ; then
+    sp_f_zcpzmv "${_p_if}" "${WORKDIR}" INCAR
   else
-    sp_f_err "file ${_if} not found"
+    sp_f_err "file ${_p_if} not found"
     return 21
   fi
 
-  _if="${INPUTDIR}/${_inp}${sp_s_vgsfx}"
-  if test -f "${_if}" ; then
-    sp_f_zcpzmv "${_if}" "${WORKDIR}" POSCAR
+  _p_if="${INPUTDIR}/${_inp}${sp_s_vgeom}"
+  if test -f "${_p_if}" ; then
+    sp_f_zcpzmv "${_p_if}" "${WORKDIR}" POSCAR
   else
-    sp_f_err "file ${_if} not found"
+    sp_f_err "file ${_p_if} not found"
     return 22
   fi
 
-  _if="${INPUTDIR}/${_inp}${sp_s_vksfx}"
-  if test -f "${_if}" ; then
-    sp_f_zcpzmv "${_if}" "${WORKDIR}" KPOINTS
+  _p_if="${INPUTDIR}/${_inp}${sp_s_vkpts}"
+  if test -f "${_p_if}" ; then
+    sp_f_zcpzmv "${_p_if}" "${WORKDIR}" KPOINTS
   else
-    sp_f_err "file ${_if} not found"
+    sp_f_err "file ${_p_if} not found"
     return 23
   fi
 
   if test "${GW}" = "on" ; then
-    _if="${INPUTDIR}/${_inp}${sp_s_vqsfx}"
-    if test -f "${_if}" ; then
-      sp_f_zcpzmv "${_if}" "${WORKDIR}" QPOINTS
+    _p_if="${INPUTDIR}/${_inp}${sp_s_vqpts}"
+    if test -f "${_p_if}" ; then
+      sp_f_zcpzmv "${_p_if}" "${WORKDIR}" QPOINTS
     else
-      sp_f_err "file ${_if} not found"
+      sp_f_err "file ${_p_if} not found"
       return 24
     fi
   fi
