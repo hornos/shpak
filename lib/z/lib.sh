@@ -1,5 +1,5 @@
 
-function sp_f_zcpzmv() {
+function sp_f_zcpumv() {
  local _src="${1}"
  local _dir="${2}"
  local _dst="${3}"

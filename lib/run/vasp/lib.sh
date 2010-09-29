@@ -7,7 +7,7 @@ function sp_f_vasp_prepare() {
   # prepare inputs --------------------------------------------------------------
   _p_if="${INPUTDIR}/${_inp}${sp_s_vcntl}"
   if test -f "${_p_if}" ; then
-    sp_f_zcpzmv "${_p_if}" "${WORKDIR}" INCAR
+    sp_f_zcpumv "${_p_if}" "${WORKDIR}" INCAR
   else
     sp_f_err "file ${_p_if} not found"
     return 21
@@ -15,7 +15,7 @@ function sp_f_vasp_prepare() {
 
   _p_if="${INPUTDIR}/${_inp}${sp_s_vgeom}"
   if test -f "${_p_if}" ; then
-    sp_f_zcpzmv "${_p_if}" "${WORKDIR}" POSCAR
+    sp_f_zcpumv "${_p_if}" "${WORKDIR}" POSCAR
   else
     sp_f_err "file ${_p_if} not found"
     return 22
@@ -23,7 +23,7 @@ function sp_f_vasp_prepare() {
 
   _p_if="${INPUTDIR}/${_inp}${sp_s_vkpts}"
   if test -f "${_p_if}" ; then
-    sp_f_zcpzmv "${_p_if}" "${WORKDIR}" KPOINTS
+    sp_f_zcpumv "${_p_if}" "${WORKDIR}" KPOINTS
   else
     sp_f_err "file ${_p_if} not found"
     return 23
@@ -32,7 +32,7 @@ function sp_f_vasp_prepare() {
   if test "${GW}" = "on" ; then
     _p_if="${INPUTDIR}/${_inp}${sp_s_vqpts}"
     if test -f "${_p_if}" ; then
-      sp_f_zcpzmv "${_p_if}" "${WORKDIR}" QPOINTS
+      sp_f_zcpumv "${_p_if}" "${WORKDIR}" QPOINTS
     else
       sp_f_err "file ${_p_if} not found"
       return 24
@@ -55,7 +55,7 @@ function sp_f_vasp_prepare() {
         sp_f_err "projectorfile ${_p_lib} not found"
         return 31
       fi
-      sp_f_zcpzmv "${_p_lib}" "${WORKDIR}"
+      sp_f_zcpumv "${_p_lib}" "${WORKDIR}"
       _t_p_lib="${WORKDIR}/POTCAR"
       if ! test -f "${_t_p_lib}" ; then
         sp_f_err "projectorfile ${_t_p_lib} not found"
@@ -71,7 +71,7 @@ function sp_f_vasp_prepare() {
           sp_f_err "projectorfile ${_p_lib} not found"
           return 33
         fi
-        sp_f_zcpzmv "${_p_lib}" "${WORKDIR}"
+        sp_f_zcpumv "${_p_lib}" "${WORKDIR}"
         _t_p_lib="${WORKDIR}/POTSIC"
         if ! test -f "${_t_p_lib}" ; then
           sp_f_err "projectorfile ${_t_p_lib} not found"
@@ -102,7 +102,7 @@ function sp_f_vasp_prepare() {
     fi
     _oout=${_oin##${_pfx}.}
     _oout=${_oout%%${sp_s_z}}
-    sp_f_zcpzmv "${_p_oin}" "${WORKDIR}" "${_oout}"
+    sp_f_zcpumv "${_p_oin}" "${WORKDIR}" "${_oout}"
   done
 
   return 0

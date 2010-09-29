@@ -101,7 +101,7 @@ function sp_f_run_collect() {
     elif test -d "${_rs}" ; then
       sp_f_wrn "directory copy is not implemented"
     else
-      sp_f_wrn "file ${_rs} skipped"
+      sp_f_wrn "unknown file ${_rs} skipped"
     fi
   done
 
@@ -266,6 +266,7 @@ function sp_f_runprg() {
 }
 
 function sp_f_run_mail() {
+  # remark: _sched is global
   local _act=${1:-Started}
 
   if ! test -z "${QUEUE_MAIL_TO}" ; then
