@@ -34,3 +34,7 @@ function sp_f_zcpumv() {
  fi
  return 0
 }
+
+function sp_f_zutbc() {
+
+}

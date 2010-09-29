@@ -1,7 +1,7 @@
 
 function sp_f_vasp_prepare() {
   local _inp=""
-  _inp=$(sp_f_run_inm ${MAININPUT})
+  _inp=$(sp_f_inm "${MAININPUT}")
   local _p_if=""
 
   # prepare inputs --------------------------------------------------------------
@@ -90,7 +90,7 @@ function sp_f_vasp_prepare() {
   fi # LIBS
 
   # prepare others --------------------------------------------------------------
-  local _pfx=${MAININPUT}
+  local _pfx="${MAININPUT}"
   local _oin=""
   local _p_oin=""
   local _oout=""
@@ -114,17 +114,12 @@ function sp_f_vasp_finish() {
 }
 
 function sp_f_vasp_collect() {
-  local _inp=""
-  local _pna=${1:-true}
-  local _sfx="${2}"
+  local _inp=$(sp_f_inm "${MAININPUT}")
+  local _sfx="${1}"
 
-  if ${_pna} ; then
-    _inp=$(sp_f_run_inm ${MAININPUT})
-    _inp=${_inp%%${_sfx}}
-  fi
+  _inp=${_inp%%${_sfx}}
 
   sp_f_run_collect
-
   if test $? -gt 0 ; then
     return $?
   fi

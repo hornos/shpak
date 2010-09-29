@@ -3,35 +3,10 @@ sp_f_load z
 sp_f_load mail
 
 
-
-function sp_f_run_ird() {
-  # check first character
-  local _s="${1}"
-  local _p="${2:-<}"
-  if test "${_s:0:1}" = "{_p}" ; then return 1; fi
-
-  return 0
-}
-
-
-function sp_f_run_inm() {
-  # trim first character
-  local _s="${1}"
-  local _p="${2:-<}"
-  sp_f_run_ird "${_s}" "${_p}"
-  if test $? -gt 0 ; then
-    echo "${_s:1}"
-  else
-    echo "${_s}"
-  fi
-  return 0
-}
-
-
 function sp_f_run_clean() {
   cd "${INPUTDIR}"
 
-  local _p_wdir=$(sp_f_run_inm "${WORKDIR}" "@")
+  local _p_wdir=$(sp_f_inm "${WORKDIR}" "@")
   sp_f_rmdir "${_p_wdir}"
   sp_f_rmlnk "${WORKDIRLINK}"
 
@@ -81,10 +56,10 @@ function sp_f_run_collect() {
   local _sfx="${2}"
   local _r=0
   local _rs=""
-  local _p_wdir=$(sp_f_run_inm "${WORKDIR}" "@")
+  local _p_wdir=$(sp_f_inm "${WORKDIR}" "@")
 
   if ${_pna} ; then
-    _inp=$(sp_f_run_inm "${MAININPUT}")
+    _inp=$(sp_f_inm "${MAININPUT}")
     _inp=${_inp%%${_sfx}}
   fi
 
@@ -143,7 +118,7 @@ function sp_f_runprg() {
 
   cd "${INPUTDIR}"
 
-  local _p_wdir=$(sp_f_run_inm "${WORKDIR}")
+  local _p_wdir=$(sp_f_inm "${WORKDIR}")
   sp_f_mkdir "${_p_wdir}"
   if test $? -gt 0 ; then
     return 13
@@ -158,10 +133,10 @@ function sp_f_runprg() {
   WORKDIRLINK=${INPUTDIR}/${_prg}-${USER}-${HOSTNAME}-${$}
   _p_wdir=$(readlink ${_p_wdir})
   if test $? -gt 0 ; then
-    _p_wdir=$(sp_f_run_inm "${WORKDIR}")
+    _p_wdir=$(sp_f_inm "${WORKDIR}")
   fi
 
-  sp_f_run_ird "${WORKDIR}" "@"
+  sp_f_ird "${WORKDIR}" "@"
   if test $? -gt 0 ; then
     sp_f_mklnk "." "${WORKDIRLINK}"
   else
@@ -207,10 +182,9 @@ function sp_f_runprg() {
   sp_f_stt "Running: ${_prg}"
   echo "${_program}"
 
-  sp_f_run_ird "${MAININPUT}"
+  sp_f_ird "${MAININPUT}"
   _r=$?
-  local _inp=""
-  _inp=$(sp_f_run_inm "${MAININPUT}")
+  local _inp=$(sp_f_inm "${MAININPUT}")
   if test ${_r} -gt 0 ; then
     ${_program} < "${_inp}" >& "${_out}"
   else

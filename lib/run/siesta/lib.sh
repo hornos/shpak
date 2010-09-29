@@ -2,8 +2,9 @@
 
 function sp_f_siesta_prepare() {
   local _sfx=${1:-${sp_s_spsf}}
-  local _inp=""
-  _inp=$(sp_f_run_inm ${MAININPUT})
+  local _inp=$(sp_f_inm "${MAININPUT}")
+
+  echo ${_inp}
   _inp=${_inp%%${sp_g_scntl}}
   local _p_if=""
 
