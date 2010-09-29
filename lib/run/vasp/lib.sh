@@ -1,13 +1,13 @@
 
 function sp_f_vasp_prepare() {
-  local _inp=""
-  _inp=$(sp_f_inm "${MAININPUT}")
+  local _inp=$(sp_f_inm "${MAININPUT}")
   local _p_if=""
+  local _p_wdir=$(sp_f_inm "${WORKDIR}" "@")
 
   # prepare inputs --------------------------------------------------------------
   _p_if="${INPUTDIR}/${_inp}${sp_s_vcntl}"
   if test -f "${_p_if}" ; then
-    sp_f_zcpumv "${_p_if}" "${WORKDIR}" INCAR
+    sp_f_zcpumv "${_p_if}" "${_p_wdir}" INCAR
   else
     sp_f_err "file ${_p_if} not found"
     return 21
@@ -15,7 +15,7 @@ function sp_f_vasp_prepare() {
 
   _p_if="${INPUTDIR}/${_inp}${sp_s_vgeom}"
   if test -f "${_p_if}" ; then
-    sp_f_zcpumv "${_p_if}" "${WORKDIR}" POSCAR
+    sp_f_zcpumv "${_p_if}" "${_p_wdir}" POSCAR
   else
     sp_f_err "file ${_p_if} not found"
     return 22
@@ -23,7 +23,7 @@ function sp_f_vasp_prepare() {
 
   _p_if="${INPUTDIR}/${_inp}${sp_s_vkpts}"
   if test -f "${_p_if}" ; then
-    sp_f_zcpumv "${_p_if}" "${WORKDIR}" KPOINTS
+    sp_f_zcpumv "${_p_if}" "${_p_wdir}" KPOINTS
   else
     sp_f_err "file ${_p_if} not found"
     return 23
@@ -32,7 +32,7 @@ function sp_f_vasp_prepare() {
   if test "${GW}" = "on" ; then
     _p_if="${INPUTDIR}/${_inp}${sp_s_vqpts}"
     if test -f "${_p_if}" ; then
-      sp_f_zcpumv "${_p_if}" "${WORKDIR}" QPOINTS
+      sp_f_zcpumv "${_p_if}" "${_p_wdir}" QPOINTS
     else
       sp_f_err "file ${_p_if} not found"
       return 24
@@ -55,13 +55,13 @@ function sp_f_vasp_prepare() {
         sp_f_err "projectorfile ${_p_lib} not found"
         return 31
       fi
-      sp_f_zcpumv "${_p_lib}" "${WORKDIR}"
-      _t_p_lib="${WORKDIR}/POTCAR"
+      sp_f_zcpumv "${_p_lib}" "${_p_wdir}"
+      _t_p_lib="${_p_wdir}/POTCAR"
       if ! test -f "${_t_p_lib}" ; then
         sp_f_err "projectorfile ${_t_p_lib} not found"
         return 32
       fi
-      cat "${_t_p_lib}" >> "${WORKDIR}/tmpPOTCAR"
+      cat "${_t_p_lib}" >> "${_p_wdir}/tmpPOTCAR"
       rm -f "${_t_p_lib}"
 
       # build potsic for GW calcs
@@ -71,21 +71,21 @@ function sp_f_vasp_prepare() {
           sp_f_err "projectorfile ${_p_lib} not found"
           return 33
         fi
-        sp_f_zcpumv "${_p_lib}" "${WORKDIR}"
-        _t_p_lib="${WORKDIR}/POTSIC"
+        sp_f_zcpumv "${_p_lib}" "${_p_wdir}"
+        _t_p_lib="${_p_wdir}/POTSIC"
         if ! test -f "${_t_p_lib}" ; then
           sp_f_err "projectorfile ${_t_p_lib} not found"
           return 34
         fi
-        cat "${_t_p_lib}" >> "${WORKDIR}/tmpPOTSIC"
+        cat "${_t_p_lib}" >> "${_p_wdir}/tmpPOTSIC"
         rm -f "${_t_p_lib}"
       fi
     done
 
     # finalize
-    mv -f "${WORKDIR}/tmpPOTCAR" "${WORKDIR}/POTCAR"
+    mv -f "${_p_wdir}/tmpPOTCAR" "${_p_wdir}/POTCAR"
     if test "${GW}" = "on" ; then
-      mv -f "${WORKDIR}/tmpPOTSIC" "${WORKDIR}/POTSIC"
+      mv -f "${_p_wdir}/tmpPOTSIC" "${_p_wdir}/POTSIC"
     fi
   fi # LIBS
 
@@ -102,7 +102,7 @@ function sp_f_vasp_prepare() {
     fi
     _oout=${_oin##${_pfx}.}
     _oout=${_oout%%${sp_s_z}}
-    sp_f_zcpumv "${_p_oin}" "${WORKDIR}" "${_oout}"
+    sp_f_zcpumv "${_p_oin}" "${_p_wdir}" "${_oout}"
   done
 
   return 0
@@ -116,6 +116,7 @@ function sp_f_vasp_finish() {
 function sp_f_vasp_collect() {
   local _inp=$(sp_f_inm "${MAININPUT}")
   local _sfx="${1}"
+  local _p_wdir=$(sp_f_inm "${WORKDIR}")
 
   _inp=${_inp%%${_sfx}}
 
@@ -125,13 +126,13 @@ function sp_f_vasp_collect() {
   fi
 
   if test "${NEB}" = "on" ; then
-    cd "${WORKDIR}"
+    cd "${_p_wdir}"
 
     local _r=""
     local _rs=""
-    for _rs in ${WORKDIR}/[01]*; do
+    for _rs in ${_p_wdir}/[01]*; do
       if test -f "${_rs}" ; then
-        sp_f_run_fsave "${_rs}" "${_inp}"
+        sp_f_run_fsv "${_rs}" "${_inp}"
         _r=$?
         if test ${_r} -gt 0 ; then
           return ${_r}

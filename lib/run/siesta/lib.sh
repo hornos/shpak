@@ -3,15 +3,15 @@
 function sp_f_siesta_prepare() {
   local _sfx=${1:-${sp_s_spsf}}
   local _inp=$(sp_f_inm "${MAININPUT}")
+  local _p_wdir=$(sp_f_inm "${WORKDIR}")
 
-  echo ${_inp}
   _inp=${_inp%%${sp_g_scntl}}
   local _p_if=""
 
   # prepare inputs --------------------------------------------------------------
   _p_if="${INPUTDIR}/${_inp}${sp_g_scntl}"
   if test -f "${_p_if}" ; then
-    sp_f_zcpumv "${_p_if}" "${WORKDIR}"
+    sp_f_zcpumv "${_p_if}" "${_p_wdir}"
   else
     sp_f_err "file ${_p_if} not found"
     return 21
@@ -34,7 +34,7 @@ function sp_f_siesta_prepare() {
       fi
 
       _n_lib=${_lib%%.*${_sfx##.}*}${_sfx}
-      sp_f_zcpumv "${_p_lib}" "${WORKDIR}" "${_n_lib}"
+      sp_f_zcpumv "${_p_lib}" "${_p_wdir}" "${_n_lib}"
     done
   fi # LIBS
 
@@ -47,7 +47,7 @@ function sp_f_siesta_prepare() {
       errmsg "file ${_p_oin} not found"
       return 35
     fi
-    sp_f_zcpumv "${_p_oin}" "${WORKDIR}"
+    sp_f_zcpumv "${_p_oin}" "${_p_wdir}"
   done
 
   return 0

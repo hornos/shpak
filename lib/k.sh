@@ -10,7 +10,7 @@ sp_p_hosts="${sp_p_user}/hosts"
 sp_p_queues="${sp_p_user}/queues"
 sp_p_keys="${sp_p_user}/keys"
 sp_p_lck="${sp_p_user}/lock"
-sp_p_remote="${HOME}/remote"
+sp_p_remote="${sp_p_user}/remote"
 
 sp_s_lib=".sh"
 sp_s_cfg=".cfg"

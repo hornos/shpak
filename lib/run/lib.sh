@@ -14,7 +14,7 @@ function sp_f_run_clean() {
 }
 
 
-function sp_f_run_fsave() {
+function sp_f_run_fsv() {
   local _rs="${1}"
   local _inp="${2}"
   if ! test -z "${_inp}" ; then
@@ -22,43 +22,20 @@ function sp_f_run_fsave() {
   fi
 
   local _p_dst="${RESULTDIR}/${_inp}${_rs}${sp_s_z}"
-  local _p_sav="${RESULTDIR}/${_inp}${_rs}.old${sp_s_z}"
 
-  if test -f "${_p_dst}" ; then
-    mv -f "${_p_dst}" "${_p_sav}"
-    if test $? -gt 0 ; then
-      sp_f_err "file ${_p_dst} can't be renamed"
-      return 20
-    fi
-  fi
-
-  local _crs="${_rs}${sp_s_z}"
-  ${sp_b_z} "${_rs}"
-  cp -f "${_crs}" "${_p_dst}"
-  if test $? -gt 0 ; then
-    sp_f_err "file ${_crs} can't be copied"
-    return 21
-  fi
-  chmod u-w "${_p_dst}"
-  rm -f "${_crs}"
-  if test $? -gt 0 ; then
-    sp_f_err "file ${_crs} can't be deleted"
-    return 22
-  fi
-
-  return 0
+  sp_f_svzmv "${_rs}" "${_p_dst}"
 }
 
 
 function sp_f_run_collect() {
   local _inp=""
-  local _pna=${1:-true}
+  local _irs=${1:-true}
   local _sfx="${2}"
   local _r=0
   local _rs=""
   local _p_wdir=$(sp_f_inm "${WORKDIR}" "@")
 
-  if ${_pna} ; then
+  if ${_irs} ; then
     _inp=$(sp_f_inm "${MAININPUT}")
     _inp=${_inp%%${_sfx}}
   fi
@@ -68,7 +45,7 @@ function sp_f_run_collect() {
   #
   for _rs in ${RESULTS}; do
     if test -f "${_rs}" ; then
-      sp_f_run_fsave "${_rs}" "${_inp}"
+      sp_f_run_fsv "${_rs}" "${_inp}"
       _r=$?
       if test ${_r} -gt 0 ; then
         return ${_r}
