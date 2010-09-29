@@ -1,41 +1,67 @@
 
-function sp_f_vasp_prepare() {
-  local _inp=$(sp_f_inm "${MAININPUT}")
-  local _p_if=""
-  local _p_wdir=$(sp_f_inm "${WORKDIR}" "@")
+function sp_f_vasp_bcast() {
+  local _isd=${1}
+  local _p_if="${2}"
+  local _dst="${3}"
+  local _p_wdir="${4}"
+  local _p_sdir="${5}"
 
-  # prepare inputs --------------------------------------------------------------
-  _p_if="${INPUTDIR}/${_inp}${sp_s_vcntl}"
   if test -f "${_p_if}" ; then
-    sp_f_zcpumv "${_p_if}" "${_p_wdir}" INCAR
+    if ${_isd} ; then
+      sp_f_zcpumv "${_p_if}" "${_p_sdir}" "${_dst}"
+      ${sp_b_qbca} "${_p_sdir}/${_dst}" "${_p_wdir}/${_dst}"
+    else
+      sp_f_zcpumv "${_p_if}" "${_p_wdir}" "${_dst}"
+    fi
   else
     sp_f_err "file ${_p_if} not found"
     return 21
   fi
+  return 0
+}
+
+
+function sp_f_vasp_prepare() {
+  local _inp=$(sp_f_inm "${MAININPUT}")
+  local _p_if=""
+  local _dst=""
+  local _p_wdir=$(sp_f_inm "${WORKDIR}" "@")
+  local _p_sdir="${STAGEDIR}"
+  local _isd=false
+
+  sp_f_ird "${WORKDIR}" "@"
+  if test $? -gt 0 ; then
+    _isd=true
+  fi
+
+  # prepare inputs --------------------------------------------------------------
+  _p_if="${INPUTDIR}/${_inp}${sp_s_vcntl}"
+  _dst="INCAR"
+  sp_f_vasp_bcast ${_isd} "${_p_if}" "${_dst}" "${_p_wdir}" "${_p_sdir}"
+  if test $? -gt 0 ; then
+    return $?
+  fi
 
   _p_if="${INPUTDIR}/${_inp}${sp_s_vgeom}"
-  if test -f "${_p_if}" ; then
-    sp_f_zcpumv "${_p_if}" "${_p_wdir}" POSCAR
-  else
-    sp_f_err "file ${_p_if} not found"
-    return 22
+  _dst="POSCAR"
+  sp_f_vasp_bcast ${_isd} "${_p_if}" "${_dst}" "${_p_wdir}" "${_p_sdir}"
+  if test $? -gt 0 ; then
+    return $?
   fi
 
   _p_if="${INPUTDIR}/${_inp}${sp_s_vkpts}"
-  if test -f "${_p_if}" ; then
-    sp_f_zcpumv "${_p_if}" "${_p_wdir}" KPOINTS
-  else
-    sp_f_err "file ${_p_if} not found"
-    return 23
+  _dst="KPOINTS"
+  sp_f_vasp_bcast ${_isd} "${_p_if}" "${_dst}" "${_p_wdir}" "${_p_sdir}"
+  if test $? -gt 0 ; then
+    return $?
   fi
 
   if test "${GW}" = "on" ; then
     _p_if="${INPUTDIR}/${_inp}${sp_s_vqpts}"
-    if test -f "${_p_if}" ; then
-      sp_f_zcpumv "${_p_if}" "${_p_wdir}" QPOINTS
-    else
-      sp_f_err "file ${_p_if} not found"
-      return 24
+    _dst="QPOINTS"
+    sp_f_vasp_bcast ${_isd} "${_p_if}" "${_dst}" "${_p_wdir}" "${_p_sdir}"
+    if test $? -gt 0 ; then
+      return $?
     fi
   fi
 

@@ -8,6 +8,7 @@ function sp_f_run_clean() {
 
   local _p_wdir=$(sp_f_inm "${WORKDIR}" "@")
   sp_f_rmdir "${_p_wdir}"
+  sp_f_rmdir "${STAGEDIR}"
   sp_f_rmlnk "${WORKDIRLINK}"
 
   return 0
@@ -67,7 +68,7 @@ function sp_f_runprg() {
   local _guide=${2:-vasp.guide}
   _sched=${3}
 
-  if ! test -z ${QUEUE_MAIL_TO} && ! test -z "${_sched}" ; then
+  if ! test -z "${_sched}" ; then
     sp_f_load queue/${_sched}
   fi
 
@@ -95,22 +96,40 @@ function sp_f_runprg() {
 
   cd "${INPUTDIR}"
 
-  local _p_wdir=$(sp_f_inm "${WORKDIR}")
+  # workdir
+  local _p_wdir=$(sp_f_inm "${WORKDIR}" "@")
   sp_f_mkdir "${_p_wdir}"
   if test $? -gt 0 ; then
     return 13
   fi
 
+  # resultdir
   sp_f_mkdir "${RESULTDIR}"
   if test $? -gt 0 ; then
     sp_f_run_clean
     return 14
   fi
 
-  WORKDIRLINK=${INPUTDIR}/${_prg}-${USER}-${HOSTNAME}-${$}
-  _p_wdir=$(readlink ${_p_wdir})
+  # stage dir for broadcast
+  STAGEDIR=""
+  local _t_dir="${_prg}-${USER}-${HOSTNAME}-${$}"
+  sp_f_ird "${WORKDIR}" "@"
   if test $? -gt 0 ; then
-    _p_wdir=$(sp_f_inm "${WORKDIR}")
+    local _p_sdir="${sp_p_tmp}/tmp-${_t_dir}"
+    sp_f_mkdir "${_p_sdir}"
+    if test $? -gt 0 ; then
+      sp_f_run_clean
+      return 15
+    fi
+    STAGEDIR="${_p_sdir}"
+    sp_f_stt "Inut broadcast:"
+    echo "${STAGEDIR}"
+  fi
+
+  WORKDIRLINK="${INPUTDIR}/${_prg}-${USER}-${HOSTNAME}-${$}"
+  _p_wdir=$(readlink "${_p_wdir}")
+  if test $? -gt 0 ; then
+    _p_wdir=$(sp_f_inm "${WORKDIR}" "@")
   fi
 
   sp_f_ird "${WORKDIR}" "@"
@@ -135,6 +154,10 @@ function sp_f_runprg() {
     sp_f_err "program ${_prg} prepare exited with error code ${_r}"
     return ${_r}
   fi
+
+  # rm stage dir
+  sp_f_rmdir "${STAGEDIR}"
+
 
   # run program -----------------------------------------------------------------
   cd "${_p_wdir}"
