@@ -5,18 +5,22 @@ sp_f_load mail
 
 
 function sp_f_run_ird() {
-  if test "${1:0:1}" = "<" ; then return 1; fi
+  local _s="${1}"
+  local _p="${2:-<}"
+  if test "${_s:0:1}" = "{_p}" ; then return 1; fi
 
   return 0
 }
 
 
 function sp_f_run_inm() {
-  sp_f_run_ird "${1}"
+  local _s="${1}"
+  local _p="${2:-<}"
+  sp_f_run_ird "${_s}" "${_p}"
   if test $? -gt 0 ; then
-    echo "${1:1}"
+    echo "${_s:1}"
   else
-    echo "${1}"
+    echo "${_s}"
   fi
   return 0
 }

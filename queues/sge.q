@@ -1,0 +1,8 @@
+SCHED="sge"
+QUEUE_MAIL_TO="email"
+QUEUE_MAIL="abe"
+QUEUE_QUEUE="sge.q"
+QUEUE_PE="pe_mpi"
+QUEUE_ARCH="lx24-amd64"
+QUEUE_SHELL="/bin/bash"
+QUEUE_OPTS="-cwd -j y -V"

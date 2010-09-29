@@ -1,0 +1,6 @@
+SCHED="pbs"
+QUEUE_MAIL_TO="youremail"
+QUEUE_MAIL="abe"
+QUEUE_PROJECT="projectno"
+QUEUE_SHARE="off"
+QUEUE_CONST="ib"
