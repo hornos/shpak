@@ -254,3 +254,24 @@ function sp_f_run_mail() {
     sp_f_mail "${_sub}" "${_msg}" "${QUEUE_MAIL_TO}"
   fi
 }
+
+function sp_f_run_bcast() {
+  local _isd=${1}
+  local _p_if="${2}"
+  local _dst="${3}"
+  local _p_wdir="${4}"
+  local _p_sdir="${5}"
+
+  if test -f "${_p_if}" ; then
+    if ${_isd} ; then
+      sp_f_zcpumv "${_p_if}" "${_p_sdir}" "${_dst}"
+      ${sp_b_qbca} "${_p_sdir}/${_dst}" "${_p_wdir}/${_dst}"
+    else
+      sp_f_zcpumv "${_p_if}" "${_p_wdir}" "${_dst}"
+    fi
+  else
+    sp_f_err "file ${_p_if} not found"
+    return 21
+  fi
+  return 0
+}

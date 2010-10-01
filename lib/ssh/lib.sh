@@ -249,12 +249,23 @@ function sp_f_sshmnt() {
   local _host="${1:-default}"
   local _force="${2:-false}"
   local _mnt="${3:-true}"
+  local _r=0
 
   sp_f_ssh_init "${_host}"
+
+  # lock --------------------------------
+  local _lck="${_host}.${sp_g_bn}"
+  if ${_force} ; then
+    sp_f_rmlck "${_lck}"
+  fi
 
   local _dst="${sp_p_sshfs_local}"
 
   if ${_mnt} ; then
+    if ! sp_f_mklck "${_lck}" ; then
+      sp_f_err "${_host} is already mounted"
+      return 1
+    fi
     local _opts="${sp_g_sshfs_opts}"
     # ssh key -----------------------------
     local _p_key="${sp_p_keys}/${_host}${sp_s_key}"
@@ -269,12 +280,21 @@ function sp_f_sshmnt() {
 
     sp_f_stt "${_dst} -> ${_url}"
     ${sp_b_sshmnt} ${_url} ${_dst} ${_opts}
+    _r=$?
+    if test ${_r} -gt 0 ; then
+      sp_f_rmlck "${_lck}"
+    fi
   else
     sp_f_stt "${_dst}"
+    if ! sp_f_lck "${_lck}" ; then
+      sp_f_err "${_host} is not mounted"
+      return 2
+    fi
     ${sp_b_sshumnt} ${_dst}
+    _r=$?
   fi
 
-  return $?
+  return ${_r}
 }
 
 
