@@ -122,7 +122,7 @@ function sp_f_runprg() {
       return 15
     fi
     STAGEDIR="${_p_sdir}"
-    sp_f_stt "Inut broadcast:"
+    sp_f_stt "Input broadcast:"
     echo "${STAGEDIR}"
   fi
 
