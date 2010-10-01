@@ -286,7 +286,7 @@ function sp_f_sshmnt() {
     fi
   else
     sp_f_stt "${_dst}"
-    if ! sp_f_lck "${_lck}" ; then
+    if sp_f_lck "${_lck}" ; then
       sp_f_err "${_host} is not mounted"
       return 2
     fi
