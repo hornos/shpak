@@ -13,7 +13,6 @@ sp_p_queues="${sp_p_user}/queues"
 sp_p_keys="${sp_p_user}/keys"
 sp_p_lck="${sp_p_user}/lock"
 sp_p_remote="${HOME}/remote"
-sp_p_tmp="/tmp"
 
 # suffixes ----------------------------------------------------------------------
 sp_s_lib=".sh"
