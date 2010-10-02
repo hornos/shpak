@@ -1,0 +1,10 @@
+#!/bin/bash
+# mcedit TAB: 4 with spaces
+
+### BEGIN MAIN
+_SSH_AGENT_PID=`ps ax | grep ssh-agent | awk '/\?\?/{print $1}'`
+if test "${_SSH_AGENT_PID}" != "" ; then
+  echo "Killing ssh-agent..."
+  kill ${_SSH_AGENT_PID}
+fi
+### END MAIN

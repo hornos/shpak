@@ -12,6 +12,15 @@ while getopts fhm: o; do
     m) _m=$OPTARG;;
     f) _f=true;;
     h) echo "Usage: ${sp_g_bn} [-f] [-m host]"; exit 1;;
+    l) sp_f_ptt "${sp_g_bn}: mounted volumes"
+        if test -z "${OSTYPE#darwin}"; then
+          mount | grep sshfs | awk '{printf "%-32s => %s\n",$3,$1}'
+        else
+          mount | grep fusefs | awk '{printf "%-32s => %s\n",$3,$1}'
+        fi
+        echo
+        exit 0
+    ;;
   esac
 done
 
