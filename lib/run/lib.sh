@@ -260,10 +260,15 @@ function sp_f_run_bcast() {
   local _p_sdir="${3}"
   local _p_if="${4}"
   local _dst="${5}"
+  local _n_dst=$(basename "${_p_if}")
+  _n_dst=${_n_dst%%${sp_s_z}}
 
   if test -f "${_p_if}" ; then
     if ${_isd} ; then
       sp_f_zcpumv "${_p_if}" "${_p_sdir}" "${_dst}"
+      if test -z "${_dst}" ; then
+        _dst="${_n_dst}"
+      fi
       ${sp_b_qbca} "${_p_sdir}/${_dst}" "${_p_wdir}/${_dst}"
     else
       sp_f_zcpumv "${_p_if}" "${_p_wdir}" "${_dst}"
