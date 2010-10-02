@@ -31,7 +31,7 @@ function sp_f_siesta_prepare() {
     for _lib in ${LIBS}; do
       _p_if="${LIBDIR}/${_lib}"
       if ! test -f "${_p_if}" ; then
-        errmsg "library file ${_p_if} not found"
+        sp_f_err "library file ${_p_if} not found"
         return 31
       fi
       _dst=${_lib%%.*${_s_l##.}*}${_s_l}
@@ -44,7 +44,7 @@ function sp_f_siesta_prepare() {
   for _oin in ${OTHERINPUTS}; do
     _p_if="${INPUTDIR}/${_oin}"
     if ! test -f "${_p_if}" ; then
-      errmsg "file ${_p_if} not found"
+      sp_f_err "file ${_p_if} not found"
       return 35
     fi
     sp_f_run_bcast ${_isd} "${_p_wdir}" "${_p_sdir}" "${_p_if}"
