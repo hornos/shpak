@@ -7,29 +7,26 @@ function sp_f_vasp_prepare() {
   local _p_sdir="${STAGEDIR}"
   local _isd=false
 
-  sp_f_ird "${WORKDIR}" "@"
-  if test $? -gt 0 ; then
-    _isd=true
-  fi
+  if sp_f_ird "${WORKDIR}" "@" ; then _isd=true; fi
 
   # prepare inputs --------------------------------------------------------------
   _p_if="${INPUTDIR}/${_inp}${sp_s_vcntl}"
   _dst="INCAR"
-  sp_f_run_bcast ${_isd} "${_p_if}" "${_dst}" "${_p_wdir}" "${_p_sdir}"
+  sp_f_run_bcast ${_isd} "${_p_wdir}" "${_p_sdir}" "${_p_if}" "${_dst}"
   if test $? -gt 0 ; then
     return $?
   fi
 
   _p_if="${INPUTDIR}/${_inp}${sp_s_vgeom}"
   _dst="POSCAR"
-  sp_f_run_bcast ${_isd} "${_p_if}" "${_dst}" "${_p_wdir}" "${_p_sdir}"
+  sp_f_run_bcast ${_isd} "${_p_wdir}" "${_p_sdir}" "${_p_if}" "${_dst}"
   if test $? -gt 0 ; then
     return $?
   fi
 
   _p_if="${INPUTDIR}/${_inp}${sp_s_vkpts}"
   _dst="KPOINTS"
-  sp_f_run_bcast ${_isd} "${_p_if}" "${_dst}" "${_p_wdir}" "${_p_sdir}"
+  sp_f_run_bcast ${_isd} "${_p_wdir}" "${_p_sdir}" "${_p_if}" "${_dst}"
   if test $? -gt 0 ; then
     return $?
   fi
@@ -37,7 +34,7 @@ function sp_f_vasp_prepare() {
   if test "${GW}" = "on" ; then
     _p_if="${INPUTDIR}/${_inp}${sp_s_vqpts}"
     _dst="QPOINTS"
-    sp_f_run_bcast ${_isd} "${_p_if}" "${_dst}" "${_p_wdir}" "${_p_sdir}"
+    sp_f_run_bcast ${_isd} "${_p_wdir}" "${_p_sdir}" "${_p_if}" "${_dst}"
     if test $? -gt 0 ; then
       return $?
     fi
@@ -47,7 +44,6 @@ function sp_f_vasp_prepare() {
   if ! test -d "${LIBDIR}" ; then
     sp_f_wrn "directory ${LIBDIR} doesn't exist"
   fi
-
 
   # begin bcast -------------------------
   local _lib=""
@@ -81,7 +77,7 @@ function sp_f_vasp_prepare() {
     done
     # finalize
     _dst="POTCAR"
-    sp_f_run_bcast ${_isd} "${_p_if}" "${_dst}" "${_p_wdir}" "${_p_sdir}"
+    sp_f_run_bcast ${_isd} "${_p_wdir}" "${_p_sdir}" "${_p_if}" "${_dst}"
     if test $? -gt 0 ; then
       return $?
     fi
@@ -114,10 +110,9 @@ function sp_f_vasp_prepare() {
         cat "${_p_dst}" >> "${_p_if}"
         rm -f "${_p_dst}"
       done
-      # mv -f "${_p_wdir}/tmpPOTSIC" "${_p_wdir}/POTSIC"
       # finalize
       _dst="POTSIC"
-      sp_f_run_bcast ${_isd} "${_p_if}" "${_dst}" "${_p_wdir}" "${_p_sdir}"
+      sp_f_run_bcast ${_isd} "${_p_wdir}" "${_p_sdir}" "${_p_if}" "${_dst}"
       if test $? -gt 0 ; then
         return $?
       fi
@@ -127,7 +122,6 @@ function sp_f_vasp_prepare() {
     # end POTSIC ------------------------
   fi # end LIBS
   # end bcast ---------------------------
-
 
   # prepare others --------------------------------------------------------------
   local _pfx="${MAININPUT}."
@@ -140,9 +134,8 @@ function sp_f_vasp_prepare() {
     fi
     _dst=${_oin##${_pfx}}
     _dst=${_dst%%${sp_s_z}}
-     sp_f_run_bcast ${_isd} "${_p_if}" "${_dst}" "${_p_wdir}" "${_p_sdir}"
+     sp_f_run_bcast ${_isd} "${_p_wdir}" "${_p_sdir}" "${_p_if}" "${_dst}"
   done
-
   return 0
 }
 
@@ -150,6 +143,7 @@ function sp_f_vasp_prepare() {
 function sp_f_vasp_finish() {
   return 0
 }
+
 
 function sp_f_vasp_collect() {
   local _inp=$(sp_f_inm "${MAININPUT}")

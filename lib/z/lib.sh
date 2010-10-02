@@ -62,7 +62,6 @@ function sp_f_svzmv() {
     sp_f_err "file ${_zrs} can't be deleted"
     return 22
   fi
-
   return 0
 }
 

@@ -4,6 +4,7 @@ sp_f_load mail
 
 
 function sp_f_run_clean() {
+#D clean temporary directories and files
   cd "${INPUTDIR}"
 
   local _p_wdir=$(sp_f_inm "${WORKDIR}" "@")
@@ -16,19 +17,18 @@ function sp_f_run_clean() {
 
 
 function sp_f_run_fsv() {
+#D save a file ($1) and put a prefix ($2)
   local _rs="${1}"
   local _inp="${2}"
-  if ! test -z "${_inp}" ; then
-    _inp="${_inp}."
-  fi
+  if ! test -z "${_inp}" ; then _inp="${_inp}."; fi
 
   local _p_dst="${RESULTDIR}/${_inp}${_rs}${sp_s_z}"
-
   sp_f_svzmv "${_rs}" "${_p_dst}"
 }
 
 
 function sp_f_run_collect() {
+#D collect results suffix ($2) might ($1) be removed
   local _inp=""
   local _irs=${1:-true}
   local _sfx="${2}"
@@ -43,7 +43,6 @@ function sp_f_run_collect() {
 
   cd "${_p_wdir}"
 
-  #
   for _rs in ${RESULTS}; do
     if test -f "${_rs}" ; then
       sp_f_run_fsv "${_rs}" "${_inp}"
@@ -63,6 +62,7 @@ function sp_f_run_collect() {
 
 
 function sp_f_runprg() {
+#D run program ($1) with guide ($2) on scheduler ($3)
   # options ---------------------------------------------------------------------
   local _prg=${1:-vasp}
   local _guide=${2:-vasp.guide}
@@ -98,51 +98,52 @@ function sp_f_runprg() {
 
   # workdir
   local _p_wdir=$(sp_f_inm "${WORKDIR}" "@")
-  sp_f_mkdir "${_p_wdir}"
-  if test $? -gt 0 ; then
+  if ! sp_f_mkdir "${_p_wdir}" ; then
     return 13
   fi
 
   # resultdir
-  sp_f_mkdir "${RESULTDIR}"
-  if test $? -gt 0 ; then
+  if ! sp_f_mkdir "${RESULTDIR}" ; then
     sp_f_run_clean
     return 14
   fi
 
-  # stage dir for broadcast
-  STAGEDIR=""
+  # tempdir
   local _t_dir="${_prg}-${USER}-${HOSTNAME}-${$}"
-  sp_f_ird "${WORKDIR}" "@"
-  if test $? -gt 0 ; then
+
+  # stage dir for broadcast
+  if sp_f_ird "${WORKDIR}" "@" ; then
     local _p_sdir="${sp_p_tmp}/tmp-${_t_dir}"
+    if ! test -z "${STAGEDIR}" ; then
+      _p_sdir="${STAGEDIR}"
+    else
+      STAGEDIR="${_p_sdir}"
+    fi
     sp_f_mkdir "${_p_sdir}"
     if test $? -gt 0 ; then
       sp_f_run_clean
       return 15
     fi
-    STAGEDIR="${_p_sdir}"
-    sp_f_stt "Input broadcast:"
-    echo "${STAGEDIR}"
+    sp_f_stt "Input broadcast"
+    echo "Stage directory: ${STAGEDIR}"
+    echo "Check local node scratch for output!"
   fi
 
+  # workdir link
   WORKDIRLINK="${INPUTDIR}/${_prg}-${USER}-${HOSTNAME}-${$}"
   _p_wdir=$(readlink "${_p_wdir}")
   if test $? -gt 0 ; then
     _p_wdir=$(sp_f_inm "${WORKDIR}" "@")
   fi
 
-  sp_f_ird "${WORKDIR}" "@"
-  if test $? -gt 0 ; then
+  if sp_f_ird "${WORKDIR}" "@" ; then
     sp_f_mklnk "." "${WORKDIRLINK}"
   else
     sp_f_mklnk "${_p_wdir}" "${WORKDIRLINK}"
   fi
-
   if test $? -gt 0 ; then
     sp_f_wrn "link ${_p_wdir} can't be created"
   fi
-
 
   # preapre ---------------------------------------------------------------------
   sp_f_${_prg}_prepare
@@ -155,9 +156,8 @@ function sp_f_runprg() {
     return ${_r}
   fi
 
-  # rm stage dir
+  # delete stage dir
   sp_f_rmdir "${STAGEDIR}"
-
 
   # run program -----------------------------------------------------------------
   cd "${_p_wdir}"
@@ -165,6 +165,7 @@ function sp_f_runprg() {
   sp_f_stt "Input files in ${_p_wdir}:"
   ls
 
+  # MPI & options
   local _out=${_prg}.output
   local _program="${PRGBIN}"
 
@@ -182,10 +183,8 @@ function sp_f_runprg() {
   sp_f_stt "Running: ${_prg}"
   echo "${_program}"
 
-  sp_f_ird "${MAININPUT}"
-  _r=$?
   local _inp=$(sp_f_inm "${MAININPUT}")
-  if test ${_r} -gt 0 ; then
+  if sp_f_ird "${MAININPUT}" ; then
     ${_program} < "${_inp}" >& "${_out}"
   else
     ${_program} >& "${_out}"
@@ -257,10 +256,10 @@ function sp_f_run_mail() {
 
 function sp_f_run_bcast() {
   local _isd=${1}
-  local _p_if="${2}"
-  local _dst="${3}"
-  local _p_wdir="${4}"
-  local _p_sdir="${5}"
+  local _p_wdir="${2}"
+  local _p_sdir="${3}"
+  local _p_if="${4}"
+  local _dst="${5}"
 
   if test -f "${_p_if}" ; then
     if ${_isd} ; then

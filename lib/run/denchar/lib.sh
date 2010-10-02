@@ -9,6 +9,6 @@ function sp_f_denchar_finish() {
   sp_f_siesta_finish
 }
 
-function __SP_denchar_collect() {
+function sp_f_denchar_collect() {
   sp_f_siesta_collect
 }
