@@ -7,7 +7,7 @@ sp_f_load ssh
 # options -----------------------------------------------------------------------
 _m="default"
 _f=false
-while getopts fhm: o; do
+while getopts lfhm: o; do
   case "$o" in
     m) _m=$OPTARG;;
     f) _f=true;;
