@@ -1,15 +1,20 @@
 
 function sp_f_zbn() {
   local _bn=$(basename "${1}")
-  _bn=${_bn%%${sp_s_z}}
+  local _zn=${2:-true}
+  if ${_zn} ; then _bn=${_bn%%${sp_s_z}}; fi
+
   echo "${_bn}"
 }
+
 
 function sp_f_zcpumv() {
  local _src="${1}"
  local _dir="${2}"
  local _dst="${3}"
- local _src_bn=$(sp_f_zbn "${_src}")
+ local _src_n=$(sp_f_zbn "${_src}")
+ local _src_bn=$(sp_f_zbn "${_src}" false)
+
  # copy ---------------------------------
  cp "${_src}" "${_dir}"
  if test $? -gt 0 ; then
@@ -18,22 +23,22 @@ function sp_f_zcpumv() {
  fi
 
  # uncompress ---------------------------
- if test "${_src_bn}" != "${_src_ne}" ; then
+ if test "${_src_bn}" != "${_src_n}" ; then
    ${sp_b_uz} "${_dir}/${_src_bn}"
  fi
 
  # rename -------------------------------
- local _p_src_ne="${_dir}/${_src_ne}"
+ local _p_src_n="${_dir}/${_src_n}"
  local _p_dst="${_dir}/${_dst}"
  if ! test -z "${_dst}" && ! test -f "${_p_dst}" ; then
-   mv "${_p_src_ne}" "${_p_dst}"
+   mv "${_p_src_n}" "${_p_dst}"
    if test $? -gt 0 ; then
-     sp_f_err "file ${_p_src_ne} can't be renamed"
+     sp_f_err "file ${_p_src_n} can't be renamed"
      return 11
    fi
    chmod u+w "${_p_dst}"
  else
-   chmod u+w "${_p_src_ne}"
+   chmod u+w "${_p_src_n}"
  fi
  return 0
 }
