@@ -1,12 +1,15 @@
 
+function sp_f_zbn() {
+  local _bn=$(basename "${1}")
+  _bn=${_bn%%${sp_s_z}}
+  echo "${_bn}"
+}
+
 function sp_f_zcpumv() {
  local _src="${1}"
  local _dir="${2}"
  local _dst="${3}"
- local _src_bn=""
- _src_bn=$(basename ${_src})
- local _src_ne=${_src_bn%%${sp_s_z}}
-
+ local _src_bn=$(sp_f_zbn "${_src}")
  # copy ---------------------------------
  cp "${_src}" "${_dir}"
  if test $? -gt 0 ; then

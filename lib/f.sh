@@ -23,6 +23,12 @@ function sp_f_wrn() {
 }
 
 
+function sp_f_msg() {
+#D print message ($1)
+  echo -e "$(basename "${0}"): Message ($*)" >&2
+}
+
+
 function sp_f_inarr() {
 #D check key ($1) in array ($2)
   local _k

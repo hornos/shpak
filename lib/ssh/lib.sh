@@ -32,7 +32,7 @@ function sp_f_sshlogin() {
     if sp_f_mklck "${_lck}" ; then
       _proxy=true
       _opts="${_opts} ${sp_g_ssh_proxy}"
-      echo "connect proxies: ${sp_g_ssh_proxy}"
+      sp_f_msg "connect proxies: ${sp_g_ssh_proxy}"
     else
       sp_f_wrn "active proxies: ${sp_g_ssh_proxy}"
     fi
@@ -285,7 +285,7 @@ function sp_f_sshmnt() {
     if test ${_r} -gt 0 ; then
       sp_f_rmlck "${_lck}"
     else
-      echo "host mounted"
+      sp_f_msg "host mounted"
     fi
   else
     # unmount
@@ -298,7 +298,7 @@ function sp_f_sshmnt() {
     _r=$?
     if ! test ${_r} -gt 0 ; then
       sp_f_rmlck "${_lck}"
-      echo "host unmounted"
+      sp_f_msg "host unmounted"
     fi
   fi
 

@@ -260,8 +260,7 @@ function sp_f_run_bcast() {
   local _p_sdir="${3}"
   local _p_if="${4}"
   local _dst="${5}"
-  local _n_dst=$(basename "${_p_if}")
-  _n_dst=${_n_dst%%${sp_s_z}}
+  local _n_dst=$(sp_f_zbn "${_p_if}")
 
   if test -f "${_p_if}" ; then
     if ${_isd} ; then
