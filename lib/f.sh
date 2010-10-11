@@ -11,21 +11,21 @@ sp_g_libs=()
 
 function sp_f_err() {
 #D print error ($1)
-  echo -e "$(basename "${0}"): Error   ($*)" >&2
+  echo -e "$(basename "${0}") : Error : $*" >&2
 }
 
 
 function sp_f_wrn() {
 #D print warning ($1)
   if ${sp_g_debug} ; then
-    echo -e "$(basename "${0}"): Warning ($*)" >&2
+    echo -e "$(basename "${0}") : Warning : $*" >&2
   fi
 }
 
 
 function sp_f_msg() {
 #D print message ($1)
-  echo -e "$(basename "${0}"): Message ($*)" >&2
+  echo -e "$(basename "${0}") : Message : $*" >&2
 }
 
 
