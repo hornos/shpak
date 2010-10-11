@@ -262,9 +262,6 @@ function sp_f_sshmnt() {
 
   local _dst="${sp_p_sshfs_local}"
   local _stdout=""
-  if ! ${sp_g_debug} ; then
-    _stdout="2>/dev/null"
-  fi
 
   if ${_mnt} ; then
     if ! sp_f_mklck "${_lck}" ; then
@@ -284,7 +281,11 @@ function sp_f_sshmnt() {
     sp_f_mkdir "${_dst}"
 
     sp_f_stt "${_dst} -> ${_url}"
-    ${sp_b_sshmnt} ${_url} ${_dst} ${_opts} ${_stdout}
+    if ! ${sp_g_debug} ; then
+      ${sp_b_sshmnt} ${_url} ${_dst} ${_opts} 2>/dev/null
+    else
+      ${sp_b_sshmnt} ${_url} ${_dst} ${_opts}
+    fi
     _r=$?
     if test ${_r} -gt 0 ; then
       sp_f_rmlck "${_lck}"
@@ -298,7 +299,11 @@ function sp_f_sshmnt() {
       sp_f_err "${_host} is not mounted"
       return 2
     fi
-    ${sp_b_sshumnt} ${_dst} ${_stdout}
+    if ! ${sp_g_debug} ; then
+      ${sp_b_sshumnt} ${_dst} 2>/dev/null
+    else
+      ${sp_b_sshumnt} ${_dst}
+    fi
     _r=$?
     if ! test ${_r} -gt 0 ; then
       sp_f_rmlck "${_lck}"
