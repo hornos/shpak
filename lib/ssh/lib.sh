@@ -255,12 +255,16 @@ function sp_f_sshmnt() {
   sp_f_ssh_init "${_host}"
 
   # lock --------------------------------
-  local _lck="${_host}.${sp_g_bn}"
+  local _lck="${_host}.sshmnt"
   if ${_force} ; then
     sp_f_rmlck "${_lck}"
   fi
 
   local _dst="${sp_p_sshfs_local}"
+  local _stdout=""
+  if ! ${sp_g_debug} ; then
+    _stdout="2>/dev/null"
+  fi
 
   if ${_mnt} ; then
     if ! sp_f_mklck "${_lck}" ; then
@@ -280,7 +284,7 @@ function sp_f_sshmnt() {
     sp_f_mkdir "${_dst}"
 
     sp_f_stt "${_dst} -> ${_url}"
-    ${sp_b_sshmnt} ${_url} ${_dst} ${_opts}
+    ${sp_b_sshmnt} ${_url} ${_dst} ${_opts} ${_stdout}
     _r=$?
     if test ${_r} -gt 0 ; then
       sp_f_rmlck "${_lck}"
@@ -290,11 +294,11 @@ function sp_f_sshmnt() {
   else
     # unmount
     sp_f_stt "${_dst}"
-    if sp_f_lck "${_lck}" ; then
+    if ! sp_f_lck "${_lck}" ; then
       sp_f_err "${_host} is not mounted"
       return 2
     fi
-    ${sp_b_sshumnt} ${_dst}
+    ${sp_b_sshumnt} ${_dst} ${_stdout}
     _r=$?
     if ! test ${_r} -gt 0 ; then
       sp_f_rmlck "${_lck}"
