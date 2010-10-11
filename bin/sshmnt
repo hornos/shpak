@@ -4,7 +4,17 @@
 . $(dirname ${0})/../lib/h.sh
 sp_f_load ssh
 
+function __list() {
+  sp_f_sshlmnt
+  echo
+  exit 0
+}
+
 # options -----------------------------------------------------------------------
+if test "${1}" = "" ; then
+  __list
+fi
+
 _m="default"
 _f=false
 while getopts lfhm: o; do
@@ -12,15 +22,7 @@ while getopts lfhm: o; do
     m) _m=$OPTARG;;
     f) _f=true;;
     h) echo "Usage: ${sp_g_bn} [-f] [-m host]"; exit 1;;
-    l) sp_f_ptt "${sp_g_bn}: mounted volumes"
-        if test -z "${OSTYPE#darwin}"; then
-          mount | grep sshfs | awk '{printf "%-32s => %s\n",$3,$1}'
-        else
-          mount | grep fusefs | awk '{printf "%-32s => %s\n",$3,$1}'
-        fi
-        echo
-        exit 0
-    ;;
+    l) __list;;
   esac
 done
 

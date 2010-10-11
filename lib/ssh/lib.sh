@@ -320,3 +320,15 @@ function sp_f_sshumnt() {
   local _force="${2:-false}"
   sp_f_sshmnt "${_host}" "${_force}" false
 }
+
+
+function sp_f_sshlmnt() {
+  sp_f_ptt "${sp_g_bn}: remote volumes"
+
+  if test -z "${OSTYPE#darwin}"; then
+    mount | grep sshfs | awk '{printf "%-32s => %s\n",$3,$1}'
+  else
+    mount | grep fusefs | awk '{printf "%-32s => %s\n",$3,$1}'
+  fi
+  return 0
+}
