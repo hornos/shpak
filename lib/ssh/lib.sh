@@ -332,3 +332,27 @@ function sp_f_sshlmnt() {
   fi
   return 0
 }
+
+
+function sp_f_sshcmd() {
+  local _host="${1:-default}"
+  local _cmd="${2:-ls}"
+
+  sp_f_ssh_init "${_host}"
+
+  local _opts="${sp_g_ssh_opts}"
+
+  # ssh key -----------------------------
+  local _p_key="${sp_p_keys}/${_host}${sp_s_key}"
+  if test -r "${_p_key}" ; then
+    _opts="${_opts} -i ${_p_key}"
+  else
+    sp_f_wrn "key ${_p_key} not found"
+  fi
+
+  local _url="${sp_g_ssh_user}@${sp_g_ssh_fqdn}"
+  sp_f_stt "Run ${_cmd} on ${_url}"
+
+  # ssh ---------------------------------
+  ${sp_b_ssh} ${_opts} ${_url} ${_cmd}
+}
