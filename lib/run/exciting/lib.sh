@@ -1,7 +1,7 @@
 
 
-function sp_f_siesta_prepare() {
-  local _s_l=${1:-${sp_s_spsf}}
+function sp_f_exciting_prepare() {
+  local _s_l=${1:-${sp_s_ecntl}}
   local _inp=$(sp_f_inm "${MAININPUT}")
   local _dst=""
   local _p_if=""
@@ -11,11 +11,9 @@ function sp_f_siesta_prepare() {
 
   if sp_f_ird "${WORKDIR}" "@" ; then _isd=true; fi
 
-  _inp=${_inp%%${sp_s_scntl}}
-
   # prepare inputs --------------------------------------------------------------
-  _dst="${_inp}${sp_s_scntl}"
-  _p_if="${INPUTDIR}/${_dst}"
+  _dst="input${sp_s_ecntl}"
+  _p_if="${INPUTDIR}/${_inp}"
   sp_f_run_bcast ${_isd} "${_p_wdir}" "${_p_sdir}" "${_p_if}" "${_dst}"
   if test $? -gt 0 ; then
     return $?
@@ -53,11 +51,11 @@ function sp_f_siesta_prepare() {
 }
 
 
-function sp_f_siesta_finish() {
+function sp_f_exciting_finish() {
   return 0
 }
 
 
-function sp_f_siesta_collect() {
+function sp_f_exciting_collect() {
   sp_f_run_collect false
 }
