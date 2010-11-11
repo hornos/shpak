@@ -1,0 +1,23 @@
+# for batch scheduler comment out
+TMPDIR=/tmp
+
+INPUTDIR="${PWD}"
+WORKDIR="${TMPDIR}/exciting-${USER}-${HOSTNAME}-$$"
+RESULTDIR="${INPUTDIR}"
+
+PRGBIN="/path/to/excitingsmp"
+PARAMS=""
+
+LIBDIR="/path/to/exciting/species"
+LIBS="A.xml.gz"
+
+MAININPUT="inp.xml"
+OTHERINPUTS=""
+
+ONERR="clean"
+
+RESULTS="*.OUT *.xml *.output"
+
+# PRERUN="mpirun ${HYBMPI_MPIRUN_OPTS}"
+
+# LD_LIBRARY_PATH=
