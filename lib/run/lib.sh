@@ -195,7 +195,7 @@ function sp_f_runprg() {
   ls
 
   # check exit status -----------------------------------------------------------
-  if test ${_r} -gt 0 ; then
+  if test ${_r} -gt 0 && ! test "${ONERR}" = "collect" ; then
     if test "${ONERR}" = "clean" ; then
       sp_f_run_clean
     fi
@@ -207,7 +207,7 @@ function sp_f_runprg() {
   # finish ----------------------------------------------------------------------
   sp_f_${_prg}_finish
   _r=$?
-  if test ${_r} -gt 0 ; then
+  if test ${_r} -gt 0 && ! test "${ONERR}" = "collect" ; then
     if test "${ONERR}" = "clean" ; then
       sp_f_run_clean
     fi
