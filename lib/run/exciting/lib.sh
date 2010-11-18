@@ -27,12 +27,17 @@ function sp_f_exciting_prepare() {
   local _lib=""
   if ! test -z "${LIBS}" ; then
     for _lib in ${LIBS}; do
-      _p_if="${LIBDIR}/${_lib}"
+      __lib=$(sp_f_inm "${_lib}" "!")
+      _p_if="${LIBDIR}/${__lib}"
       if ! test -f "${_p_if}" ; then
         sp_f_err "library file ${_p_if} not found"
         return 31
       fi
-      _dst=${_lib%%.*${_s_l##.}*}${_s_l}
+      if sp_f_ird "${_lib}" "!" ; then
+        _dst="${__lib}"
+      else
+        _dst=${__lib%%.*${_s_l##.}*}${_s_l}
+      fi
       sp_f_run_bcast ${_isd} "${_p_wdir}" "${_p_sdir}" "${_p_if}" "${_dst}"
     done
   fi
