@@ -34,7 +34,7 @@ function sp_f_exciting_prepare() {
         return 31
       fi
       if sp_f_ird "${_lib}" "!" ; then
-        _dst="${__lib}"
+        _dst=""
       else
         _dst=${__lib%%.*${_s_l##.}*}${_s_l}
       fi
