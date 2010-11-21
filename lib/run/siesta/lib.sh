@@ -25,30 +25,11 @@ function sp_f_siesta_prepare() {
   if ! test -d "${LIBDIR}" ; then
     sp_f_wrn "directory ${LIBDIR} doesn't exist"
   fi
-
-  local _lib=""
-  if ! test -z "${LIBS}" ; then
-    for _lib in ${LIBS}; do
-      _p_if="${LIBDIR}/${_lib}"
-      if ! test -f "${_p_if}" ; then
-        sp_f_err "library file ${_p_if} not found"
-        return 31
-      fi
-      _dst=${_lib%%.*${_s_l##.}*}${_s_l}
-      sp_f_run_bcast ${_isd} "${_p_wdir}" "${_p_sdir}" "${_p_if}" "${_dst}"
-    done
-  fi
+  sp_f_run_prepare_libs ${_isd} "${_p_wdir}" "${_p_sdir}"
 
   # prepare others --------------------------------------------------------------
-  local _oin=""
-  for _oin in ${OTHERINPUTS}; do
-    _p_if="${INPUTDIR}/${_oin}"
-    if ! test -f "${_p_if}" ; then
-      sp_f_err "file ${_p_if} not found"
-      return 35
-    fi
-    sp_f_run_bcast ${_isd} "${_p_wdir}" "${_p_sdir}" "${_p_if}"
-  done
+  sp_f_run_prepare_others ${_isd} "${_p_wdir}" "${_p_sdir}"
+
   return 0
 }
 

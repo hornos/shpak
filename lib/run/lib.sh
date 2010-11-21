@@ -278,3 +278,46 @@ function sp_f_run_bcast() {
   fi
   return 0
 }
+
+function sp_f_run_prepare_libs() {
+  local _isd=${1}
+  local _p_wdir="${2}"
+  local _p_sdir="${3}"
+  local _p_if=""
+  local _dst=""
+  local _lib=""
+  local __lib=""
+
+  if ! test -z "${LIBS}" ; then
+    for _lib in ${LIBS}; do
+      __lib=$(sp_f_inm "${_lib}" "!")
+      _p_if="${LIBDIR}/${__lib}"
+      if ! test -f "${_p_if}" ; then
+        sp_f_err "library file ${_p_if} not found"
+        return 31
+      fi
+      if sp_f_ird "${_lib}" "!" ; then
+        _dst=""
+      else
+        _dst=${__lib%%.*${_s_l##.}*}${_s_l}
+      fi
+      sp_f_run_bcast ${_isd} "${_p_wdir}" "${_p_sdir}" "${_p_if}" "${_dst}"
+    done
+  fi
+}
+
+function sp_f_run_prepare_others() {
+  local _isd=${1}
+  local _p_wdir="${2}"
+  local _p_sdir="${3}"
+  local _p_if=""
+  local _oin=""
+  for _oin in ${OTHERINPUTS}; do
+    _p_if="${INPUTDIR}/${_oin}"
+    if ! test -f "${_p_if}" ; then
+      sp_f_err "file ${_p_if} not found"
+      return 35
+    fi
+    sp_f_run_bcast ${_isd} "${_p_wdir}" "${_p_sdir}" "${_p_if}"
+  done
+}
