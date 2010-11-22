@@ -10,21 +10,32 @@ function __list() {
   exit 0
 }
 
+function __usage() {
+  echo "Usage: ${sp_g_bn} [-f] [-m host]"
+  exit 1
+}
+
 # options -----------------------------------------------------------------------
-if test "${1}" = "" ; then
+if test $# -eq 0 ; then
   __list
 fi
 
 _m="default"
 _f=false
-while getopts lfhm: o; do
-  case "$o" in
-    m) _m=$OPTARG;;
-    f) _f=true;;
-    h) echo "Usage: ${sp_g_bn} [-f] [-m host]"; exit 1;;
-    l) __list;;
-  esac
-done
+
+if test $# -gt 1 ; then
+  while getopts lfhm: o; do
+    case "$o" in
+      m) _m=$OPTARG;;
+      f) _f=true;;
+      h) __usage;;
+      l) __list;;
+    esac
+  done
+else
+  _m="${1}"
+fi
+
 
 # main --------------------------------------------------------------------------
 sp_f_ptt "${sp_g_bn}"
