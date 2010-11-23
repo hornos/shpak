@@ -249,7 +249,7 @@ function sp_f_dtt() {
 }
 
 function sp_f_ptt() {
-  sp_f_dtt "shPAK: ${*}"
+  sp_f_dtt "shpak: ${*}"
 }
 
 

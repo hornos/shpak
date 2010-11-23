@@ -191,11 +191,21 @@ function sp_f_runprg() {
   fi
   _r=$?
 
+  sp_f_stt "Temporary directory in case of"
+  local _oemsg=""
+  case "${ONERR}" in 
+    "clean") _oemsg=" error: cleaned     success: saved";;
+    "save")  _oemsg=" error: saved       success: saved";;
+    "leave") _oemsg=" error: not saved   success: not saved";;
+    "*")     _oemsg=" error: not saved   success: saved";;
+  esac
+  echo "${_oemsg}"
+
   sp_f_stt "Output files in ${_p_wdir}:"
   ls
 
   # check exit status -----------------------------------------------------------
-  if test ${_r} -gt 0 && ! test "${ONERR}" = "collect" ; then
+  if test ${_r} -gt 0 && ! test "${ONERR}" = "save" ; then
     if test "${ONERR}" = "clean" ; then
       sp_f_run_clean
     fi
@@ -207,7 +217,7 @@ function sp_f_runprg() {
   # finish ----------------------------------------------------------------------
   sp_f_${_prg}_finish
   _r=$?
-  if test ${_r} -gt 0 && ! test "${ONERR}" = "collect" ; then
+  if test ${_r} -gt 0 && ! test "${ONERR}" = "save" ; then
     if test "${ONERR}" = "clean" ; then
       sp_f_run_clean
     fi
@@ -220,18 +230,19 @@ function sp_f_runprg() {
   sp_f_stt "Saved output files:"
   ls ${RESULTS}
 
-  sp_f_${_prg}_collect
-  _r=$?
-  if test ${_r} -gt 0 ; then
-    if test "${ONERR}" = "clean" ; then
-      sp_f_run_clean
+  if test "${ONERR}" != "leave" ; then
+    sp_f_${_prg}_collect
+    _r=$?
+    if test ${_r} -gt 0 ; then
+      if test "${ONERR}" = "clean" ; then
+        sp_f_run_clean
+      fi
+      sp_f_err "program ${_prg} collect exited with error code ${_r}"
+      sp_f_run_mail "Failed (collect)"
+      return ${_r}
     fi
-    sp_f_err "program ${_prg} collect exited with error code ${_r}"
-    sp_f_run_mail "Failed (collect)"
-    return ${_r}
+    sp_f_run_clean
   fi
-
-  sp_f_run_clean
   sp_f_run_mail "Completed"
   echo ""
   sp_f_dln
