@@ -66,6 +66,11 @@ function sp_f_jobsub() {
     echo "${QUEUE_SETUP}"                        >> "${_p_qbat}"
   fi
 
+# ulimit ------------------------------------------------------------------------
+  if ! test -z "${QUEUE_ULIMIT}" ; then
+    echo "${QUEUE_ULIMIT}"                       >> "${_p_qbat}"
+  fi
+
 # mail --------------------------------------------------------------------------
   if test "${QUEUE_MAIL}" = "runprg" ; then
     echo "export QUEUE_MAIL_TO=${QUEUE_MAIL_TO}" >> "${_p_qbat}"
