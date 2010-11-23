@@ -2,6 +2,7 @@
 function sp_f_jobsub() {
 # read job info -----------------------------------------------------------------
   local _ji=${1:-start.job}
+  local _check=${2:-false}
   if test -f "${_ji}" ; then
     . ${_ji}
   else
@@ -49,6 +50,8 @@ function sp_f_jobsub() {
   TASKS=${_tasks}
 
 # queue specific jobsub ---------------------------------------------------------
+  local _r
+
   if test -z "${COMMAND}" ; then
     sp_f_err "no command"
     return 10
@@ -61,7 +64,7 @@ function sp_f_jobsub() {
 
   sp_f_${_sched} "${_p_qbat}"
 
-# command -----------------------------------------------------------------------
+# setup -------------------------------------------------------------------------
   if ! test -z "${QUEUE_SETUP}" ; then
     echo "${QUEUE_SETUP}"                        >> "${_p_qbat}"
   fi
@@ -100,7 +103,16 @@ function sp_f_jobsub() {
 # mail --------------------------------------------------------------------------
   if test "${COMMAND/*runprg*/runprg}" = "runprg" ; then
     COMMAND="${COMMAND} -s ${SCHED}"
+    # check
+    if ${_chk} ; then
+      sp_f_jobsub_check "${COMMAND}"
+      _r=$?
+      if test ${_r} -gt 0 ; then
+        return ${_r}
+      fi
+    fi
   fi
+
   echo "${COMMAND}"                         >> "${_p_qbat}"
 
 # submission --------------------------------------------------------------------
@@ -110,10 +122,40 @@ function sp_f_jobsub() {
   echo
 
   sp_f_yesno "Submit?"
-  local _r=$?
+  _r=$?
   if test ${_r} -gt 0 ; then
     return ${_r}
   fi
   echo
   ${sp_b_qsub} "${_p_qbat}"
+}
+
+
+function sp_f_jobsub_check() {
+  local _cmd="${1##runprg}"
+  local _prg="vasp"
+  local _guide="vasp.guide"
+  local _opt
+  local _r
+  local _tmp
+
+  OPTIND=1
+  while getopts p:g:s: _opt ${_cmd[@]}; do
+    echo "${OPTARG}"
+    case ${_opt} in
+      p) _prg=${OPTARG};;
+      g) _guide=${OPTARG};;
+      s) _tmp=${OPTARG};;
+    esac
+  done
+
+  sp_f_stt "Check: ${_prg} ${_guide}"
+
+  # try to load run lib
+  sp_f_load run false
+  _r=$?
+  if test ${_r} -gt 0 ; then
+    return ${_r}
+  fi
+  sp_f_run_check "${_prg}" "${_guide}"
 }

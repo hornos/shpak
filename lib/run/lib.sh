@@ -2,6 +2,30 @@
 sp_f_load z
 sp_f_load mail
 
+function sp_f_run_check() {
+  local _prg="${1}"
+  local _guide="${2}"
+
+  # read guide ------------------------------------------------------------------
+  if ! test -f "${_guide}" ; then
+    sp_f_err "file ${_guide} not found"
+    return 10
+  fi
+  . "${_guide}"
+
+  # checks ----------------------------------------------------------------------
+  if ! test -x "${PRGBIN}" ; then
+    sp_f_err "executable ${PRGBIN} not found"
+    return 11
+  fi
+
+  # create directories ----------------------------------------------------------
+  if ! test -d "${INPUTDIR}" ; then
+    sp_f_err "directory ${INPUTDIR} doesn't exist"
+    return 12
+  fi
+
+}
 
 function sp_f_run_clean() {
 #D clean temporary directories and files
@@ -75,24 +99,7 @@ function sp_f_runprg() {
   # load program library --------------------------------------------------------
   sp_f_load run/${_prg}
 
-  # read guide ------------------------------------------------------------------
-  if ! test -f "${_guide}" ; then
-    sp_f_err "file ${_guide} not found"
-    return 10
-  fi
-  . "${_guide}"
-
-  # checks ----------------------------------------------------------------------
-  if ! test -x "${PRGBIN}" ; then
-    sp_f_err "executable ${PRGBIN} not found"
-    return 11
-  fi
-
-  # create directories ----------------------------------------------------------
-  if ! test -d "${INPUTDIR}" ; then
-    sp_f_err "directory ${INPUTDIR} doesn't exist"
-    return 12
-  fi
+  sp_f_run_check "${_prg}" "${_guide}"
 
   cd "${INPUTDIR}"
 

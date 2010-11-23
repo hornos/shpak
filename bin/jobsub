@@ -7,13 +7,15 @@
 sp_f_load queue
 ### END HEADER
 
+_chk=false
 _ji="start.job"
-while getopts hj: opt; do
+while getopts hcj: opt; do
   case "$opt" in
     j) _ji=$OPTARG;;
+    c) _chk=true;;
     h) echo "Usage: $(basename $0) [-j jobinfo]"; exit 1;;
   esac
 done
 
 sp_f_ptt "${sp_g_bn}"
-sp_f_${sp_g_bn} "${_ji}"
+sp_f_${sp_g_bn} "${_ji}" ${_chk}
