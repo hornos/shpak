@@ -1,4 +1,27 @@
+function sp_f_exciting_check() {
+  local _inp=$(sp_f_inm "${MAININPUT}")
+  local _p_if="${INPUTDIR}/${_inp}"
+  local _r
 
+  if ! test -r "${_p_if}" ; then
+    sp_f_err "missing: ${_p_if}"
+    return 30
+  fi
+  
+  sp_f_run_check_libs
+  _r=$?
+  if test ${_r} -gt 0 ; then
+    return ${_r}
+  fi
+
+  sp_f_run_check_others
+  _r=$?
+  if test ${_r} -gt 0 ; then
+    return ${_r}
+  fi
+
+  return 0
+}
 
 function sp_f_exciting_prepare() {
   local _s_l=${1:-${sp_s_ecntl}}

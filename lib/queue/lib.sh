@@ -141,7 +141,6 @@ function sp_f_jobsub_check() {
 
   OPTIND=1
   while getopts p:g:s: _opt ${_cmd[@]}; do
-    echo "${OPTARG}"
     case ${_opt} in
       p) _prg=${OPTARG};;
       g) _guide=${OPTARG};;
@@ -149,13 +148,8 @@ function sp_f_jobsub_check() {
     esac
   done
 
-  sp_f_stt "Check: ${_prg} ${_guide}"
-
   # try to load run lib
-  sp_f_load run false
-  _r=$?
-  if test ${_r} -gt 0 ; then
-    return ${_r}
-  fi
+  sp_f_load run
+
   sp_f_run_check "${_prg}" "${_guide}"
 }

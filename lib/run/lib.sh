@@ -5,27 +5,45 @@ sp_f_load mail
 function sp_f_run_check() {
   local _prg="${1}"
   local _guide="${2}"
+  local _r
+
+  sp_f_stt "Check: ${_prg} ${_guide}"
+
+  # load program library --------------------------------------------------------
+  sp_f_load run/${_prg}
 
   # read guide ------------------------------------------------------------------
   if ! test -f "${_guide}" ; then
-    sp_f_err "file ${_guide} not found"
+    sp_f_err "missing: ${_guide}"
     return 10
   fi
   . "${_guide}"
 
   # checks ----------------------------------------------------------------------
   if ! test -x "${PRGBIN}" ; then
-    sp_f_err "executable ${PRGBIN} not found"
-    return 11
+    sp_f_err "missing: ${PRGBIN}"
+    return 10
   fi
 
-  # create directories ----------------------------------------------------------
   if ! test -d "${INPUTDIR}" ; then
-    sp_f_err "directory ${INPUTDIR} doesn't exist"
-    return 12
+    sp_f_err "missing: ${INPUTDIR}"
+    return 10
   fi
 
+  if ! test -d "${LIBDIR}" ; then
+    sp_f_err "missing: ${LIBDIR}"
+    return 10
+  fi
+
+  sp_f_${_prg}_check
+  _r=$?
+  if test ${_r} -gt 0 ; then
+    return ${_r}
+  fi
+  echo "all checks passed"
+  return 0
 }
+
 
 function sp_f_run_clean() {
 #D clean temporary directories and files
@@ -91,7 +109,9 @@ function sp_f_runprg() {
   local _prg=${1:-vasp}
   local _guide=${2:-vasp.guide}
   _sched=${3}
+  local _r
 
+  # load scheduler library ------------------------------------------------------
   if ! test -z "${_sched}" ; then
     sp_f_load queue/${_sched}
   fi
@@ -99,8 +119,14 @@ function sp_f_runprg() {
   # load program library --------------------------------------------------------
   sp_f_load run/${_prg}
 
+  # read guide and general check ------------------------------------------------
   sp_f_run_check "${_prg}" "${_guide}"
+  _r=$?
+  if test ${_r} -gt 0 ; then
+    return ${_r}
+  fi
 
+  # create directories ----------------------------------------------------------
   cd "${INPUTDIR}"
 
   # workdir
@@ -154,7 +180,7 @@ function sp_f_runprg() {
 
   # preapre ---------------------------------------------------------------------
   sp_f_${_prg}_prepare
-  local _r=$?
+  _r=$?
   if test ${_r} -gt 0 ; then
     if test "${ONERR}" = "clean" ; then
       sp_f_run_clean
@@ -297,6 +323,22 @@ function sp_f_run_bcast() {
   return 0
 }
 
+function sp_f_run_check_libs() {
+  local _lib=""
+  local __lib=""
+  local _p_if=""
+
+  for _lib in ${LIBS}; do
+    __lib=$(sp_f_inm "${_lib}" "!")
+    _p_if="${LIBDIR}/${__lib}"
+    if ! test -f "${_p_if}" ; then
+      sp_f_err "missing: ${_p_if}"
+      return 31
+    fi
+  done
+  return 0
+}
+
 function sp_f_run_prepare_libs() {
   local _isd=${1}
   local _p_wdir="${2}"
@@ -306,22 +348,35 @@ function sp_f_run_prepare_libs() {
   local _lib=""
   local __lib=""
 
-  if ! test -z "${LIBS}" ; then
-    for _lib in ${LIBS}; do
-      __lib=$(sp_f_inm "${_lib}" "!")
-      _p_if="${LIBDIR}/${__lib}"
-      if ! test -f "${_p_if}" ; then
-        sp_f_err "library file ${_p_if} not found"
-        return 31
-      fi
-      if sp_f_ird "${_lib}" "!" ; then
-        _dst=""
-      else
-        _dst=${__lib%%.*${_s_l##.}*}${_s_l}
-      fi
-      sp_f_run_bcast ${_isd} "${_p_wdir}" "${_p_sdir}" "${_p_if}" "${_dst}"
-    done
-  fi
+  for _lib in ${LIBS}; do
+    __lib=$(sp_f_inm "${_lib}" "!")
+    _p_if="${LIBDIR}/${__lib}"
+    if ! test -f "${_p_if}" ; then
+      sp_f_err "library file ${_p_if} not found"
+      return 31
+    fi
+    if sp_f_ird "${_lib}" "!" ; then
+      _dst=""
+    else
+      _dst=${__lib%%.*${_s_l##.}*}${_s_l}
+    fi
+    sp_f_run_bcast ${_isd} "${_p_wdir}" "${_p_sdir}" "${_p_if}" "${_dst}"
+  done
+  return 0
+}
+
+function sp_f_run_check_others() {
+  local _p_if=""
+  local _oin=""
+  
+  for _oin in ${OTHERINPUTS}; do
+    _p_if="${INPUTDIR}/${_oin}"
+    if ! test -f "${_p_if}" ; then
+      sp_f_err "file ${_p_if} not found"
+      return 35
+    fi
+  done
+  return 0
 }
 
 function sp_f_run_prepare_others() {
@@ -330,6 +385,7 @@ function sp_f_run_prepare_others() {
   local _p_sdir="${3}"
   local _p_if=""
   local _oin=""
+
   for _oin in ${OTHERINPUTS}; do
     _p_if="${INPUTDIR}/${_oin}"
     if ! test -f "${_p_if}" ; then
@@ -338,4 +394,5 @@ function sp_f_run_prepare_others() {
     fi
     sp_f_run_bcast ${_isd} "${_p_wdir}" "${_p_sdir}" "${_p_if}"
   done
+  return 0
 }

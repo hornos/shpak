@@ -1,3 +1,50 @@
+function sp_f_vasp_check() {
+  local _inp=$(sp_f_inm "${MAININPUT}")
+  local _p_if=""
+  local _lib=""
+  local _p_lib=""
+  local _s
+  local _sarr="${sp_s_vcntl} ${sp_s_vgeom} ${sp_s_vkpts}"
+  local _r
+
+  if test "${GW}" = "on" ; then
+    _sarr="${_sarr} ${sp_s_qkpts}"
+  fi
+      
+  # check main inputs  
+  for _s in  ${_sarr}; do
+    _p_if="${INPUTDIR}/${_inp}${_s}"
+    if ! test -r "${_p_if}" ; then
+      sp_f_err "missing: ${_p_if}"
+      return 35
+    fi
+  done
+
+  # check libs
+  for _lib in ${LIBS}; do
+    _p_lib="${LIBDIR}/${_lib}/POTCAR${sp_s_z}"
+    if ! test -f "${_p_lib}" ; then
+      sp_f_err "missing: ${_p_lib}"
+      return 31
+    fi
+    if test "${GW}" = "on" ; then
+      _p_lib="${LIBDIR}/${_lib}/POTSIC${sp_s_z}"
+      if ! test -f "${_p_lib}" ; then
+        sp_f_err "missing: ${_p_lib}"
+        return 31
+      fi
+    fi
+  done
+
+  # check others
+  sp_f_run_check_others
+  _r=$?
+  if test ${_r} -gt 0 ; then
+    return ${_r}
+  fi
+  
+  return 0
+}
 
 function sp_f_vasp_prepare() {
   local _inp=$(sp_f_inm "${MAININPUT}")
