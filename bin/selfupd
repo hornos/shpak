@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# header ------------------------------------------------------------------------
+sp_g_bn=$(basename ${0})
+
+# functions ---------------------------------------------------------------------
+function local_update() {
+  local p_loc=""
+  for ip in shpak qcpak ; do
+    p_loc="${HOME}/${ip}"
+    if test -d ${p_loc} ; then
+      cd ${p_loc}; getit
+    fi
+  done
+}
+
+function remote_update() {
+  sshcmd -m${_m} -c"selfupd"
+}
+
+# options -----------------------------------------------------------------------
+_m="default"
+if test $# -eq 0 ; then
+  local_update
+elif test $# -eq 1 ; then
+  _m=${1}
+  remote_update
+elif test $# -gt 1 ; then
+  while getopts hm:c: o; do
+    case "$o" in
+      m) _m=$OPTARG;;
+      h) echo "Usage: ${sp_g_bn} [-m host]"; exit 1;;
+    esac
+  done
+  remote_update
+fi
