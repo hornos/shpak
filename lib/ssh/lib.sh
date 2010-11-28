@@ -337,6 +337,7 @@ function sp_f_sshlmnt() {
 function sp_f_sshcmd() {
   local _host="${1:-default}"
   local _cmd="${2:-ls}"
+  local _tmp=""
 
   sp_f_ssh_init "${_host}"
 
@@ -355,7 +356,9 @@ function sp_f_sshcmd() {
 
   # ssh ---------------------------------
   if ! test -z "${sp_g_ssh_env}" ; then
-    _cmd="source \${HOME}/${sp_g_ssh_env};${_cmd}"
+    _tmp="source \${HOME}/${sp_g_ssh_env};"
+    _tmp="${_tmp}echo ---------------------------------------------------------------------------------;"
+    _cmd="${_tmp}${_cmd}"
   fi
   ${sp_b_ssh} ${_opts} ${_url} ${_cmd}
 }
