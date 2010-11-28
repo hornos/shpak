@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# header ------------------------------------------------------------------------
+. $(dirname ${0})/../lib/h.sh
+
+# options -----------------------------------------------------------------------
+_c="default"
+if test $# -gt 1 ; then
+  while getopts hc: o; do
+    case "$o" in
+      c) _c=$OPTARG;;
+      h) echo "Usage: ${sp_g_bn} [-c cluster]"; exit 1;;
+    esac
+  done
+elif test $# -eq 1 ; then
+  _c=${1}
+fi
+
+# main --------------------------------------------------------------------------
+for hi in ${sp_p_hosts}/* ; do
+  hibn=$(basename ${hi})
+  sp_g_cluster=""
+  . ${hi}
+  if test "${sp_g_cluster}" = "${_c}" ; then
+    sp_f_msg "${sp_g_ssh_fqdn}"
+    selfupd -m ${hibn}
+  fi
+done

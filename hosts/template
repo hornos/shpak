@@ -1,3 +1,6 @@
+# cluster update
+# sp_g_cluster="default"
+
 # fqdn of the remote machine
 sp_g_ssh_fqdn="f.q.d.n"
 
