@@ -1,0 +1,10 @@
+#!/bin/bash
+
+for qsc in qstat squeue ; do
+  which ${qsc} &>/dev/null
+  _r=$?
+  if test ${_r} -eq 0 ; then
+    ${qsc} -u ${USER}
+    break
+  fi
+done
