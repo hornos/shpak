@@ -1,10 +1,48 @@
 #!/bin/bash
+# header ------------------------------------------------------------------------
+. $(dirname ${0})/../lib/h.sh
 
-for qsc in qstat squeue ; do
-  which ${qsc} &>/dev/null
-  _r=$?
-  if test ${_r} -eq 0 ; then
-    ${qsc} -u ${USER}
-    break
-  fi
-done
+# functions ---------------------------------------------------------------------
+function remote_myqstat() {
+  local _hi
+  local _hibn
+  for _hi in ${sp_p_hosts}/* ; do
+    _hibn=$(basename ${_hi})
+    sp_g_cluster=""
+    . ${_hi}
+    if test "${sp_g_cluster}" = "${_c}" ; then
+      sp_f_msg "${sp_g_ssh_fqdn}"
+      sshcmd -m ${_hibn} -c"myqstat"
+    fi
+  done
+}
+
+function local_myqstat() {
+  local _r
+  local _qsc
+  for _qsc in qstat squeue ; do
+    which ${_qsc} &>/dev/null
+    _r=$?
+    if test ${_r} -eq 0 ; then
+      ${_qsc} -u ${USER}
+      break
+    fi
+  done
+}
+
+
+# options -----------------------------------------------------------------------
+_c="default"
+if test $# -gt 1 ; then
+  while getopts hc: o; do
+    case "$o" in
+      c) _c=$OPTARG;;
+    esac
+  done
+  remote_myqstat
+elif test $# -eq 1 ; then
+  _c=${1}
+  remote_myqstat
+elif test $# -eq 0 ; then
+  local_myqstat
+fi
