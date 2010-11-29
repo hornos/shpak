@@ -9,7 +9,7 @@ function local_update() {
   for ip in shpak qcpak ; do
     p_loc="${HOME}/${ip}"
     if test -d ${p_loc} ; then
-      cd ${p_loc}; getit
+      cd ${p_loc}; getit -r
     fi
   done
 }
