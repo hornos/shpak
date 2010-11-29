@@ -6,14 +6,23 @@ sp_f_load ssh
 
 function __usage() {
   echo "Usage: ${sp_g_bn} [-f] [-m host]"
-  exit 1
 }
 
 
 # options -----------------------------------------------------------------------
 _m="default"
 _f=false
-if test $# -gt 1 ; then
+
+if test $# -eq 0 ; then
+  __usage
+  exit 1
+elif test $# -eq 1 ; then
+  if test "${1}" = "-h" ; then
+    __usage
+    exit 1
+  fi
+  _m="${1}"
+else
   while getopts fhm: o; do
     case "$o" in
       m) _m=$OPTARG;;
@@ -21,8 +30,6 @@ if test $# -gt 1 ; then
       h) __usage;;
     esac
   done
-else
-  _m="${1}"
 fi
 
 # main --------------------------------------------------------------------------

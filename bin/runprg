@@ -6,17 +6,34 @@
 sp_f_load run
 ### END HEADER
 
+function __usage() {
+  echo "Usage: ${sp_g_bn} -p program [-g guide] [-s scheduler]"
+}
+
 _p="vasp"
 _g="vasp.guide"
 _s=""
-while getopts hp:g:s: opt; do
-  case "$opt" in
-    p) _p=$OPTARG; g="${_p}.guide";;
-    g) _g=$OPTARG;;
-    s) _s=$OPTARG;;
-    h) echo "Usage: $(basename $0) -p program [-g guide] [-s scheduler]"; exit 1;;
-  esac
-done
+
+if test $# -eq 0 ; then
+  __usage
+  exit 1
+elif test $# -eq 1 ; then
+  if test "${1}" = "-h" ; then
+    __usage
+    exit 1
+  fi
+  _p="${1}"
+  _g="${_p}.guide"
+else
+  while getopts hp:g:s: opt; do
+    case "$opt" in
+      p) _p=$OPTARG; _g="${_p}.guide";;
+      g) _g=$OPTARG;;
+      s) _s=$OPTARG;;
+      h) __usage; exit 1;;
+    esac
+  done
+fi
 
 sp_f_ptt "${sp_g_bn}"
 sp_f_${sp_g_bn} "${_p}" "${_g}" "${_s}"

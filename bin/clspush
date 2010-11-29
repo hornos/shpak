@@ -3,19 +3,31 @@
 # header ------------------------------------------------------------------------
 . $(dirname ${0})/../lib/h.sh
 
+function __usage() {
+  echo "Usage: ${sp_g_bn} -c cluster -s source [-t mode]"
+}
+
 # options -----------------------------------------------------------------------
 _c="default"
 _s=""
 _t=3
-while getopts c:s:h o; do
-  case "$o" in
-    c) _c=$OPTARG;;
-    s) _s=$OPTARG;;
-    t) _t=$OPTARG;;
-    h) echo "Usage: ${sp_g_bn} -c cluster -s source [-t mode]"
-       exit 1;;
-  esac
-done
+
+if test $# -eq 0 ; then
+  __usage
+  exit 1
+elif test $# -eq 1 ; then
+  __usage
+  exit 1
+else
+  while getopts c:s:h o; do
+    case "$o" in
+      c) _c=$OPTARG;;
+      s) _s=$OPTARG;;
+      t) _t=$OPTARG;;
+      h) __usage; exit 1;;
+    esac
+  done
+fi
 
 # main --------------------------------------------------------------------------
 for hi in ${sp_p_hosts}/* ; do

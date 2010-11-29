@@ -1,9 +1,24 @@
 #!/bin/bash
 
+_bn=$(basename ${0})
+
+function __usage() {
+  echo "Usage: ${_bn} -r"
+}
+
 _rb=false
-while getopts r opt; do
+
+if test $# -eq 1 ; then
+  if test "${1}" = "-h" ; then
+    __usage
+    exit 1
+  fi
+fi
+
+while getopts hr opt; do
   case "$opt" in
     r) _rb=true;;
+    h) __usage; exit 1;;
   esac
 done
 

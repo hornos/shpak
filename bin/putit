@@ -1,12 +1,31 @@
 #!/bin/bash
 
-if test -z "${1}" ; then
-  echo "Error: commit message"
+_bn=$(basename ${0})
+
+function __usage() {
+  echo "Usage: ${_bn} -m message"
+}
+
+_m=""
+
+if test $# -eq 0 ; then
+  __usage
   exit 1
+elif test $# -eq 1 ; then
+  if test "${1}" = "-h" ; then
+    __usage
+    exit 1
+  fi
+  _m="${1}"
+else
+  while getopts hm: opt; do
+    case "$opt" in
+      m) _m=$OPTARG;;
+      h) __usage; exit 1;;
+    esac
+  done
 fi
 
-msg="${1}"
-
 git add .
-git commit -a -m "${msg}"
+git commit -a -m "${_m}"
 git push origin master

@@ -3,20 +3,27 @@
 . $(dirname ${0})/../lib/h.sh
 sp_f_load ssh
 
+function __usage() {
+  echo "Usage: ${sp_g_bn} [-t mode] [-m host] -s source"
+  echo " mode: 1 - scp   2 - tar/ssh   3 - rsync/ssh"
+}
+
 _m="default"
 _t=1
 # options -----------------------------------------------------------------------
-while getopts ht:s:m: o; do
-  case "$o" in
-    m) _m=$OPTARG;;
-    t) _t=$OPTARG;;
-    s) _s=$OPTARG;;
-    h) echo "Usage: ${sp_g_bn} [-t mode] [-m host] -s source"
-       echo " mode: 1 - scp   2 - tar/ssh   3 - rsync/ssh"
-       exit 1
-    ;;
-  esac
-done
+if test $# -eq 0 ; then
+  __usage
+  exit 1
+else
+  while getopts ht:s:m: o; do
+    case "$o" in
+      m) _m=$OPTARG;;
+      t) _t=$OPTARG;;
+      s) _s=$OPTARG;;
+      h) __usage; exit 1;;
+    esac
+  done
+fi
 
 # main --------------------------------------------------------------------------
 sp_f_ptt "${sp_g_bn}"

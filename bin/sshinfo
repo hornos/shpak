@@ -4,14 +4,30 @@
 . $(dirname ${0})/../lib/h.sh
 sp_f_load ssh
 
+function __usage() {
+  echo "Usage: ${sp_g_bn} [-m host]"
+}
+
 # options -----------------------------------------------------------------------
 _m="default"
-while getopts fhm: o; do
-  case "$o" in
-    m) _m=$OPTARG;;
-    h) echo "Usage: ${sp_g_bn} [-m host]"; exit 1;;
-  esac
-done
+
+if test $# -eq 0 ; then
+  __usage
+  exit 1
+elif test $# -eq 1 ; then
+  if test "${1}" = "-h" ; then
+    __usage
+    exit 1
+  fi
+  _m="${1}"
+else
+  while getopts hm: o; do
+    case "$o" in
+      m) _m=$OPTARG;;
+      h) __usage; exit 1;;
+    esac
+  done
+fi
 
 # main --------------------------------------------------------------------------
 sp_f_ptt "${sp_g_bn}"

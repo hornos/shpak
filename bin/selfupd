@@ -18,17 +18,26 @@ function remote_update() {
   sshcmd -m${_m} -x"selfupd" 2> /dev/null | awk "${sp_g_awkprn}"
 }
 
+function __usage() {
+  echo "Usage: ${sp_g_bn} -m host"
+}
+
 # options -----------------------------------------------------------------------
 _m="default"
 if test $# -eq 0 ; then
   local_update
 elif test $# -eq 1 ; then
+  if test "${1}" = "-h" ; then
+    __usage
+    exit 1
+  fi
   _m=${1}
   remote_update
-elif test $# -gt 1 ; then
+else
   while getopts hm:c: o; do
     case "$o" in
       m) _m=$OPTARG;;
+      h) __usage; exit 1;;
     esac
   done
   remote_update
