@@ -5,15 +5,17 @@
 
 # options -----------------------------------------------------------------------
 _c="default"
-if test $# -gt 1 ; then
-  while getopts c: o; do
-    case "$o" in
-      c) _c=$OPTARG;;
-    esac
-  done
-elif test $# -eq 1 ; then
-  _c=${1}
-fi
+_s=""
+_t=3
+while getopts c:s:h o; do
+  case "$o" in
+    c) _c=$OPTARG;;
+    s) _s=$OPTARG;;
+    t) _t=$OPTARG;;
+    h) echo "Usage: ${sp_g_bn} -c cluster -s source [-t mode]"
+       exit 1;;
+  esac
+done
 
 # main --------------------------------------------------------------------------
 for hi in ${sp_p_hosts}/* ; do
@@ -21,6 +23,6 @@ for hi in ${sp_p_hosts}/* ; do
   sp_g_cluster=""
   . ${hi}
   if test "${sp_g_cluster}" = "${_c}" ; then
-    selfupd -m ${hibn}
+    sshpush -m "${hibn}" -s "${_s}" -t ${_t}
   fi
 done

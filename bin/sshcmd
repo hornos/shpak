@@ -6,15 +6,15 @@ sp_f_load ssh
 
 # options -----------------------------------------------------------------------
 _m="default"
-_c="ls"
-while getopts hm:c: o; do
+_x="ls"
+while getopts hm:x: o; do
   case "$o" in
     m) _m=$OPTARG;;
-    c) _c=$OPTARG;;
-    h) echo "Usage: ${sp_g_bn} [-m host] [-c command]"; exit 1;;
+    x) _x=$OPTARG;;
+    h) echo "Usage: ${sp_g_bn} [-m host] [-x command]"; exit 1;;
   esac
 done
 
 # main --------------------------------------------------------------------------
 sp_f_ptt "${sp_g_bn}"
-sp_f_${sp_g_bn} "${_m}" "${_c}"
+sp_f_${sp_g_bn} "${_m}" "${_x}"
