@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# header ------------------------------------------------------------------------
+. $(dirname ${0})/../lib/h.sh
+
+function __usage() {
+  echo "Usage: ${sp_g_bn} -s suffixes -p pattern"
+}
+
+_sfx="*.F *.inc"
+_pat="${USER}"
+
+if test $# -eq 0 ; then
+  __usage
+  exit 1
+elif test $# -eq 1 ; then
+  if test "${1}" = "-h" ; then
+    __usage
+    exit 1
+  fi
+fi
+
+while getopts hs:p: opt; do
+  case "$opt" in
+    s) _sfx=$OPTARG;;
+    p) _pat=$OPTARG;;
+    h) __usage; exit 1;;
+  esac
+done
+
+for _s in ${_sfx} ; do
+  grep "${_pat}" "${_s}" &> /dev/null
+  if test $? -eq 0 ; then
+    echo "${_s}"
+  fi
+done
