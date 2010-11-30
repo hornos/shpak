@@ -1,0 +1,94 @@
+#!/bin/bash
+
+# header ------------------------------------------------------------------------
+. $(dirname ${0})/../lib/h.sh
+
+function __usage() {
+  echo "Usage: ${sp_g_bn} -f from -t to"
+}
+
+_from=""
+_to=""
+_zip=false
+_verbose=false
+
+if test $# -eq 0 ; then
+  __usage
+  exit 1
+elif test $# -eq 1 ; then
+  if test "${1}" = "-h" ; then
+    __usage
+    exit 1
+  fi
+fi
+
+while getopts zvhf:t: opt; do
+  case "$opt" in
+    f) _from=$OPTARG;;
+    t) _to=$OPTARG;;
+    z) _zip=true;;
+    v) _verbose=true;;
+    h) __usage; exit 1;;
+  esac
+done
+
+if test "${_from}" = "" || test "${_to}" = "" ; then
+  __usage
+  exit 1
+fi
+
+CHGLST=$(git diff --name-only "${_from}" "${_to}" | sort)
+
+_p_chgdir="./${sp_g_bn}.change"
+
+
+if test -d "${_p_chgdir}" ; then
+  rm -Rf "${_p_chgdir}"
+fi
+mkdir "${_p_chgdir}"
+
+
+for _il in $CHGLST ; do
+  _il_dn=$(dirname ${_il})
+  _il_bn=$(basename ${_il})
+
+  _il_dir="${_p_chgdir}/${_il_dn}"
+  _p_il="${_il_dir}/${_il_bn}"
+  _opts=""
+  if ! test -d "${_il_dir}" ; then
+    if ${_verbose} ; then
+      _opts="-pv"
+    else
+      _opts="-p"
+    fi
+      mkdir ${opts} "${_il_dir}"
+  fi
+
+  if ${_verbose} ; then
+    _opts="-vpR"
+  else
+    _opts="-pR"
+  fi
+  cp ${_opts} "${_il}" "${_p_il}"
+done
+
+
+if ${_zip} ; then
+  _tgz="./chglst.tgz"
+  if ${_verbose} ; then
+    _opts="cvzf"
+  else
+    _opts="czf"
+  fi
+  tar ${_opts} "${_tgz}" "${_p_chgdir}"
+  rm -Rf "${_p_chgdir}"
+fi
+
+
+if ${_zip} ; then
+  _msg="Changes are in ${_tgz}"
+else
+  _msg="Changes are in ${_p_chgdir}"
+fi
+
+sp_f_msg "${_msg}"
