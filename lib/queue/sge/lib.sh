@@ -1,6 +1,12 @@
 
 function sp_f_sge() {
-  local _p_qbat="${1}"
+  local _mode="${1:-submit}"
+  local _p_qbat="${2:-sge.sh}"
+
+  if test "${_mode}" = "login" ; then
+    echo "Queue login not implemented"
+    return
+  fi
 
   echo "#${sp_g_qsub} -N ${NAME}"                     >> "${_p_qbat}"
   echo "#${sp_g_qsub} -S ${QUEUE_SHELL:-${sp_p_qsh}}" >> "${_p_qbat}"

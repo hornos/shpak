@@ -1,8 +1,59 @@
 
 
 function sp_f_slurm() {
-  local _p_qbat="${1}"
+  local _mode="${1:-submit}"
+  local _p_qbat="${2:-slurm.sh}"
+  local _con=""
+  local _const=""
+  if test "${_mode}" = "login" ; then
+    local _qlogin="${sp_b_qlogin}"
+    # name
+    _qlogin="${_qlogin} --job-name ${NAME}"
+    # comment out if you need long interactive logins
+    # if ! test -z "${TIME}" ; then
+    #   _qlogin="${_qlogin} --time=${TIME}"
+    # fi
+    # memory
+    if ! test -z "${MEMORY}" ; then
+      _qlogin="${_qlogin} --mem-per-cpu=${MEMORY}${sp_g_qms}"
+    fi
+    # nodes
+    if ! test -z "${NODES}" ; then
+      _qlogin="${_qlogin} --nodes=${NODES}"
+    fi
+    # tasks
+    if ! test -z "${TASKS}" ; then
+      _qlogin="${_qlogin} --ntasks-per-node=${TASKS}"
+    fi
+    # other constraints
+    _const=""
+    if ! test -z "${QUEUE_CONST}" ; then
+      _qlogin="${_qlogin} --constraint="
+      local _first=true
+      for _con in ${QUEUE_CONST} ; do
+         if ${_first} ; then
+	   _const="${_con}"
+	   _first=false
+	 else
+	   _const="${_const}\&${_con}"
+	 fi
+      done
+      _qlogin="${_qlogin}${_const}"
+    fi
+    # partition
+    if ! test -z "${QUEUE_PART}" ; then
+      _qlogin="${_qlogin} --partition=${QUEUE_PART}"
+    fi
+    # project
+    if ! test -z "${QUEUE_PROJECT}" ; then
+      _qlogin="${_qlogin} --account=${QUEUE_PROJECT}"
+    fi
+    echo "${_qlogin}" >> "${_p_qbat}"
+    return 
+  fi # end login
 
+  # submit
+  # name
   echo "#${sp_g_qsub} --job-name ${NAME}"                  >> "${_p_qbat}"
 
   # mail
@@ -33,8 +84,8 @@ function sp_f_slurm() {
 
   # other constraints
   if ! test -z "${QUEUE_CONST}" ; then
-    for con in ${QUEUE_CONST} ; do
-      echo "#${sp_g_qsub} --constraint=${con}"      >> "${_p_qbat}"
+    for _con in ${QUEUE_CONST} ; do
+      echo "#${sp_g_qsub} --constraint=${_con}"     >> "${_p_qbat}"
     done
   fi
 
@@ -59,7 +110,6 @@ function sp_f_slurm() {
   if ! test -z "${QUEUE_OPTS}" ; then
     echo "#${sp_g_qsub} ${QUEUE_OPTS}"              >> "${_p_qbat}"
   fi
-
 }
 
 function sp_f_qmail_sub() {

@@ -1,8 +1,56 @@
 
 
 function sp_f_pbs() {
-  local _p_qbat="${1}"
+  local _mode="${1:-submit}"
+  local _p_qbat="${2:-pbs.sh}"
+  local _const=""
+  local _con=""
+  local _tasks=""
 
+  if test "${_mode}" = "login" ; then
+    local _qlogin="${sp_b_qlogin}"
+    # name
+    _qlogin="${_qlogin} -N ${NAME}"
+    # uncomment if you need more time
+    # time
+    # if ! test -z "${TIME}" ; then
+    #   _qlogin="${_qlogin} -lwalltime=${TIME}"
+    # fi
+    # memory
+    if ! test -z "${MEMORY}" ; then
+      _qlogin="${_qlogin} -lpmem=${MEMORY}${sp_g_qms}"
+    fi
+    # other constraints
+    _const=""
+    _con=""
+    if ! test -z "${QUEUE_CONST}" ; then
+      for _con in ${QUEUE_CONST} ; do
+        _const="${_const}:${_con}"
+      done
+    fi
+    # tasks
+    _tasks=""
+    if ! test -z "${TASKS}" ; then
+      _tasks=":ppn=${TASKS}"
+    fi
+    # nodes
+    if ! test -z "${NODES}" ; then
+      _qlogin="${_qlogin} -lnodes=${NODES}${_tasks}${_const}"
+    fi
+    # project
+    if ! test -z "${QUEUE_PROJECT}" ; then
+      _qlogin="${_qlogin} -A ${QUEUE_PROJECT}"
+    fi
+    # queue
+    if ! test -z "${QUEUE_QUEUE}" ; then
+      _qlogin="${_qlogin} -q ${QUEUE_QUEUE}"
+    fi
+    echo "${_qlogin}" >> "${_p_qbat}"
+    return
+  fi
+
+  # submit
+  # name
   echo "#${sp_g_qsub} -N ${NAME}"                    >> "${_p_qbat}"
 
   # mail
@@ -24,15 +72,15 @@ function sp_f_pbs() {
   fi
 
   # other constraints
-  local _const=""
-  local _con=""
+  _const=""
+  _con=""
   if ! test -z "${QUEUE_CONST}" ; then
     for _con in ${QUEUE_CONST} ; do
       _const="${_const}:${_con}"
     done
   fi
 
-  local _tasks=""
+  _tasks=""
   if ! test -z "${TASKS}" ; then
     _tasks=":ppn=${TASKS}"
   fi

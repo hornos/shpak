@@ -1,8 +1,9 @@
 
 function sp_f_jobsub() {
 # read job info -----------------------------------------------------------------
-  local _ji=${1:-start.job}
-  local _check=${2:-false}
+  local _mode=${1:-submit}
+  local _ji=${2:-start.job}
+  local _check=${3:-false}
   if test -f "${_ji}" ; then
     . ${_ji}
   else
@@ -23,7 +24,11 @@ function sp_f_jobsub() {
   local _sched=${SCHED}
   sp_f_load queue/${_sched}
 
-  local _p_qbat="./${_sched}.sh"
+  if test "${_mode}" = "login" ; then
+    local _p_qbat="./${_sched}.login.sh"
+  else
+    local _p_qbat="./${_sched}.sh"
+  fi
   local _tt
   _tt=$(date)
 
@@ -62,58 +67,60 @@ function sp_f_jobsub() {
     return 11
   fi
 
-  sp_f_${_sched} "${_p_qbat}"
+  sp_f_${_sched} "${_mode}" "${_p_qbat}"
 
+  if test "${_mode}" != "login" ; then
 # setup -------------------------------------------------------------------------
-  if ! test -z "${QUEUE_SETUP}" ; then
-    echo "${QUEUE_SETUP}"                        >> "${_p_qbat}"
-  fi
+    if ! test -z "${QUEUE_SETUP}" ; then
+      echo "${QUEUE_SETUP}"                        >> "${_p_qbat}"
+    fi
 
 # ulimit ------------------------------------------------------------------------
-  if ! test -z "${QUEUE_ULIMIT}" ; then
-    echo "${QUEUE_ULIMIT}"                       >> "${_p_qbat}"
-  fi
+    if ! test -z "${QUEUE_ULIMIT}" ; then
+      echo "${QUEUE_ULIMIT}"                       >> "${_p_qbat}"
+    fi
 
 # mail --------------------------------------------------------------------------
-  if test "${QUEUE_MAIL}" = "runprg" ; then
-    echo "export QUEUE_MAIL_TO=${QUEUE_MAIL_TO}" >> "${_p_qbat}"
-  fi
+    if test "${QUEUE_MAIL}" = "runprg" ; then
+      echo "export QUEUE_MAIL_TO=${QUEUE_MAIL_TO}" >> "${_p_qbat}"
+    fi
 
 # MPI ---------------------------------------------------------------------------
-  if test "${HYBMPI}" = "on" ; then
-    echo "export HYBMPI_MPIRUN_OPTS=\"-np ${_sockets} -npernode ${_sckts}\"" >> "${_p_qbat}"
-  else
-    _threads=${_thrds}
-    echo "export HYBMPI_MPIRUN_OPTS=\"-np ${_slots} -npernode ${_tasks}\""   >> "${_p_qbat}"
-  fi
-  # openMP & Intel MKL
-  echo "export OMP_NUM_THREADS=${_threads}" >> "${_p_qbat}"
-  echo "export MKL_NUM_THREADS=${_threads}" >> "${_p_qbat}"
-  if test ${_threads} -gt 1 ; then
-    echo "export KMP_LIBRARY=turnaround"    >> "${_p_qbat}"
-    # echo "export KMP_AFFINITY=granularity=core,compact,0,0"        >> "${_p_qbat}"
-    # echo "export KMP_AFFINITY=norespect,granularity=core,none,0,0" >> "${_p_qbat}"
-    # echo "export KMP_AFFINITY=granularity=thread,compact0,0"       >> "${_p_qbat}"
-    echo "export MKL_DYNAMIC=TRUE"          >> "${_p_qbat}"
-  else
-    echo "export KMP_LIBRARY=serial"        >> "${_p_qbat}"
-    echo "export MKL_DYNAMIC=FALSE"         >> "${_p_qbat}"
-  fi
+    if test "${HYBMPI}" = "on" ; then
+      echo "export HYBMPI_MPIRUN_OPTS=\"-np ${_sockets} -npernode ${_sckts}\"" >> "${_p_qbat}"
+    else
+      _threads=${_thrds}
+      echo "export HYBMPI_MPIRUN_OPTS=\"-np ${_slots} -npernode ${_tasks}\""   >> "${_p_qbat}"
+    fi
+    # openMP & Intel MKL
+    echo "export OMP_NUM_THREADS=${_threads}" >> "${_p_qbat}"
+    echo "export MKL_NUM_THREADS=${_threads}" >> "${_p_qbat}"
+    if test ${_threads} -gt 1 ; then
+      echo "export KMP_LIBRARY=turnaround"    >> "${_p_qbat}"
+      # echo "export KMP_AFFINITY=granularity=core,compact,0,0"        >> "${_p_qbat}"
+      # echo "export KMP_AFFINITY=norespect,granularity=core,none,0,0" >> "${_p_qbat}"
+      # echo "export KMP_AFFINITY=granularity=thread,compact0,0"       >> "${_p_qbat}"
+      echo "export MKL_DYNAMIC=TRUE"          >> "${_p_qbat}"
+    else
+      echo "export KMP_LIBRARY=serial"        >> "${_p_qbat}"
+      echo "export MKL_DYNAMIC=FALSE"         >> "${_p_qbat}"
+    fi
 
 # mail --------------------------------------------------------------------------
-  if test "${COMMAND/*runprg*/runprg}" = "runprg" ; then
-    COMMAND="${COMMAND} -s ${SCHED}"
-    # check
-    if ${_chk} ; then
-      sp_f_jobsub_check "${COMMAND}"
-      _r=$?
-      if test ${_r} -gt 0 ; then
-        return ${_r}
+    if test "${COMMAND/*runprg*/runprg}" = "runprg" ; then
+      COMMAND="${COMMAND} -s ${SCHED}"
+      # check
+      if ${_chk} ; then
+        sp_f_jobsub_check "${COMMAND}"
+        _r=$?
+        if test ${_r} -gt 0 ; then
+          return ${_r}
+        fi
       fi
     fi
-  fi
 
-  echo "${COMMAND}"                         >> "${_p_qbat}"
+    echo "${COMMAND}"                         >> "${_p_qbat}"
+  fi # end submit
 
 # submission --------------------------------------------------------------------
   sp_f_stt "Scheduler: ${_sched}"
@@ -121,13 +128,22 @@ function sp_f_jobsub() {
   sp_f_sln
   echo
 
-  sp_f_yesno "Submit?"
+  if test "${_mode}" = "login" ; then
+    local _q="Login"
+  else
+    local _q="Submit"
+  fi
+  sp_f_yesno "${_q} ?"
   _r=$?
   if test ${_r} -gt 0 ; then
     return ${_r}
   fi
   echo
-  ${sp_b_qsub} "${_p_qbat}"
+  if test "${_mode}" = "login" ; then
+    sh "${_p_qbat}"
+  else
+    ${sp_b_qsub} "${_p_qbat}"
+  fi
 }
 
 

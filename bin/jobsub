@@ -13,6 +13,7 @@ function __usage() {
 
 _chk=true
 _ji="start.job"
+_mode="submit"
 
 if test $# -eq 0 ; then
   __usage
@@ -24,14 +25,15 @@ elif test $# -eq 1 ; then
   fi
   _ji="${1}"
 else
-  while getopts hnj: opt; do
+  while getopts hnlj: opt; do
     case "$opt" in
       j) _ji=$OPTARG;;
       n) _chk=false;;
+      l) _mode="login";;
       h) __usage; exit 1;;
     esac
   done
 fi
 
 sp_f_ptt "${sp_g_bn}"
-sp_f_${sp_g_bn} "${_ji}" ${_chk}
+sp_f_${sp_g_bn} "${_mode}" "${_ji}" ${_chk}
