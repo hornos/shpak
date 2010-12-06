@@ -229,5 +229,27 @@ function sp_f_vasp_summary() {
   local _pb_bn=$(basename "${PRGBIN}")
   local _ld_bn=$(basename "${LIBDIR}")
   local _inp="${MAININPUT}"
-  echo "${QUEUE} ${_pb_bn} ${_inp} ${_ld_bn}"
+
+  local _p_out="${_inp}.OSZICAR${sp_s_z}"
+  if ! test -r "${_p_out}" ; then
+    sp_f_err "missing: ${_p_out}"
+    return 10
+  fi
+  local _etot=$(${sp_b_zc} "${_p_out}" | \
+                awk 'BEGIN{etot=0.0}
+                /^ *[0-9]+ *F=/{gsub(/=/,"",$8);etot=$3}
+                END{printf "%12.9f", etot}')
+
+
+  local _p_out="${_inp}.OUTCAR${sp_s_z}"
+  if ! test -r "${_p_out}" ; then
+    sp_f_err "missing: ${_p_out}"
+    return 10
+  fi
+  local _tcpu=$(${sp_b_zc} "${_p_out}" | \
+                awk -F: '/Total CPU time used/{gsub(" ","",$2);print $2}')
+
+  local _tpc=$(((${_tcpu%%.*})/60))
+
+  echo "${QUEUE} ${_pb_bn} ${_inp} ${_ld_bn} ${_etot} ${_tpc}"
 }
