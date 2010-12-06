@@ -396,3 +396,23 @@ function sp_f_run_prepare_others() {
   done
   return 0
 }
+
+function sp_f_run_summary() {
+#D summary program ($1) with guide ($2)
+  # options ---------------------------------------------------------------------
+  local _prg=${1:-vasp}
+  local _guide=${2:-vasp.guide}
+
+  # load program library --------------------------------------------------------
+  sp_f_load run/${_prg}
+
+  # read guide ------------------------------------------------------------------
+  if ! test -f "${_guide}" ; then
+    sp_f_err "missing: ${_guide}"
+    return 10
+  fi
+  . "${_guide}"
+
+  # read guide and general check ------------------------------------------------
+  sp_f_${_prg}_summary
+}

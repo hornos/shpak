@@ -222,3 +222,12 @@ function sp_f_vasp_collect() {
 
   return 0
 }
+
+function sp_f_vasp_summary() {
+  sp_f_load z
+
+  local _pb_bn=$(basename "${PRGBIN}")
+  local _ld_bn=$(basename "${LIBDIR}")
+  local _inp="${MAININPUT}"
+  echo "${QUEUE} ${_pb_bn} ${_inp} ${_ld_bn}"
+}

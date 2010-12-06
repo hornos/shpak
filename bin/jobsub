@@ -8,7 +8,7 @@ sp_f_load queue
 ### END HEADER
 
 function __usage() {
-  echo "Usage: ${sp_g_bn} [-j jobinfo]"
+  echo "Usage: ${sp_g_bn} [-j jobinfo] [-l/-s] [-n]"
 }
 
 _chk=true
@@ -25,11 +25,12 @@ elif test $# -eq 1 ; then
   fi
   _ji="${1}"
 else
-  while getopts hnlj: opt; do
+  while getopts hnlsj: opt; do
     case "$opt" in
       j) _ji=$OPTARG;;
       n) _chk=false;;
       l) _mode="login";;
+      s) _mode="summary";;
       h) __usage; exit 1;;
     esac
   done

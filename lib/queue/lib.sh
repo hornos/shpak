@@ -11,6 +11,12 @@ function sp_f_jobsub() {
     return 1
   fi
 
+# summary -----------------------------------------------------------------------
+  if test "${_mode}" = "summary" ; then
+    sp_f_jobsub_check "${COMMAND}" "${_mode}"
+    return $?
+  fi
+
 # read queue info ---------------------------------------------------------------
   local _p_qi="${sp_p_queues}/${QUEUE:-default}"
   if test -r "${_p_qi}" ; then
@@ -149,6 +155,7 @@ function sp_f_jobsub() {
 
 function sp_f_jobsub_check() {
   local _cmd="${1##runprg}"
+  local _mode="${2:-submit}"
   local _prg="vasp"
   local _guide="vasp.guide"
   local _opt
@@ -167,5 +174,9 @@ function sp_f_jobsub_check() {
   # try to load run lib
   sp_f_load run
 
-  sp_f_run_check "${_prg}" "${_guide}"
+  if test "${_mode}" = "summary" ; then
+    sp_f_run_summary "${_prg}" "${_guide}"
+  else
+    sp_f_run_check "${_prg}" "${_guide}"
+  fi
 }
