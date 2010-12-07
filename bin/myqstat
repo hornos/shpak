@@ -11,7 +11,7 @@ function remote_myqstat() {
     sp_g_cluster=""
     . ${_hi}
     if test "${sp_g_cluster}" = "${_c}" ; then
-      sshcmd -m ${_hibn} -x"myqstat" 2> /dev/null | awk "${sp_g_awkprn}"
+      sshcmd -m ${_hibn} -x"myqstat${_start}" 2> /dev/null | awk "${sp_g_awkprn}"
       echo
       echo
     fi
@@ -20,15 +20,24 @@ function remote_myqstat() {
 
 function local_myqstat() {
   local _r
+  local _tmp
   local _qsc
-  for _qsc in qstat squeue ; do
-    which ${_qsc} &>/dev/null
+
+  for _tmp in qstat squeue ; do
+    which ${_tmp} &>/dev/null
     _r=$?
     if test ${_r} -eq 0 ; then
-      ${_qsc} -u ${USER}
+      _qsc="${_tmp}"
       break
     fi
   done
+  ${_qsc} -u ${USER}
+
+  if test ${_start} = "-s" ; then
+    for _j in $(${qsc} -u ${USER} | awk '/^[0-9]+/{print $1}') ; do
+      showstart ${_j}
+    done
+  fi
 }
 
 function __usage() {
@@ -37,7 +46,7 @@ function __usage() {
 
 # options -----------------------------------------------------------------------
 _c="default"
-
+_start=""
 if test $# -eq 0 ; then
   local_myqstat
 elif test $# -eq 1 ; then
@@ -45,13 +54,19 @@ elif test $# -eq 1 ; then
     __usage
     exit 1
   fi
+  if test "${1}" = "-s" ; then
+    _start="-s"
+    local_myqstat
+    exit 0
+  fi
   _c="${1}"
   remote_myqstat
 else
-  while getopts hc: o; do
+  while getopts hsc: o; do
     case "$o" in
       c) _c=$OPTARG;;
       h) __usage; exit 1;;
+      s) _start=" -s";;
     esac
   done
   remote_myqstat
