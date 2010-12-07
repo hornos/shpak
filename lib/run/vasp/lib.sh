@@ -251,5 +251,5 @@ function sp_f_vasp_summary() {
 
   local _tpc=$(((${_tcpu%%.*})/60))
 
-  echo "${QUEUE} ${_pb_bn} ${_inp} ${_ld_bn} ${_etot} ${_tpc}"
+  echo "${QUEUE} ${_pb_bn} ${NAME}:${_inp} ${_ld_bn} ${_etot} ${_tpc}"
 }
