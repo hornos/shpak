@@ -31,9 +31,13 @@ function local_myqstat() {
       break
     fi
   done
+  if test "${_qsc}" = "" ; then
+    return 10
+  fi
   ${_qsc} -u ${USER}
 
   if test "${_start}" = "-s" ; then
+    echo
     for _j in $(${_qsc} -u ${USER} | awk '/^[0-9]+/{print $1}') ; do
       showstart ${_j}
     done
