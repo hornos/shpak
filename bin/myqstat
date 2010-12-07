@@ -34,7 +34,7 @@ function local_myqstat() {
   ${_qsc} -u ${USER}
 
   if test ${_start} = "-s" ; then
-    for _j in $(${qsc} -u ${USER} | awk '/^[0-9]+/{print $1}') ; do
+    for _j in $(${_qsc} -u ${USER} | awk '/^[0-9]+/{print $1}') ; do
       showstart ${_j}
     done
   fi
