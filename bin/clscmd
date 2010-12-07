@@ -3,6 +3,8 @@
 # header ------------------------------------------------------------------------
 . $(dirname ${0})/../lib/h.sh
 
+sp_f_load cls
+
 function __usage() {
   echo "Usage: ${sp_g_bn} -c cluster -x command"
 }
@@ -27,11 +29,4 @@ else
 fi
 
 # main --------------------------------------------------------------------------
-for hi in ${sp_p_hosts}/* ; do
-  hibn=$(basename ${hi})
-  sp_g_cluster=""
-  . ${hi}
-  if test "${sp_g_cluster}" = "${_c}" ; then
-    sshcmd -m "${hibn}" -x "${_x}" 2> /dev/null | awk "${sp_g_awkprn}"
-  fi
-done
+sp_f_${sp_g_bn} "${_c}" "${_x}"
