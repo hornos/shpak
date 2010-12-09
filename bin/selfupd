@@ -6,7 +6,7 @@
 # functions ---------------------------------------------------------------------
 function local_update() {
   local p_loc=""
-  for ip in shpak qcpak ; do
+  for ip in shpak qcpak pypak; do
     p_loc="${HOME}/${ip}"
     if test -d ${p_loc} ; then
       cd ${p_loc}; getit
