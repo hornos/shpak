@@ -261,7 +261,6 @@ function sp_f_sshmnt() {
   fi
 
   local _dst="${sp_p_sshfs_local}"
-  local _stdout=""
 
   if ${_mnt} ; then
     if ! sp_f_mklck "${_lck}" ; then
@@ -426,3 +425,79 @@ function sp_f_efskeygen() {
   echo ""
   return ${_r}
 } # end sp_f_efskeygen
+
+
+function sp_f_efsmnt() {
+  local _host="${1:-default}"
+  local _force="${2:-false}"
+  local _mnt="${3:-true}"
+  local _r=0
+
+  sp_f_ssh_init "${_host}"
+
+  # lock --------------------------------
+  local _lck="${_host}.efsmnt"
+  if ${_force} ; then
+    sp_f_rmlck "${_lck}"
+  fi
+
+  local _dst="${sp_p_efs_udir}"
+  local _url="${sp_p_efs_edir}"
+  local _pre=""
+
+  if ${_mnt} ; then
+    if ! sp_f_mklck "${_lck}" ; then
+      sp_f_err "${_host} is already mounted"
+      return 1
+    fi
+    local _opts="${sp_g_efs_opts}"
+    # ssh key -----------------------------
+    local _p_key="${sp_p_keys}/${_host}${sp_s_ekey}"
+    if ! test -r "${_p_key}" ; then
+      sp_f_err "${_p_key} not found"
+      return 1
+    fi
+
+    sp_f_mkdir "${_dst}"
+    sp_f_mkdir "${_url}"
+
+    sp_f_stt "${_dst} -> ${_url}"
+    if ! ${sp_g_debug} ; then
+      ENCFS5_CONFIG="${_p_key}" ${sp_b_encfs} ${_opts} ${_url} ${_dst} # 2>/dev/null
+    else
+      ENCFS5_CONFIG="${_p_key}" ${sp_b_encfs} ${_opts} ${_url} ${_dst}
+    fi
+    _r=$?
+    if test ${_r} -gt 0 ; then
+      sp_f_rmlck "${_lck}"
+    else
+      sp_f_msg "directory mounted"
+    fi
+  else
+    # unmount
+    sp_f_stt "${_dst}"
+    if ! sp_f_lck "${_lck}" && ! ${_force}; then
+      sp_f_err "${_host} is not mounted"
+      return 2
+    fi
+    if ! ${sp_g_debug} ; then
+      ${sp_b_sshumnt} ${_dst} 2>/dev/null
+    else
+      ${sp_b_sshumnt} ${_dst}
+    fi
+    _r=$?
+    if ! test ${_r} -gt 0 ; then
+      sp_f_rmlck "${_lck}"
+      sp_f_msg "host unmounted"
+    fi
+  fi
+
+  return ${_r}
+}
+
+
+function sp_f_efsumnt() {
+  local _host="${1:-default}"
+  local _force="${2:-false}"
+  sp_f_efsmnt "${_host}" "${_force}" false
+}
