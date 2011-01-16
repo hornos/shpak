@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# header ------------------------------------------------------------------------
+. $(dirname ${0})/../lib/h.sh
+sp_f_load ssh
+
+function __usage() {
+  echo "Usage: ${sp_g_bn} [-f] [-m id]"
+}
+
+
+# options -----------------------------------------------------------------------
+_m="default"
+_f=false
+
+if test $# -eq 0 ; then
+  __usage
+  exit 1
+elif test $# -eq 1 ; then
+  if test "${1}" = "-h" ; then
+    __usage
+    exit 1
+  fi
+  _m="${1}"
+else
+  while getopts fhm: o; do
+    case "$o" in
+      m) _m=$OPTARG;;
+      f) _f=true;;
+      h) __usage;;
+    esac
+  done
+fi
+
+# main --------------------------------------------------------------------------
+sp_f_ptt "${sp_g_bn}"
+sp_f_${sp_g_bn} "${_m}" ${_f}
