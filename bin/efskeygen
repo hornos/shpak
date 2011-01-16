@@ -5,11 +5,12 @@
 sp_f_load ssh
 
 function __usage() {
-  echo "Usage: ${sp_g_bn} [-m host]"
+  echo "Usage: ${sp_g_bn} [-m id]"
 }
 
 # options -----------------------------------------------------------------------
 _m="default"
+_f=false
 
 if test $# -eq 0 ; then
   __usage
@@ -21,8 +22,9 @@ elif test $# -eq 1 ; then
   fi
   _m="${1}"
 else
-  while getopts hm: o; do
+  while getopts fhm: o; do
     case "$o" in
+      f) _f=true;;
       m) _m=$OPTARG;;
       h) __usage; exit 1;;
     esac
@@ -31,4 +33,4 @@ fi
 
 # main --------------------------------------------------------------------------
 sp_f_ptt "${sp_g_bn}"
-sp_f_${sp_g_bn} "${_m}"
+sp_f_${sp_g_bn} "${_m}" ${_f}

@@ -362,3 +362,67 @@ function sp_f_sshcmd() {
   fi
   ${sp_b_ssh} ${_opts} ${_url} ${_cmd}
 }
+
+# encfs -------------------------------------------------------------------------
+function sp_f_efskeygen() {
+  local _host="${1:-default}"
+  local _force="${2:-false}"
+
+  sp_f_ssh_init "${_host}"
+
+  local _r=$?
+  local _key="${_host}${sp_s_ekey}"
+  local _p_key="${sp_p_keys}/${_key}"
+
+  echo ""
+
+  if ${_force} ; then
+    if test -r "${_p_key}" ; then
+      echo "${_p_key}"
+      sp_f_yesno "Delete key?"
+      _r=$?
+      if test ${_r} -gt 0 ; then
+        return ${_r}
+      else
+        rm -f "${_p_key}"
+      fi
+    fi
+  fi
+
+  if test -r "${_p_key}" ; then
+    sp_f_err "found ${_p_key}"
+    return 1
+  fi
+  local _etmp="${sp_p_encfs}/.__etmp"
+  local _utmp="${sp_p_encfs}/.__utmp"
+  for _d in  "{_etmp}" "${_utmp}" ; do
+    if test -d "{_d}" ; then
+      sp_f_err "found ${_d}"
+      return 2
+    fi
+  done
+  mkdir -p "${_etmp}" "${_utmp}"
+
+  ${sp_b_encfs} ${sp_g_efs_opts} "${_etmp}" "${_utmp}"
+  _r=$?
+  if test ${_r} -gt 0 ; then
+    rm -fR "${_etmp}"
+    rm -fR "${_utmp}"
+    return ${_r}
+  fi
+
+  echo "Generating key..."
+  sleep 2
+  ${sp_b_sshumnt} "${_utmp}"
+  _r=$?
+  if test ${_r} -gt 0 ; then
+    return ${_r}
+  fi
+
+  mv "${_etmp}/${sp_s_ekey}" "${_p_key}"
+  rm -fR "${_etmp}"
+  rm -fR "${_utmp}"
+
+  echo ""
+  return ${_r}
+} # end sp_f_efskeygen
