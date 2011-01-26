@@ -471,7 +471,7 @@ function sp_f_efsmnt() {
     if test ${_r} -gt 0 ; then
       sp_f_rmlck "${_lck}"
     else
-      sp_f_msg "directory mounted"
+      sp_f_msg "encfs mounted"
     fi
   else
     # unmount
@@ -488,7 +488,7 @@ function sp_f_efsmnt() {
     _r=$?
     if ! test ${_r} -gt 0 ; then
       sp_f_rmlck "${_lck}"
-      sp_f_msg "host unmounted"
+      sp_f_msg "encfs unmounted"
     fi
   fi
 
