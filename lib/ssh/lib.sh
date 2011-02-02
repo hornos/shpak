@@ -356,7 +356,7 @@ function sp_f_sshcmd() {
   # ssh ---------------------------------
   if ! test -z "${sp_g_ssh_env}" ; then
     _tmp="source \${HOME}/${sp_g_ssh_env};"
-    _tmp="${_tmp}echo ---------------------------------------------------------------------------------;"
+    _tmp="${_tmp}echo ${sp_g_nruler};"
     _cmd="${_tmp}${_cmd}"
   fi
   ${sp_b_ssh} ${_opts} ${_url} ${_cmd}
