@@ -40,7 +40,8 @@ function sp_f_run_check() {
   if test ${_r} -gt 0 ; then
     return ${_r}
   fi
-  echo "all checks passed"
+  echo ""
+  echo "ALL CHECKS PASSED"
   return 0
 }
 
