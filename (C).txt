@@ -1,5 +1,6 @@
-    shpak 2.0
-    Copyright (C) 2010  Tom Hornos
+    shpak is a general purpose shell library
+
+    Copyright (C) 2010  Tom Hornos (tom.hornos@gmail.com)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
