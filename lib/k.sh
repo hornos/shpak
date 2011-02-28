@@ -14,6 +14,7 @@ sp_p_keys="${sp_p_user}/keys"
 sp_p_lck="${sp_p_user}/lock"
 sp_p_remote="${HOME}/remote"
 sp_p_encfs="${HOME}/encfs"
+sp_p_dbs="${HOME}/dbs"
 
 # suffixes ----------------------------------------------------------------------
 sp_s_lib=".sh"
@@ -39,5 +40,6 @@ fi
 . "${sp_p_f}"
 
 # create directories ------------------------------------------------------------
+# TODO: conspiracy
 sp_f_mkdir "${sp_p_lck}"
 sp_f_mkdir "${sp_p_keys}"
