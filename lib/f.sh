@@ -1,19 +1,14 @@
-# +-----------------------------------------------------------------------------+
-# | shPAK: common global functions                                              |
-# +-----------------------------------------------------------------------------+
-
-# init --------------------------------------------------------------------------
-# array for loaded libraries (modules)
+#f3--&7-9-V13------21-------------------42--------------------64------72
+# GLOBALS
 sp_g_libs=()
 
 
-# error handling ----------------------------------------------------------------
-
+#f3--&7-9-V13------21-------------------42--------------------64------72
+# ERRORS
 function sp_f_err() {
 #D print error ($1)
   echo -e "$(basename "${0}") : Error : $*" >&2
 }
-
 
 function sp_f_wrn() {
 #D print warning ($1)
@@ -22,12 +17,10 @@ function sp_f_wrn() {
   fi
 }
 
-
 function sp_f_msg() {
 #D print message ($1)
   echo -e "$(basename "${0}") : Message : $*" >&2
 }
-
 
 function sp_f_inarr() {
 #D check key ($1) in array ($2)
@@ -39,29 +32,26 @@ function sp_f_inarr() {
 }
 
 
-# library loader ----------------------------------------------------------------
+#f3--&7-9-V13------21-------------------42--------------------64------72
+# LIBRARY
 function sp_f_load() {
 #D load library ($1), exit or return ($2)
   local _lib="${1}"
   local _isex=${2:-true}
-
   if test -z "${_lib}" ; then
     if ${_isex} ; then exit 1; else return 1; fi
   fi
-
   # check library path
   local _p_lib="${sp_p_lib}/${_lib}/lib${sp_s_lib}"
   if ! test -r "${_p_lib}" ; then
     sp_f_err "file ${_p_lib} not found";
     if ${_isex} ; then exit 2; else return 2; fi
   fi
-
   # check loaded libraries
   if sp_f_inarr "${_lib}" ${sp_g_libs} ; then
     sp_f_err "${_lib} is already loaded"
     if ${_isex} ; then exit 3; else return 3; fi
   fi
-
   # load the library config
   local _p_cfg="${sp_p_lib}/${_lib}/lib${sp_s_cfg}"
   if test -r ${_p_cfg} ; then
@@ -69,7 +59,6 @@ function sp_f_load() {
   else
     sp_f_wrn "file ${_p_cfg} not found"
   fi
-
   # load OS specific library config
   _p_cfg="${sp_p_lib}/${_lib}/${OSTYPE}${sp_s_cfg}"
   if test -r ${_p_cfg} ; then
@@ -77,7 +66,6 @@ function sp_f_load() {
   else
     sp_f_wrn "file ${_p_cfg} not found"
   fi
-
   # load the library
   . "${_p_lib}"
   local _nx=${#sp_g_libs[@]}
@@ -86,12 +74,14 @@ function sp_f_load() {
 } # end sp_f_load
 
 
-# lock handling -----------------------------------------------------------------
+#f3--&7-9-V13------21-------------------42--------------------64------72
+# LOCK
+function sp_f_lck() {
+#D check lock ($1)
 # if sp_f_lck LOCK ; then
 #   this part runs when LOCK is present
 # fi
-function sp_f_lck() {
-#D check lock ($1)
+
   if test -z "${1}" ; then return 1; fi
 
   local _lck="${1}"
@@ -102,12 +92,12 @@ function sp_f_lck() {
   return 2
 }
 
-
+function sp_f_mklck() {
+#D create lock ($1)
 # if sp_f_mklck LOCK ; then
 #   this part runs when LOCK is created
 # fi
-function sp_f_mklck() {
-#D create lock ($1)
+
   if test -z "${1}" ; then return 1; fi
 
   local _lck="${1}"
@@ -120,12 +110,12 @@ function sp_f_mklck() {
   return 0
 }
 
-
+function sp_f_rmlck() {
+#D delete lock ($1)
 # if sp_f_rmlck LOCK ; then
 #   this part runs when LOCK is deleted
 # fi
-function sp_f_rmlck() {
-#D delete lock ($1)
+
   if test -z "${1}" ; then return 1; fi
 
   local _lck="${1}"
@@ -139,7 +129,8 @@ function sp_f_rmlck() {
 }
 
 
-# directory handling ------------------------------------------------------------
+#f3--&7-9-V13------21-------------------42--------------------64------72
+# DIRECTORY
 function sp_f_mkdir() {
 #D create directory ($1)
   if test -z "${1}" ; then return 1; fi
@@ -155,7 +146,6 @@ function sp_f_mkdir() {
   fi
   return 0
 }
-
 
 function sp_f_rmdir() {
 #D delete directory ($1)
@@ -174,7 +164,8 @@ function sp_f_rmdir() {
 }
 
 
-# link handling -----------------------------------------------------------------
+#f3--&7-9-V13------21-------------------42--------------------64------72
+# LINK
 function sp_f_mklnk() {
 #D create link ($1) with target ($2)
   if test -z "${1}" || test -z "${2}" ; then return 1; fi
@@ -187,7 +178,6 @@ function sp_f_mklnk() {
   fi
   return 0
 }
-
 
 function sp_f_rmlnk() {
 #D delete link ($1)
@@ -202,7 +192,8 @@ function sp_f_rmlnk() {
 }
 
 
-# misc --------------------------------------------------------------------------
+#f3--&7-9-V13------21-------------------42--------------------64------72
+# HCI
 function sp_f_yesno() {
 #D ask yesno question ($1)
   local _msg="${1:-Answer}"
@@ -226,15 +217,16 @@ function sp_f_yesno() {
 }
 
 
-# print -------------------------------------------------------------------------
+#f3--&7-9-V13------21-------------------42--------------------64------72
+# GUI
 function sp_f_sln() {
   echo "${sp_g_nruler}"
 }
+
 function sp_f_dln() {
   echo "${sp_g_bruler}"
 }
 
-# title -------------------------------------------------------------------------
 function sp_f_stt() {
   echo ""
   echo -e "${1}"
@@ -252,7 +244,8 @@ function sp_f_ptt() {
 }
 
 
-# input -------------------------------------------------------------------------
+#f3--&7-9-V13------21-------------------42--------------------64------72
+# IO
 function sp_f_ird() {
   # check first character ($2) of a string ($1)
   local _s="${1}"
@@ -261,7 +254,6 @@ function sp_f_ird() {
 
   return 1
 }
-
 
 function sp_f_inm() {
   # trim first character ($2) of a string ($1)
@@ -273,4 +265,36 @@ function sp_f_inm() {
     echo "${_s}"
   fi
   return 0
+}
+
+
+#f3--&7-9-V13------21-------------------42--------------------64------72
+# PYTHON
+function sp_f_aa() {
+  local _aa=${1:-'{one:1,two:2,three:3}'}
+  local _key=${2:-one}
+  local _oby=${3:-1}
+
+  echo ${_aa} | awk -v key=${_key} -v oby=${_oby} \
+  '{
+    sub(/^[[:space:]]*{[[:space:]]*/,"")
+    sub(/[[:space:]]*}[[:space:]]*/,"")
+    split($0,va,"[[:space:]]*,[[:space:]]*")
+    # print "->" $0 "<-"
+    for( k in va ) {
+      sub(/^[[:space:]]*/,"",va[v])
+      sub(/[[:space:]]*$/,"",va[v])
+      split(va[k],vva,"[[:space:]]*:[[:space:]]*")
+      sub(/^'\''/,"",vva[1])
+      sub(/'\''$/,"",vva[1])
+      if(oby==1)
+        aa[vva[1]]=vva[2]
+      else
+        aa[vva[2]]=vva[1]
+    }
+    # check key
+    if(aa[key]=="")
+      exit 1
+    print aa[key]
+  }'
 }
