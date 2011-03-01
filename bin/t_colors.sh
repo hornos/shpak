@@ -2,7 +2,7 @@
 SRC_URL="http://tldp.org/HOWTO/Bash-Prompt-HOWTO/x329.html"
 T='gYw'
 echo
-echo " Color Test: ${SRC_URL}"
+echo " Credit: ${SRC_URL}"
 echo
 echo ' Syntax: \033[$FG\033[$BG$TXT\033[0m'
 echo -e "\n FG/BG           40m     41m     42m     43m\
