@@ -3,8 +3,8 @@ SRC_URL="http://tldp.org/HOWTO/Bash-Prompt-HOWTO/c583.html"
 #   Script: escgen
 
 _b=false
-_ul=100
-_ll=200
+_ul=200
+_ll=100
 while getopts hbu:l: o; do
   case "$o" in
     b) _b=true;;
@@ -19,15 +19,16 @@ let upper_val=${_ul}
 
 if [ "${lower_val}" -gt "${upper_val}" ]
 then
-   echo -e "\033[1;31m${lower_val} is larger than ${upper_val}."
+   # echo -e "\033[1;31m${lower_val} is larger than ${upper_val}.\033[0m"
+   echo -e "${lower_val} is larger than ${upper_val}"
    echo
-   usage
+   exit 1
 fi
 if [ "${upper_val}" -gt "777" ]
    then
-   echo -e "\033[1;31mValues cannot exceed 777.\033[0m"
+   echo -e "Values cannot exceed 777"
    echo
-   usage
+   exit 1
 fi
 
 echo
