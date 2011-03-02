@@ -8,7 +8,7 @@ _ll=100
 while getopts hbu:l: o; do
   case "$o" in
     b) _b=true;;
-    h) exit1;;
+    h) exit 1;;
     u) _ul=$OPTARG;;
     l) _ll=$OPTARG;;
   esac
@@ -34,7 +34,11 @@ fi
 echo
 echo "Credit ${SRC_URL}"
 echo
-echo "Syntax: \0OCT"
+if ${_b} ; then
+  echo "Syntax: \033(0OCT\033(B"
+else
+  echo "Syntax: \0OCT"
+fi
 echo
 let i=$lower_val
 let line_count=1

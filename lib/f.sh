@@ -274,8 +274,9 @@ function sp_f_aa() {
   local _aa=${1:-'{one:1,two:2,three:3}'}
   local _key=${2:-one}
   local _oby=${3:-1}
+  local _ie=${4:-0}
 
-  echo ${_aa} | awk -v key=${_key} -v oby=${_oby} \
+  echo ${_aa} | awk -v key=${_key} -v oby=${_oby} -v ie=${_ie} \
   '{
     sub(/^[[:space:]]*{[[:space:]]*/,"")
     sub(/[[:space:]]*}[[:space:]]*/,"")
@@ -293,8 +294,10 @@ function sp_f_aa() {
         aa[vva[2]]=vva[1]
     }
     # check key
-    if(aa[key]=="")
+    if(aa[key]=="") {
+      print ie
       exit 1
+    }
     print aa[key]
   }'
 }

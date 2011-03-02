@@ -1,28 +1,25 @@
 
 sp_g_cdb='{none:0,white:37,yellow:33,purple:35,red:31,cyan:36,green:32,blue:34,black:30'
+sp_g_fst='{normal:0,bold:1,under:4,blink:5,inv:7,conc:8}'
 sp_g_ces='\033['
 
 function sp_f_ctxt() {
   local _txt=${1:-color}
   local _fg=${2:-none}
   local _bg=${3:-none}
-  local _ct=${4:-0}
+  local _st=${4:-normal}
   local _cfg=0
   local _cbg=0
   local _head=""
   local _tail=""
-  # check
+
   _cfg=$(sp_f_aa "${sp_g_cdb}" "${_fg}")
-  if test $? -gt 0 ; then
-    _cfg=0
-  fi
   _cbg=$(sp_f_aa "${sp_g_cdb}" "${_bg}")
-  if test $? -gt 0 ; then
-    _cbg=0
-  fi
+  _fst=$(sp_f_aa "${sp_g_fst}" "${_st}")
+
   # fg
   if test "${_fg}" != "none" ; then
-    _head="${sp_g_ces}${_ct};${_cfg}m"
+    _head="${sp_g_ces}${_fst};${_cfg}m"
     _tail="${sp_g_ces}0m"
   fi
   # bg
