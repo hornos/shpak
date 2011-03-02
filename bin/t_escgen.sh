@@ -5,9 +5,8 @@ SRC_URL="http://tldp.org/HOWTO/Bash-Prompt-HOWTO/c583.html"
 _b=false
 _ul=200
 _ll=100
-while getopts hbu:l: o; do
+while getopts hu:l: o; do
   case "$o" in
-    b) _b=true;;
     h) exit 1;;
     u) _ul=$OPTARG;;
     l) _ll=$OPTARG;;
@@ -34,30 +33,25 @@ fi
 echo
 echo "Credit ${SRC_URL}"
 echo
-if ${_b} ; then
-  echo "Syntax: \033(0\0OCT\033(B"
-else
-  echo "Syntax: \0OCT"
-fi
+echo "1st Syntax: \0OCT"
+echo "2nd Syntax: \033(0\0OCT\033(B"
 echo
 let i=$lower_val
 let line_count=1
 let limit=$upper_val
 padding="000"
-while [ "$i" -lt "$limit" ]
-do
-   octal_escape="\\0$i"
-   if ${_b} ; then
-     octal_escape="\033(0${octal_escape}\033(B"
-   fi
-   pi=${padding:${#i}}$i
-   echo -en "$pi: '$octal_escape' "
-   if [ "$line_count" -gt "7" ]
-   then 
-      echo
-      let line_count=0
-   fi
-   let i=$(echo -e "obase=8 \n ibase=8 \n $i+1 \n quit" | bc)
-   let line_count=$line_count+1
+echo "OCT: 1st 2nd  OCT: 1st 2nd  OCT: 1st 2nd  OCT: 1st 2nd  OCT: 1st 2nd"
+echo "--------------------------------------------------------------------"
+while [ "$i" -lt "$limit" ] ; do
+  octal_escape_1="\\0$i"
+  octal_escape_2="\033(0${octal_escape_1}\033(B"
+  pi=${padding:${#i}}$i
+  echo -en "$pi: '$octal_escape_1' '$octal_escape_2'  "
+  if [ "$line_count" -gt "4" ] ; then 
+    echo
+    let line_count=0
+  fi
+  let i=$(echo -e "obase=8 \n ibase=8 \n $i+1 \n quit" | bc)
+  let line_count=$line_count+1
 done
 echo
