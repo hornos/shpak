@@ -35,7 +35,7 @@ echo
 echo "Credit ${SRC_URL}"
 echo
 if ${_b} ; then
-  echo "Syntax: \033(0OCT\033(B"
+  echo "Syntax: \033(0\0OCT\033(B"
 else
   echo "Syntax: \0OCT"
 fi
