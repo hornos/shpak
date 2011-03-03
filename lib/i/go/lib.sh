@@ -7,8 +7,9 @@ sp_f_gt() {
   local _f=${2:-en}
   local _t=${3:-hu}
   local _r=""
-  _r=$(wget -qO- "${sp_g_gtu}&q=${_s}&langpair=${_f}|${_t}" \
-  | sed -E -n 's/[[:alnum:]": {}]+"translatedText":"([^"]+)".*/\1/p')
+  _r=$(wget -qO- "${sp_g_gtu}&q=\"${_s}\"&langpair=${_f}|${_t}" \
+  | sed -E -n 's/[[:alnum:]": {}]+"translatedText":"([^"]+)".*/\1/p' \
+  | sed s/\u0026//g | sed s/\\\\quot\;//g )
   if test "${_r}" = "" ; then
     return 1
   fi
