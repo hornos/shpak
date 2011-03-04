@@ -1,0 +1,49 @@
+#!/bin/bash
+#/// \file gdict
+#/// \brief Google Translator Interface
+#///
+#/// \param [-h] LOGICAL show help
+#/// \param [-s.or.1st=hello] CHARACTER(*) text to translate
+#/// \param [-f=en] CHARACTER(2) from language
+#/// \param [-t=hu] CHARACTER(2) to language
+
+#f3--&7-9-V13------21-------------------42--------------------64------72
+### HEADER
+. $(dirname ${0})/../lib/h.sh
+sp_f_load i/go
+_bn=$(basename ${0})
+
+
+#f3--&7-9-V13------21-------------------42--------------------64------72
+### FUNCTIONS
+function __usage() {
+  echo "Usage: ${_bn} [-s text] [-f lang] [-t lang]"
+}
+
+
+#f3--&7-9-V13------21-------------------42--------------------64------72
+### SHORT HAND OPTIONS
+_s=${1:-hello}
+_f="en"
+_t="hu"
+if test $# -eq 1 ; then
+  if test "${1}" = "-h" ; then
+    __usage
+    exit 1
+  fi
+else
+### LONG HAND OPTIONS
+  while getopts hs:f:t: o; do
+    case "${o}" in
+      h) __usage; exit 1;;
+      s) _s="${OPTARG}";;
+      f) _f="${OPTARG}";;
+      t) _t="${OPTARG}";;
+    esac
+  done
+fi
+
+#f3--&7-9-V13------21-------------------42--------------------64------72
+### MAIN
+sp_f_${_bn} "${_s}" "${_f}" "${_t}"
+exit $?
