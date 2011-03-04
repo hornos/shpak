@@ -27,7 +27,7 @@ sp_f_gdict() {
   local _x=${4:-3}
   local _r=""
   _r=$(wget -T ${_x} -qO- "${sp_g_gtu}&q=\"${_s}\"&langpair=${_f}|${_t}" \
-  | ${sp_g_sede} -n 's/[[:alnum:]": {}]+"translatedText":"([^"]+)".*/\1/p' \
+  | ${sp_b_sede} -n 's/[[:alnum:]": {}]+"translatedText":"([^"]+)".*/\1/p' \
   | sed s/\u0026//g | sed s/\\\\quot\;//g )
   if test "${_r}" = "" ; then
     return 1
