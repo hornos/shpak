@@ -32,6 +32,6 @@ sp_f_gdict() {
   if test "${_r}" = "" ; then
     return 1
   fi
-  echo ${_r}
+  echo $(sp_f_lc "${_r}")
   return 0
 }

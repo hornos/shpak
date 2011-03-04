@@ -301,3 +301,32 @@ function sp_f_aa() {
     print aa[key]
   }'
 }
+
+#f3--&7-9-V13------21-------------------42--------------------64------72
+# CHARACTER
+function sp_f_btxt() {
+  local _oe=${1:-140}
+  local _o=${2:-true}
+  if ${_o} ; then
+    _oe="\\0${_oe}"
+  fi
+  echo -e "${sp_g_esc}(0${_oe}${sp_g_esc}(B"
+}
+
+function sp_f__c() {
+  local _s=${1:-case}
+  local _d=${2:-false}
+  if ${_d} ; then
+    echo "${_s}" | tr '[:upper:]' '[:lower:]'
+  else
+    echo "${_s}" | tr '[:lower:]' '[:upper:]'
+  fi
+}
+
+function sp_f_lc() {
+  sp_f__c "${1}" true
+}
+
+function sp_f_uc() {
+  sp_f__c "${1}"
+}
