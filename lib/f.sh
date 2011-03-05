@@ -328,7 +328,7 @@ function sp_f_btxt() {
   if ${_o} ; then
     _oe="\\0${_oe}"
   fi
-  echo -e "${sp_g_esc}(0${_oe}${sp_g_esc}(B"
+  echo -ne "${sp_g_esc}(0${_oe}${sp_g_esc}(B"
 }
 
 function sp_f__c() {

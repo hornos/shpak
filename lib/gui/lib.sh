@@ -3,7 +3,7 @@
 sp_g_cdb='{none:0,white:37,yellow:33,purple:35,red:31,cyan:36,green:32,blue:34,black:30}'
 sp_g_fst='{normal:0,bold:1,under:4,blink:5,inv:7,conc:8}'
 sp_g_esc='\033'
-
+sp_g_edb='{diamond:140,dsblock:141,rbcorner:152,rtcorner:153,ltcorner:154,lbcorner:155,junction:156,hline:161,ljunction:164,rjunction:165,bjunction:166,tjunction:167,vline:170}'
 
 #f3--&7-9-V13------21-------------------42--------------------64------72
 # COLOR
@@ -42,8 +42,8 @@ function sp_f_ctxt() {
 #/// \fn sp_f_htxt
 #/// \brief print a header with figlet
 #///
-#/// \param _s CHARACTER(*) header text
-#/// \param _f CHARACTER(*) font type
+#/// \param 1 CHARACTER(*) header text
+#/// \param 2 CHARACTER(*) font type
 function sp_f_htxt() {
   local _s="${1:-shpak}"
   local _f="${2:-slant}"
@@ -53,3 +53,20 @@ function sp_f_htxt() {
 #f3--&7-9-V13------21-------------------42--------------------64------72
 # DRAW
 
+#/// \fn sp_f_dtxt
+#/// \brief print a header with figlet
+#///
+#/// \param 1 CHARACTER(*) edb character key
+#/// \param 2 INTEGER span
+function sp_f_dtxt() {
+  local _k="${1:-diamond}"
+  local _s="${2:-3}"
+  local _c=""
+  _c=$(sp_f_aa "${sp_g_edb}" "${_k}")
+  if test $? -gt 0 ; then
+    return 1
+  fi
+  for((i=0;i<_s;++i)) ; do
+    sp_f_btxt "${_c}"
+  done
+}
