@@ -37,6 +37,19 @@ function sp_f_ctxt() {
   echo -e "${_head}${_txt}${_tail}"
 }
 
+#f3--&7-9-V13------21-------------------42--------------------64------72
+# TEXT
+#/// \fn sp_f_htxt
+#/// \brief print a header with figlet
+#///
+#/// \param _s CHARACTER(*) header text
+#/// \param _f CHARACTER(*) font type
+function sp_f_htxt() {
+  local _s="${1:-shpak}"
+  local _f="${2:-slant}"
+  figlet -f "${_f}" "${_s}"
+}
 
 #f3--&7-9-V13------21-------------------42--------------------64------72
 # DRAW
+
