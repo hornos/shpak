@@ -17,7 +17,7 @@
 ### GLOBALS
 #/// \var sp_p_home
 #/// \brief shpak global home directory
-sp_p_home=$(dirname "${SHPAK_KICKSTART}")
+sp_p_home=$(dirname "${SHPAK_KERNEL}")
 sp_p_home=${sp_p_home%%/lib}
 
 #/// \var sp_p_user

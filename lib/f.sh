@@ -1,29 +1,47 @@
+#/// \file f.sh
+#/// \brief shpak kernel functions
+#///
+#/// Defines common kernel functions
+
 #f3--&7-9-V13------21-------------------42--------------------64------72
-# GLOBALS
+#/// \var sp_g_libs
+#/// \brief internal array for loaded libraries
 sp_g_libs=()
 
 
 #f3--&7-9-V13------21-------------------42--------------------64------72
-# ERRORS
+#/// \fn sp_f_err
+#/// \brief print error message
+#///
+#/// \param * CHARACTER(*) error text
 function sp_f_err() {
-#D print error ($1)
-  echo -e "$(basename "${0}") : Error : $*" >&2
+  echo -e "ERROR ($(basename "${0}")) $*" >&2
 }
 
+#/// \fn sp_f_wrn
+#/// \brief print warning message
+#///
+#/// \param * CHARACTER(*) warning text
 function sp_f_wrn() {
-#D print warning ($1)
   if ${sp_g_debug} ; then
-    echo -e "$(basename "${0}") : Warning : $*" >&2
+    echo -e "WARN ($(basename "${0}")) $*" >&2
   fi
 }
 
+#/// \fn sp_f_msg
+#/// \brief print message
+#///
+#/// \param * CHARACTER(*) text
 function sp_f_msg() {
-#D print message ($1)
-  echo -e "$(basename "${0}") : Message : $*" >&2
+  echo -e "$*" >&2
 }
 
+#/// \fn sp_f_inarr
+#/// \brief check if key is in the array
+#///
+#/// \param 1 CHARACTER(*) key
+#/// \param 2 ARRAY
 function sp_f_inarr() {
-#D check key ($1) in array ($2)
   local _k
   for _k in ${2} ; do
     if test "${_k}" = "${1}" ; then return 0; fi
