@@ -1,6 +1,6 @@
 #f3--&7-9-V13------21-------------------42--------------------64------72
 # GLOBALS
-sp_g_cdb='{none:0,white:37,yellow:33,purple:35,red:31,cyan:36,green:32,blue:34,black:30'
+sp_g_cdb='{none:0,white:37,yellow:33,purple:35,red:31,cyan:36,green:32,blue:34,black:30}'
 sp_g_fst='{normal:0,bold:1,under:4,blink:5,inv:7,conc:8}'
 sp_g_esc='\033'
 
