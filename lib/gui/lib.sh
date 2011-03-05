@@ -54,7 +54,7 @@ function sp_f_htxt() {
 # DRAW
 
 #/// \fn sp_f_dtxt
-#/// \brief print a header with figlet
+#/// \brief print draw characters
 #///
 #/// \param 1 CHARACTER(*) edb character key
 #/// \param 2 INTEGER span
