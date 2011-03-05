@@ -15,7 +15,7 @@
 #f3--&7-9-V13------21-------------------42--------------------64------72
 ### FUNCTIONS
 function __usage() {
-  echo "Usage: ${sp_g_bn} -l library -f function [-a arguments]"
+  echo "Usage: ${sp_g_bn} [-v] -l library -f function [-a arguments]"
 }
 
 
@@ -24,6 +24,7 @@ function __usage() {
 _l=${1:-gui}
 _f="htxt"
 _a="${sp_g_bn}"
+_v=false
 if test $# -eq 1 ; then
   if test "${1}" = "-h" ; then
     __usage
@@ -31,9 +32,10 @@ if test $# -eq 1 ; then
   fi
 else
 ### LONG HAND OPTIONS
-  while getopts hl:f:a: o; do
+  while getopts hvl:f:a: o; do
     case "${o}" in
       h) __usage; exit 1;;
+      v) _v=true;;
       l) _l="${OPTARG}";;
       f) _f="${OPTARG}";;
       a) _a="${OPTARG}";;
@@ -43,6 +45,13 @@ fi
 
 #f3--&7-9-V13------21-------------------42--------------------64------72
 ### MAIN
+if ${_v} ; then
+  sp_f_ptt "${sp_g_bn}"
+  echo "Library: ${_l}"
+  echo "Function: (sp_f_)${_f}"
+  echo "Arguments: ${_a}"
+  sp_f_sln
+fi
 sp_f_load ${_l}
 sp_f_${_f} ${_a}
 exit $?
