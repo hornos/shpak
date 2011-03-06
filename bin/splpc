@@ -23,7 +23,7 @@ function __usage() {
 ### SHORT HAND OPTIONS
 _l=${1:-gui}
 _f="htxt"
-_a="${sp_g_bn}"
+_a=""
 _v=false
 if test $# -eq 1 ; then
   if test "${1}" = "-h" ; then
