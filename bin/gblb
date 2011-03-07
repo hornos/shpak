@@ -1,5 +1,5 @@
 #!/bin/bash
-#/// \file gdict
+#/// \file gblb
 #/// \brief Google Translator Interface
 #///
 #/// \param [-h] LOGICAL show help

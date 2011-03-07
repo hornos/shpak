@@ -9,17 +9,17 @@ sp_g_gtu="http://ajax.googleapis.com/ajax/services/language/translate?v=1.0"
 #f3--&7-9-V13------21-------------------42--------------------64------72
 ### FUNCTIONS
 
-#/// \fn sp_f_gdict
+#/// \fn sp_f_gblb
 #/// \brief call Google translate api
 #///
-#/// sp_f_gdict calls Google translate api by wget
+#/// sp_f_gblb calls Google translate api by wget
 #/// URL http://ajax.googleapis.com/ajax/services/language/translate?v=1.0
 #///
 #/// \param _s CHARACTER(*) text to translate
 #/// \param _f CHARACTER(2) from language
 #/// \param _t CHARACTER(3) to language
 #/// \param _x INTEGER wget timeout
-sp_f_gdict() {
+sp_f_gblb() {
   # http://www.devharb.com/a-handy-bash-function-leveraging-google-api-to-do-translation-job-in-terminal/
   local _s="${1:-sok alma}"
   local _f=${2:-hu}
