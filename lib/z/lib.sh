@@ -8,6 +8,8 @@ function sp_f_zbn() {
 }
 
 
+#/// \fn sp_f_zcpumv
+#/// \brief copy, uncompress, move
 function sp_f_zcpumv() {
  local _src="${1}"
  local _dir="${2}"
@@ -75,5 +77,20 @@ function sp_f_svzmv() {
 
 
 function sp_f_zutbc() {
- sp_f_zcpumv "${1}" "${sp_z_tmp}" "${3}"
+  sp_f_zcpumv "${1}" "${sp_z_tmp}" "${3}"
+}
+
+#/// \fn sp_f_maco
+#/// \brief Hungarian lossy language compression
+#///
+#/// Based on the fact that vowels and consonants are not 
+#/// on the smae level in Hungarian language, that is
+#/// consonants play a more important role thus vowels
+#/// can be omitted still allowing the recovery of the world.
+function sp_f_maco() {
+  local _s="${1:-}"
+  local _ws="${2:-.}"
+  echo $(sp_f_lc "${_s}") | \
+  tr '[aáeéiíoóöőuúüű]' 'X' | \
+  sed s/X//g | sed s/\ /${_ws}/
 }
