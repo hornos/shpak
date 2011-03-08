@@ -46,7 +46,7 @@ function sp_f_ctxt() {
 #/// \param 2 CHARACTER(*) font type
 function sp_f_htxt() {
   local _s="${1:-shpak}"
-  local _f="${2:-utf8-digital}"
+  local _f="${2:-utf8-slant}"
   ${sp_b_flt} -f "${_f}" "${_s}"
 }
 

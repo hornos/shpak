@@ -11,12 +11,12 @@ Modified by Paul Burton <solution@earthlink.net> 12/96 to include new parameter
 supported by FIGlet and FIGWin.  May also be slightly modified for better use
 of new full-width/kern/smush alternatives, but default output is NOT changed.
 
-2011-03-08 Modified by Tom Hornos <tom.hornos@gmail.com> 2011 to include 
+2011-03-08 Modified by Tom Hornos <tom.hornos@gmail.com> to include 
 Hungarian unicode characters
 
- @
- @
- @@
+ +-+@
+ | |@
+ +-+@@
  +-+@
  |!|@
  +-+@@
