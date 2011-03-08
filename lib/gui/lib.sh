@@ -47,7 +47,7 @@ function sp_f_ctxt() {
 function sp_f_htxt() {
   local _s="${1:-shpak}"
   local _f="${2:-slant}"
-  figlet -f "${_f}" "${_s}"
+  ${sp_b_flt} -f "${_f}" "${_s}"
 }
 
 #f3--&7-9-V13------21-------------------42--------------------64------72
