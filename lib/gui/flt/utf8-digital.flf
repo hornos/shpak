@@ -1,4 +1,16 @@
-flf2a$ 3 2 6 1 15 0 16513 242
+flf2a$   3   2   6   1  27   0 16513 242
+  |  |   |   |   |   |   |   |   |   |
+  /  |   |   |   |   |   |   |   |   \
+Signature|   |   |   |   |   |Codetag_Count
+     /   |   |   |   |   |   |   \
+Hardblank|   |   |   |   |   |Full_Layout*
+         /   |   |   |   |   \
+    Height   |   |   |   |    Print_Direction
+             /   |   |   \
+      Baseline   |   |    Comment_Lines(CL)
+                 /   \
+        Max_Length    Old_Layout*
+CL12-&7-9-V13------21-------------------42--------------------64------72
 Digital by Glenn Chappell 1/94 -- based on Bubble
 Includes characters 128-255
 Enhanced for Latin-2,3,4 by John Cowan <cowan@ccil.org>
@@ -10,10 +22,10 @@ modifier's name is placed on a comment line.
 Modified by Paul Burton <solution@earthlink.net> 12/96 to include new parameter
 supported by FIGlet and FIGWin.  May also be slightly modified for better use
 of new full-width/kern/smush alternatives, but default output is NOT changed.
-
-2011-03-08 Modified by Tom Hornos <tom.hornos@gmail.com> to include 
-Hungarian unicode characters
-
+CL24-&7-9-V13------21-------------------42--------------------64------72
+2011-03-08 Tom Hornos <tom.hornos@gmail.com> to include Hungarian 
+unicode characters
+CL27-&7-9-V13------21-------------------42--------------------64------72
  +-+@
  | |@
  +-+@@

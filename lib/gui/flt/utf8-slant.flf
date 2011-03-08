@@ -1,4 +1,16 @@
-flf2a$ 6 5 16 15 13 0 18319 96
+flf2a$   6   5  16  15  25   0 18319 96
+  |  |   |   |   |   |   |   |   |   |
+  /  |   |   |   |   |   |   |   |   \
+Signature|   |   |   |   |   |Codetag_Count
+     /   |   |   |   |   |   |   \
+Hardblank|   |   |   |   |   |Full_Layout*
+         /   |   |   |   |   \
+    Height   |   |   |   |    Print_Direction
+             /   |   |   \
+      Baseline   |   |    Comment_Lines(CL)
+                 /   \
+        Max_Length    Old_Layout*
+CL12-&7-9-V13------21-------------------42--------------------64------72
 Slant by Glenn Chappell 3/93 -- based on Standard
 Includes ISO Latin-1
 figlet release 2.1 -- 12 Aug 1994
@@ -8,10 +20,10 @@ modifier's name is placed on a comment line.
 Modified by Paul Burton <solution@earthlink.net> 12/96 to include new parameter
 supported by FIGlet and FIGWin.  May also be slightly modified for better use
 of new full-width/kern/smush alternatives, but default output is NOT changed.
-
-2011-03-08 Modified by Tom Hornos <tom.hornos@gmail.com> to include 
-Hungarian unicode characters
-
+CL22-&7-9-V13------21-------------------42--------------------64------72
+2011-03-08 Tom Hornos <tom.hornos@gmail.com> to include Hungarian 
+unicode characters
+CL25-&7-9-V13------21-------------------42--------------------64------72
      $$@
     $$ @
    $$  @
