@@ -52,8 +52,12 @@ function sp_f_inarr() {
 
 #f3--&7-9-V13------21-------------------42--------------------64------72
 # LIBRARY
+#/// \fn sp_f_load
+#/// \brief load a function library
+#///
+#/// \param 1 CHARACTER(*) library relative path in $sp_p_lib
+#/// \param 2 LOGICAL if not found exit (true) or return (false)
 function sp_f_load() {
-#D load library ($1), exit or return ($2)
   local _lib="${1}"
   local _isex=${2:-true}
   if test -z "${_lib}" ; then
@@ -94,12 +98,16 @@ function sp_f_load() {
 
 #f3--&7-9-V13------21-------------------42--------------------64------72
 # LOCK
+#/// \fn sp_f_lck
+#/// \brief check the lock file in sp_p_lck
+#///
+#/// \param 1 CHARACTER(*) name of the lock
+#///
+#/// Example:
+#/// if sp_f_lck LOCK ; then
+#///   this part runs when the LOCK is there
+#/// fi
 function sp_f_lck() {
-#D check lock ($1)
-# if sp_f_lck LOCK ; then
-#   this part runs when LOCK is present
-# fi
-
   if test -z "${1}" ; then return 1; fi
 
   local _lck="${1}"
@@ -110,12 +118,16 @@ function sp_f_lck() {
   return 2
 }
 
+#/// \fn sp_f_mklck
+#/// \brief create the lock file in sp_p_lck
+#///
+#/// \param 1 CHARACTER(*) name of the lock
+#///
+#/// Example:
+#/// if sp_f_mklck LOCK ; then
+#///   this part runs when LOCK is created
+#/// fi
 function sp_f_mklck() {
-#D create lock ($1)
-# if sp_f_mklck LOCK ; then
-#   this part runs when LOCK is created
-# fi
-
   if test -z "${1}" ; then return 1; fi
 
   local _lck="${1}"
@@ -128,12 +140,16 @@ function sp_f_mklck() {
   return 0
 }
 
+#/// \fn sp_f_rmlck
+#/// \brief delete the lock file in sp_p_lck
+#///
+#/// \param 1 CHARACTER(*) name of the lock
+#///
+#/// Example:
+#/// if sp_f_mklck LOCK ; then
+#///   this part runs when LOCK is deleted
+#/// fi
 function sp_f_rmlck() {
-#D delete lock ($1)
-# if sp_f_rmlck LOCK ; then
-#   this part runs when LOCK is deleted
-# fi
-
   if test -z "${1}" ; then return 1; fi
 
   local _lck="${1}"
@@ -149,8 +165,11 @@ function sp_f_rmlck() {
 
 #f3--&7-9-V13------21-------------------42--------------------64------72
 # DIRECTORY
+#/// \fn sp_f_mkdir
+#/// \brief creates a directory
+#///
+#/// \param 1 CHARACTER(*) name of the directory
 function sp_f_mkdir() {
-#D create directory ($1)
   if test -z "${1}" ; then return 1; fi
 
   local _dir="${1}"
@@ -165,8 +184,11 @@ function sp_f_mkdir() {
   return 0
 }
 
+#/// \fn sp_f_rmdir
+#/// \brief deletes a directory
+#///
+#/// \param 1 CHARACTER(*) name of the directory
 function sp_f_rmdir() {
-#D delete directory ($1)
   if test -z "${1}" ; then return 1; fi
 
   local _dir="${1}"
@@ -184,8 +206,12 @@ function sp_f_rmdir() {
 
 #f3--&7-9-V13------21-------------------42--------------------64------72
 # LINK
+#/// \fn sp_f_mklnk
+#/// \brief creates a symbolic link
+#///
+#/// \param 1 CHARACTER(*) name of the link (what)
+#/// \param 2 CHARACTER(*) target (where)
 function sp_f_mklnk() {
-#D create link ($1) with target ($2)
   if test -z "${1}" || test -z "${2}" ; then return 1; fi
 
   local _src="${1}"
@@ -197,8 +223,11 @@ function sp_f_mklnk() {
   return 0
 }
 
+#/// \fn sp_f_rmlnk
+#/// \brief deletes a symbolic link
+#///
+#/// \param 1 CHARACTER(*) name of the link
 function sp_f_rmlnk() {
-#D delete link ($1)
   if test -z "${1}" ; then return 1; fi
   local _lnk="${1}"
 
@@ -212,51 +241,77 @@ function sp_f_rmlnk() {
 
 #f3--&7-9-V13------21-------------------42--------------------64------72
 # HCI
-function sp_f_yesno() {
-#D ask yesno question ($1)
+#/// \fn sp_f_yesno
+#/// \brief asks a yes no question with retry
+#///
+#/// \param 1 CHARACTER(*) question
+#/// \param 2 INTEGER retry
+function sp_f_yesno_() {
   local _msg="${1:-Answer}"
+  local _flt=${2:-3}
   local _ans
-  echo -n "${_msg} (y - yes / n - no): "
-  read _ans
-  case "${_ans}" in
-    "y" | "Y")
-      return 0
-    ;;
-    "n" | "N")
-      sp_f_err "abort"
-      return 1
-    ;;
-    *)
-      sp_f_err "invalid answer"
+
+  while true ; do
+    echo -en "\n${_msg} (y - yes / n - no) [${_flt}]: "
+    read _ans
+    case "${_ans}" in
+      "y" | "Y")
+        return 0
+      ;;
+      "n" | "N")
+        sp_f_err "abort"
+        return 1
+      ;;
+      *)
+        sp_f_err "invalid answer"
+        _flt=$((_flt-1))
+      ;;
+    esac
+    if test ${_flt} -lt 1 ; then
       return 2
-    ;;
-  esac
-  return 3
+    fi
+  done
 }
 
 
 #f3--&7-9-V13------21-------------------42--------------------64------72
 # GUI
+#/// \fn sp_f_sln
+#/// \brief draw a normal line
 function sp_f_sln() {
   echo "${sp_g_nruler}"
 }
 
+#/// \fn sp_f_dln
+#/// \brief draw a double line
 function sp_f_dln() {
   echo "${sp_g_bruler}"
 }
 
+#/// \fn sp_f_stt
+#/// \brief print title with a single line
+#///
+#/// \param 1 CHARACTER(*) title text
 function sp_f_stt() {
   echo ""
   echo -e "${1}"
   sp_f_sln
 }
 
+#/// \fn sp_f_dtt
+#/// \brief print title with a double line
+#///
+#/// \param 1 CHARACTER(*) title text
 function sp_f_dtt() {
   echo ""
   echo -e "${1}"
   sp_f_dln
 }
 
+#/// \fn sp_f_ptt
+#/// \brief print program title
+#///
+#/// \param 1 CHARACTER(*) program name
 function sp_f_ptt() {
   sp_f_dtt "shpak: ${*}"
 }
@@ -264,8 +319,17 @@ function sp_f_ptt() {
 
 #f3--&7-9-V13------21-------------------42--------------------64------72
 # IO
+#/// \fn sp_f_ird
+#/// \brief check the first character
+#///
+#/// \param 1 CHARACTER(*) string
+#/// \param 2 CHARACTER first character
+#///
+#/// Example:
+#/// if sp_f_ird 1 2 ; then
+#///   this part runs when 1 contains 2 as the first character
+#/// else
 function sp_f_ird() {
-  # check first character ($2) of a string ($1)
   local _s="${1}"
   local _p="${2:-<}"
   if test "${_s:0:1}" = "${_p}" ; then return 0; fi
@@ -273,8 +337,12 @@ function sp_f_ird() {
   return 1
 }
 
+#/// \fn sp_f_inm
+#/// \brief trim the first character
+#///
+#/// \param 1 CHARACTER(*) string
+#/// \param 2 CHARACTER first character
 function sp_f_inm() {
-  # trim first character ($2) of a string ($1)
   local _s="${1}"
   local _p="${2:-<}"
   if sp_f_ird "${_s}" "${_p}" ; then
@@ -288,6 +356,13 @@ function sp_f_inm() {
 
 #f3--&7-9-V13------21-------------------42--------------------64------72
 # PYTHON
+#/// \fn sp_f_aa
+#/// \brief python / json (level 1) dictionary api
+#///
+#/// \param 1 CHARACTER(*) dictionary string
+#/// \param 2 CHARACTER(*) key to search
+#/// \param 3 INTEGER order by (1: key->value, 2: value->key)
+#/// \param 4 INTEGER not found value
 function sp_f_aa() {
   local _aa=${1:-'{one:1,two:2,three:3}'}
   local _key=${2:-one}
@@ -322,6 +397,11 @@ function sp_f_aa() {
 
 #f3--&7-9-V13------21-------------------42--------------------64------72
 # CHARACTER
+#/// \fn sp_f_btxt
+#/// \brief print the backslash / escaped character
+#///
+#/// \param 1 INTEGER character code
+#/// \param 2 LOGICAL without backslash?
 function sp_f_btxt() {
   local _oe=${1:-140}
   local _o=${2:-true}
@@ -331,6 +411,8 @@ function sp_f_btxt() {
   echo -ne "${sp_g_esc}(0${_oe}${sp_g_esc}(B"
 }
 
+#/// \fn sp_f__c
+#/// \brief case converter (internal)
 function sp_f__c() {
   local _s=${1:-case}
   local _d=${2:-false}
@@ -341,10 +423,18 @@ function sp_f__c() {
   fi
 }
 
+#/// \fn sp_f_lc
+#/// \brief convert to lowercase
+#///
+#/// \param CHARACTER(*) text to convert
 function sp_f_lc() {
   sp_f__c "${1}" true
 }
 
+#/// \fn sp_f_uc
+#/// \brief convert to uppercase
+#///
+#/// \param CHARACTER(*) text to convert
 function sp_f_uc() {
   sp_f__c "${1}"
 }
