@@ -1,5 +1,13 @@
+#f3--&7-9-V13------21-------------------42--------------------64------72
 
-# functions ---------------------------------------------------------------------
+#/// \fn sp_f_clscmd
+#/// \brief run a shell command on a cluster
+#///
+#/// \param 1 CHARACTER(*) cluster id
+#/// \param 2 CHARACTER(*) command
+#///
+#/// hosts can be divided into disjoint sets by setting the 
+#/// sp_g_cluster variable
 function sp_f_clscmd() {
   local _c="${1:-default}"
   local _cmd="${2:-ls}"
@@ -17,7 +25,12 @@ function sp_f_clscmd() {
   done
 }
 
-
+#/// \fn sp_f_clspush
+#/// \brief sshpush to a cluster
+#///
+#/// \param 1 CHARACTER(*) cluster id
+#/// \param 2 CHARACTER(*) source (what)
+#/// \param 3 INTEGER sshpush xfer mode
 function sp_f_clspush() {
   local _c="${1:-default}"
   local _s="${2}"

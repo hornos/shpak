@@ -1,12 +1,30 @@
 #f3--&7-9-V13------21-------------------42--------------------64------72
 # GLOBALS
+#/// \var sp_g_cdb
+#/// \brief color code db
 sp_g_cdb='{none:0,white:37,yellow:33,purple:35,red:31,cyan:36,green:32,blue:34,black:30}'
+
+#/// \var sp_g_fst
+#/// \brief font style db
 sp_g_fst='{normal:0,bold:1,under:4,blink:5,inv:7,conc:8}'
+
+#/// \var sp_g_esc
+#/// \brief escape
 sp_g_esc='\033'
+
+#/// \var sp_g_edb
+#/// \brief bloack character codes db
 sp_g_edb='{diamond:140,dsblock:141,rbcorner:152,rtcorner:153,ltcorner:154,lbcorner:155,junction:156,hline:161,ljunction:164,rjunction:165,bjunction:166,tjunction:167,vline:170}'
 
 #f3--&7-9-V13------21-------------------42--------------------64------72
 # COLOR
+#/// \fn sp_f_ctxt
+#/// \brief print a color text
+#///
+#/// \param 1 CHARACTER(*) text to display
+#/// \param 2 CHARACTER(*) forground color
+#/// \param 3 CHARACTER(*) background color
+#/// \param 4 CHARACTER(*) font style
 function sp_f_ctxt() {
   local _txt=${1:-color}
   local _fg=${2:-none}
