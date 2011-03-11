@@ -246,7 +246,7 @@ function sp_f_rmlnk() {
 #///
 #/// \param 1 CHARACTER(*) question
 #/// \param 2 INTEGER retry
-function sp_f_yesno_() {
+function sp_f_yesno() {
   local _msg="${1:-Answer}"
   local _flt=${2:-3}
   local _ans

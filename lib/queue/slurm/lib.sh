@@ -1,5 +1,10 @@
+#f3--&7-9-V13------21-------------------42--------------------64------72
 
-
+#/// \fn sp_f_slurm
+#/// \brief SLURM submission
+#///
+#/// \param mode
+#/// \param queue batch file
 function sp_f_slurm() {
   local _mode="${1:-submit}"
   local _p_qbat="${2:-slurm.sh}"
@@ -9,10 +14,10 @@ function sp_f_slurm() {
     local _qlogin="${sp_b_qlogin}"
     # name
     _qlogin="${_qlogin} --job-name ${NAME}"
-    # comment out if you need long interactive logins
-    # if ! test -z "${TIME}" ; then
-    #   _qlogin="${_qlogin} --time=${TIME}"
-    # fi
+    # time
+    if ! test -z "${TIME}" ; then
+      _qlogin="${_qlogin} --time=${TIME}"
+    fi
     # memory
     if ! test -z "${MEMORY}" ; then
       _qlogin="${_qlogin} --mem-per-cpu=${MEMORY}${sp_g_qms}"
@@ -31,12 +36,12 @@ function sp_f_slurm() {
       _qlogin="${_qlogin} --constraint="
       local _first=true
       for _con in ${QUEUE_CONST} ; do
-         if ${_first} ; then
-	   _const="${_con}"
-	   _first=false
-	 else
-	   _const="${_const}\&${_con}"
-	 fi
+        if ${_first} ; then
+          _const="${_con}"
+          _first=false
+        else
+          _const="${_const}\&${_con}"
+        fi
       done
       _qlogin="${_qlogin}${_const}"
     fi

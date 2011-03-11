@@ -1,5 +1,10 @@
+#f3--&7-9-V13------21-------------------42--------------------64------72
 
-
+#/// \fn sp_f_pbs
+#/// \brief PBS submission
+#///
+#/// \param mode
+#/// \param queue batch file
 function sp_f_pbs() {
   local _mode="${1:-submit}"
   local _p_qbat="${2:-pbs.sh}"
@@ -11,11 +16,10 @@ function sp_f_pbs() {
     local _qlogin="${sp_b_qlogin}"
     # name
     _qlogin="${_qlogin} -N ${NAME}"
-    # uncomment if you need more time
     # time
-    # if ! test -z "${TIME}" ; then
-    #   _qlogin="${_qlogin} -lwalltime=${TIME}"
-    # fi
+    if ! test -z "${TIME}" ; then
+      _qlogin="${_qlogin} -lwalltime=${TIME}"
+    fi
     # memory
     if ! test -z "${MEMORY}" ; then
       _qlogin="${_qlogin} -lpmem=${MEMORY}${sp_g_qms}"

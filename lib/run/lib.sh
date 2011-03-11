@@ -295,7 +295,7 @@ function sp_f_run_mail() {
       _msg=$(sp_f_qmail_msg)
       _sub="${_sub} ${_act}"
     fi
-    sp_f_mail "${_sub}" "${_msg}" "${QUEUE_MAIL_TO}"
+    sp_f_mail "${QUEUE_MAIL_TO}" "${_sub}" "${_msg}"
   fi
 }
 

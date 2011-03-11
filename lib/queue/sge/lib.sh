@@ -1,11 +1,17 @@
+#f3--&7-9-V13------21-------------------42--------------------64------72
 
+#/// \fn sp_f_pbs
+#/// \brief SGE submission
+#///
+#/// \param mode
+#/// \param queue batch file
 function sp_f_sge() {
   local _mode="${1:-submit}"
   local _p_qbat="${2:-sge.sh}"
 
   if test "${_mode}" = "login" ; then
-    echo "Queue login not implemented"
-    return
+    sp_f_err "Login is not implemented"
+    return 1
   fi
 
   echo "#${sp_g_qsub} -N ${NAME}"                     >> "${_p_qbat}"
@@ -64,7 +70,6 @@ function sp_f_sge() {
   fi
 
 }
-
 
 function sp_f_qmail_sub() {
   echo "Job ${JOB_ID} (${JOB_NAME})"
