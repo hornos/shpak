@@ -395,6 +395,93 @@ function sp_f_aa() {
   }'
 }
 
+#/// \fn sp_f_ii
+#/// \brief ini file to dictionary
+#///
+#/// \param 1 CHARACTER(*) section header
+#/// \param 2 CHARACTER(*) path of the in file
+#///
+#/// http://docs.python.org/library/configparser.html
+#/// only single line entries are supported without % resolving
+function sp_f_ii() {
+  local _h="${1:-${sp_g_bn}}"
+  local _p="${2:-./${sp_g_bn%%sh}ini}"
+  cat "${_p}" | \
+  awk -v h="${_h}" '
+  BEGIN {
+    inh = 0;
+    aas = "{";
+    fir = 1;
+    kc = 0;
+  }
+  {
+    # section header
+    if( match( $0, "^[[:space:]]*\\[[[:space:]]*[[:alnum:]._-]+[[:space:]]*\\][[:space:]]*$" ) ) {
+      # trim
+      gsub("^[[:space:]]*\\[[[:space:]]*", "" )
+      gsub("[[:space:]]*\\][[:space:]]*$", "" )
+      # match
+      if( match( $0, "^" h "$" ) ) {
+        inh = 1;
+      }
+      else {
+        inh = 0;
+      }
+    }
+    # in section
+    if( inh ) {
+      # match key :/= val pairs
+      if( match( $0, "[=:]") ) {
+        # split
+        split( $0, a, "[[:space:]]*[:|=][[:space:]]*" )
+        # trim
+        gsub("^[[:space:]]*","",a[1])
+        gsub("^[[:space:]]*","",a[2])
+        # store
+        if( ! fir ) {
+          aas = aas "," a[1] ":" a[2];
+        }
+        else {
+          aas = aas a[1] ":" a[2];
+        }
+        fir = 0;
+        ++kc;
+      }
+    }
+  }
+  END {
+    aas = aas "}";
+    print aas;
+    if( kc )
+      exit 0;
+    exit 1;
+  }'
+}
+
+#/// \fn sp_f_cfg
+#/// \brief INI file parser
+#///
+#/// \param 1 CHARACTER(*) key
+#/// \param 2 CHARACTER(*) section header
+#/// \param 3 CHARACTER(*) file name
+function sp_f_cfg() {
+  local _k="${1:-debug}"
+  local _h="${2:-${sp_g_bn}}"
+  local _f="${3:-./${sp_g_bn%%sh}ini}"
+  local _aa=""
+  local _v=""
+  _aa=$(sp_f_ii "${_h}" "${_f}")
+  if test $? -gt 0 ; then
+    return 1
+  fi
+  _v=$(sp_f_aa "${_aa}" "${_k}")
+  if test $? -gt 0 ; then
+    return 1
+  fi
+  echo "${_v}"
+}
+
+
 #f3--&7-9-V13------21-------------------42--------------------64------72
 # CHARACTER
 #/// \fn sp_f_btxt
