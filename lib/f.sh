@@ -252,13 +252,14 @@ function sp_f_yesno() {
   local _ans
 
   while true ; do
-    echo -en "\n${_msg} (y - yes / n - no) [${_flt}]: "
+    echo -en "\n${_msg} (y / n / q) [${_flt}]: "
     read _ans
+    _ans=$(sp_f_lc ${_ans})
     case "${_ans}" in
-      "y" | "Y")
+      "y" )
         return 0
       ;;
-      "n" | "N")
+      "n" | "q" )
         sp_f_err "abort"
         return 1
       ;;
