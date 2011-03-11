@@ -1,0 +1,10 @@
+#!/bin/bash
+#/// \file gdict
+#/// \brief Surfraw Interface
+#///
+
+#f3--&7-9-V13------21-------------------42--------------------64------72
+### HEADER
+# . $(dirname ${0})/../lib/h.sh
+
+SURFRAW_browser="w3m" sr $*
