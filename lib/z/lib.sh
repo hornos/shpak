@@ -1,4 +1,11 @@
+#f3--&7-9-V13------21-------------------42--------------------64------72
+#/// Credit to B. A. for the original versions
 
+#/// \fn sp_f_zbn
+#/// \brief basename with or without z suffix
+#///
+#/// \param 1 CHARACTER(*) binary name
+#/// \param 2 LOGICAL true: strip off z suffix
 function sp_f_zbn() {
   local _bn=$(basename "${1}")
   local _zn=${2:-true}
@@ -10,6 +17,10 @@ function sp_f_zbn() {
 
 #/// \fn sp_f_zcpumv
 #/// \brief copy, uncompress, move
+#///
+#/// \param 1 CHARACTER(*) source path
+#/// \param 2 CHARACTER(*) destination directory
+#/// \param 3 CHARACTER(*) destination name
 function sp_f_zcpumv() {
  local _src="${1}"
  local _dir="${2}"
@@ -17,19 +28,19 @@ function sp_f_zcpumv() {
  local _src_n=$(sp_f_zbn "${_src}")
  local _src_bn=$(sp_f_zbn "${_src}" false)
 
- # copy ---------------------------------
+ # copy ----------------------------------------------------------------
  cp "${_src}" "${_dir}"
  if test $? -gt 0 ; then
    sp_f_err "file $src can't be copied"
    return 10
  fi
 
- # uncompress ---------------------------
+ # uncompress ----------------------------------------------------------
  if test "${_src_bn}" != "${_src_n}" ; then
    ${sp_b_uz} "${_dir}/${_src_bn}"
  fi
 
- # rename -------------------------------
+ # rename
  local _p_src_n="${_dir}/${_src_n}"
  local _p_dst="${_dir}/${_dst}"
  if ! test -z "${_dst}" && ! test -f "${_p_dst}" ; then
@@ -45,7 +56,16 @@ function sp_f_zcpumv() {
  return 0
 }
 
+function sp_f_zcput() {
+  sp_f_zcpumv "${1}" "${sp_z_tmp}" "${2}"
+}
 
+#/// \fn sp_f_svzmv
+#/// \brief save, compress, move
+#///
+#/// \param 1 CHARACTER(*) source path
+#/// \param 2 CHARACTER(*) destination path
+#/// if destination exist make a backup copy (save)
 function sp_f_svzmv() {
   local _rs="${1}"
   local _p_dst="${2}"
@@ -76,9 +96,6 @@ function sp_f_svzmv() {
 }
 
 
-function sp_f_zutbc() {
-  sp_f_zcpumv "${1}" "${sp_z_tmp}" "${3}"
-}
 
 #/// \fn sp_f_maco
 #/// \brief Hungarian lossy language compression

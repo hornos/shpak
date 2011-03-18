@@ -1,4 +1,7 @@
-# common ------------------------------------------------------------------------
+#f3--&7-9-V13------21-------------------42--------------------64------72
+
+#/// \fn sp_f_ssh_init
+#/// \brief common init for ssh functions
 function sp_f_ssh_init() {
   local _p_host="${sp_p_hosts}/${_host}"
 
@@ -12,20 +15,24 @@ function sp_f_ssh_init() {
 } # end sp_f_sshinit
 
 
-# login -------------------------------------------------------------------------
+#/// \fn sp_f_sshlogin
+#/// \brief ssh login
+#///
+#/// \param 1 CHARACTER(*) host MID
+#/// \param 2 LOGICAL prevent lock checking
 function sp_f_sshlogin() {
   local _host="${1:-default}"
   local _force="${2:-false}"
 
   sp_f_ssh_init "${_host}"
 
-  # lock --------------------------------
+  # lock
   local _lck="${_host}.${sp_g_bn}"
   if ${_force} ; then
     sp_f_rmlck "${_lck}"
   fi
 
-  # proxy -------------------------------
+  # proxy
   local _proxy=false
   local _opts="${sp_g_ssh_opts}"
   if ! test -z "${sp_g_ssh_proxy}" ; then
