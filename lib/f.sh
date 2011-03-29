@@ -45,7 +45,7 @@ function sp_f_wrn_fnf() {
 #///
 #/// \param * CHARACTER(*) text
 function sp_f_msg() {
-  echo -e "$*" >&2
+  echo -e "\n$*\n" >&2
 }
 
 #/// \fn sp_f_inarr
