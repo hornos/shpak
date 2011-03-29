@@ -15,7 +15,7 @@ sp_g_libs=()
 #///
 #/// \param * CHARACTER(*) error text
 function sp_f_err() {
-  echo -e "ERROR ($(basename "${0}")) $*" >&2
+  echo -e "\nERROR ($(basename "${0}")) $*\n" >&2
 }
 
 function sp_f_err_fnf() {
@@ -32,7 +32,7 @@ function sp_f_err_cac() {
 #/// \param * CHARACTER(*) warning text
 function sp_f_wrn() {
   if ${sp_g_debug} ; then
-    echo -e "WARN ($(basename "${0}")) $*" >&2
+    echo -e "\nWARN ($(basename "${0}")) $*\n" >&2
   fi
 }
 
