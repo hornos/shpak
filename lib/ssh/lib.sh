@@ -290,6 +290,7 @@ function sp_f_sshmnt() {
     ${sp_b_sshmnt} ${_url} ${_dst} ${_opts}
     _r=$?
     if test ${_r} -gt 0 ; then
+      sp_f_err "sshfs failure (might run sshreset)"
       sp_f_rmlck "${_lck}"
     else
       sp_f_msg "host mounted"
