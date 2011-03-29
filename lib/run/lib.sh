@@ -1,6 +1,6 @@
 
 sp_f_load z
-sp_f_load i/ma
+sp_f_load net/ma
 
 function sp_f_run_check() {
   local _prg="${1}"
