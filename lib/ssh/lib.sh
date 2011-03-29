@@ -287,7 +287,7 @@ function sp_f_sshmnt() {
     sp_f_mkdir "${_dst}"
 
     sp_f_stt "${_dst} -> ${_url}"
-    ${sp_b_sshmnt} ${_url} ${_dst} ${_opts}
+    ${sp_b_sshmnt} ${_url} ${_dst} ${_opts} 2>/dev/null
     _r=$?
     if test ${_r} -gt 0 ; then
       sp_f_err "sshfs failure (might run sshreset)"
