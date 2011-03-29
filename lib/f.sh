@@ -18,6 +18,14 @@ function sp_f_err() {
   echo -e "ERROR ($(basename "${0}")) $*" >&2
 }
 
+function sp_f_err_fnf() {
+  sp_f_err "Not found $*"
+}
+
+function sp_f_err_cac() {
+  sp_f_err "Cannot create $*"
+}
+
 #/// \fn sp_f_wrn
 #/// \brief print warning message
 #///
@@ -26,6 +34,10 @@ function sp_f_wrn() {
   if ${sp_g_debug} ; then
     echo -e "WARN ($(basename "${0}")) $*" >&2
   fi
+}
+
+function sp_f_wrn_fnf() {
+  sp_f_wrn "Not found $*"
 }
 
 #/// \fn sp_f_msg
@@ -66,12 +78,12 @@ function sp_f_load() {
   # check library path
   local _p_lib="${sp_p_lib}/${_lib}/lib${sp_s_lib}"
   if ! test -r "${_p_lib}" ; then
-    sp_f_err "file ${_p_lib} not found";
+    sp_f_err_fnf "${_p_lib}";
     if ${_isex} ; then exit 2; else return 2; fi
   fi
   # check loaded libraries
   if sp_f_inarr "${_lib}" ${sp_g_libs} ; then
-    sp_f_err "${_lib} is already loaded"
+    sp_f_err "loaded ${_lib}"
     if ${_isex} ; then exit 3; else return 3; fi
   fi
   # load the library config
@@ -79,14 +91,14 @@ function sp_f_load() {
   if test -r ${_p_cfg} ; then
     . "${_p_cfg}"
   else
-    sp_f_wrn "file ${_p_cfg} not found"
+    sp_f_wrn_fnf "${_p_cfg}"
   fi
   # load OS specific library config
   _p_cfg="${sp_p_lib}/${_lib}/${OSTYPE}${sp_s_cfg}"
   if test -r ${_p_cfg} ; then
     . "${_p_cfg}"
   else
-    sp_f_wrn "file ${_p_cfg} not found"
+    sp_f_wrn_fnf "${_p_cfg}"
   fi
   # load the library
   . "${_p_lib}"
@@ -177,7 +189,7 @@ function sp_f_mkdir() {
     mkdir -p "${_dir}"
     local _r=$?
     if test ${_r} -gt 0 ; then
-      sp_f_err "directory ${_dir} can't be created"
+      sp_f_err_cac "${_dir}"
     fi
     return ${_r}
   fi
@@ -396,7 +408,7 @@ function sp_f_aa() {
   }'
 }
 
-#/// \fn sp_f_ii
+#/// \fn sp_f_ini
 #/// \brief ini file to dictionary
 #///
 #/// \param 1 CHARACTER(*) section header
@@ -404,7 +416,7 @@ function sp_f_aa() {
 #///
 #/// http://docs.python.org/library/configparser.html
 #/// only single line entries are supported without % resolving
-function sp_f_ii() {
+function sp_f_ini() {
   local _h="${1:-${sp_g_bn}}"
   local _p="${2:-./${sp_g_bn%%sh}ini}"
   cat "${_p}" | \
@@ -459,29 +471,25 @@ function sp_f_ii() {
   }'
 }
 
-#/// \fn sp_f_cfg
-#/// \brief INI file parser
-#///
-#/// \param 1 CHARACTER(*) key
-#/// \param 2 CHARACTER(*) section header
-#/// \param 3 CHARACTER(*) file name
-function sp_f_cfg() {
-  local _k="${1:-debug}"
-  local _h="${2:-${sp_g_bn}}"
-  local _f="${3:-./${sp_g_bn%%sh}ini}"
-  local _aa=""
+function sp_f_init() {
+  local _f="${sp_p_home}/shpak.ini"
   local _v=""
-  _aa=$(sp_f_ii "${_h}" "${_f}")
-  if test $? -gt 0 ; then
-    return 1
+  if ! test -r "${_f}" ; then
+    return 0
   fi
-  _v=$(sp_f_aa "${_aa}" "${_k}")
-  if test $? -gt 0 ; then
-    return 1
+  sp_g_ini=$(sp_f_ini "shpak" "${_f}")
+  _v=$(sp_f_aa "${sp_g_ini}" "sp_g_debug")
+  if test $? -eq 0 ; then
+    _v=$(sp_f_lc "${_v}")
+    if test "${_v}" == "true" ; then
+      sp_g_debug = true
+      return 0
+    fi
+    sp_g_debug = false;
+    return 0
   fi
-  echo "${_v}"
+  return 1
 }
-
 
 #f3--&7-9-V13------21-------------------42--------------------64------72
 # CHARACTER

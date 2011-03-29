@@ -113,10 +113,13 @@ sp_g_bruler="===================================================================
 
 
 #f3--&7-9-V13------21-------------------42--------------------64------72
-### MAIN
+# start kernel
 sp_p_f="${sp_p_lib}/f.sh"
 if ! test -r "${sp_p_f}" ; then
   echo "functions not found: ${sp_p_f}"
   exit 200
 fi
 . "${sp_p_f}"
+# init kernel
+sp_g_ini=""
+sp_f_init
