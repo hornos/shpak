@@ -339,11 +339,17 @@ function sp_f_sshlmnt() {
 function sp_f_sshcmd() {
   local _host="${1:-default}"
   local _cmd="${2:-ls}"
+  local _int=${3:-false}
   local _tmp=""
 
   sp_f_ssh_init "${_host}"
 
   local _opts="${sp_g_ssh_opts}"
+
+  # ssh interactive ---------------------
+  if ${_int} ; then
+    _opts="-t ${_opts}"
+  fi
 
   # ssh key -----------------------------
   local _p_key="${sp_p_keys}/${_host}${sp_s_key}"
