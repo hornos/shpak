@@ -114,7 +114,7 @@ function sp_f_runprg() {
 
   # load scheduler library ------------------------------------------------------
   if ! test -z "${_sched}" ; then
-    sp_f_load queue/${_sched}
+    sp_f_load que/${_sched}
   fi
 
   # load program library --------------------------------------------------------

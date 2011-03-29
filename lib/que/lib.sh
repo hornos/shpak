@@ -46,7 +46,7 @@ function sp_f_jobsub() {
 # MODE: submit / login
 #f3--&7-9-V13------21-------------------42--------------------64------72
   local _sched=${SCHED}
-  sp_f_load queue/${_sched}
+  sp_f_load que/${_sched}
 
   if test "${_mode}" = "login" ; then
     local _p_qbat="./${_sched}.login.sh"

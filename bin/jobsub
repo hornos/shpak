@@ -4,7 +4,7 @@
 ### BEGIN HEADER
 . $(dirname ${0})/../lib/h.sh
 # load libraries
-sp_f_load queue
+sp_f_load que
 ### END HEADER
 
 function __usage() {
