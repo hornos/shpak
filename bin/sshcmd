@@ -5,7 +5,7 @@
 sp_f_load ssh
 
 function __usage() {
-  echo "Usage: ${sp_g_bn} [-m host] [-x command]"
+  echo "Usage: ${sp_g_bn} [-t] [-m host] [-x command]"
 }
 
 # options -----------------------------------------------------------------------
@@ -20,7 +20,7 @@ elif test $# -eq 1 ; then
   __usage
   exit 1
 else
-  while getopts hm:x:t o; do
+  while getopts hm:c:t o; do
     case "$o" in
       m) _m=$OPTARG;;
       x) _x=$OPTARG;;
