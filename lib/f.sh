@@ -45,8 +45,7 @@ function sp_f_wrn_fnf() {
 #///
 #/// \param * CHARACTER(*) text
 function sp_f_msg() {
-  local _m="${*}"
-  echo -e "\n$(sp_f_uc \"${_m}\")\n" >&2
+  echo -e "\n$(sp_f_uc ${*})\n" >&2
 }
 
 #/// \fn sp_f_inarr
@@ -511,7 +510,7 @@ function sp_f__c() {
 #///
 #/// \param CHARACTER(*) text to convert
 function sp_f_lc() {
-  sp_f__c "${1}" true
+  sp_f__c "${*}" true
 }
 
 #/// \fn sp_f_uc
@@ -519,5 +518,5 @@ function sp_f_lc() {
 #///
 #/// \param CHARACTER(*) text to convert
 function sp_f_uc() {
-  sp_f__c "${1}"
+  sp_f__c "${*}"
 }
