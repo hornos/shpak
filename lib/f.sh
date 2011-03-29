@@ -474,20 +474,6 @@ function sp_f_ini() {
 function sp_f_init() {
   local _f="${sp_p_home}/shpak.ini"
   local _v=""
-  if ! test -r "${_f}" ; then
-    return 0
-  fi
-  sp_g_ini=$(sp_f_ini "shpak" "${_f}")
-  _v=$(sp_f_aa "${sp_g_ini}" "sp_g_debug")
-  if test $? -eq 0 ; then
-    _v=$(sp_f_lc "${_v}")
-    if test "${_v}" == "true" ; then
-      sp_g_debug = true
-      return 0
-    fi
-    sp_g_debug = false;
-    return 0
-  fi
   return 1
 }
 
