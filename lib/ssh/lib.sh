@@ -347,7 +347,7 @@ function sp_f_sshcmd() {
   local _opts="${sp_g_ssh_opts}"
 
   # ssh interactive ---------------------
-  if ${_int} ; then
+  if ${_int} ; then
     _opts="-t ${_opts}"
   fi
 
