@@ -287,11 +287,7 @@ function sp_f_sshmnt() {
     sp_f_mkdir "${_dst}"
 
     sp_f_stt "${_dst} -> ${_url}"
-    if ! ${sp_g_debug} ; then
-      ${sp_b_sshmnt} ${_url} ${_dst} ${_opts} 2>/dev/null
-    else
-      ${sp_b_sshmnt} ${_url} ${_dst} ${_opts}
-    fi
+    ${sp_b_sshmnt} ${_url} ${_dst} ${_opts}
     _r=$?
     if test ${_r} -gt 0 ; then
       sp_f_rmlck "${_lck}"
@@ -316,7 +312,6 @@ function sp_f_sshmnt() {
       sp_f_msg "host unmounted"
     fi
   fi
-
   return ${_r}
 }
 
