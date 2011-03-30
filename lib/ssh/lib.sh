@@ -58,7 +58,11 @@ function sp_f_sshlogin() {
   sp_f_stt "Login to ${_url}"
 
   # ssh ---------------------------------
-  ${sp_b_ssh} ${_opts} ${_url}
+  if test "${_scrsel}" != "" ; then
+    ${sp_b_ssh} ${_opts} ${_url} ${_scrsel}
+  else
+    ${sp_b_ssh} ${_opts} ${_url}
+  fi
   local _r=$?
   if ${_proxy} ; then
     sp_f_rmlck "${_lck}"
