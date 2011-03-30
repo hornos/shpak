@@ -232,8 +232,8 @@ function sp_f_sshinfo() {
     echo "ssh proxy  : ${sp_g_ssh_proxy}"
   fi
   echo ""
-  echo "ssh tx loc : ${sp_p_scp_local}"
-  echo "ssh tx rem : ${sp_p_scp_remote}"
+  echo "ssh local  : ${sp_p_scp_local}"
+  echo "ssh remote : ${sp_p_scp_remote}"
   echo ""
   echo "sshfs mnt  : ${sp_p_sshfs_local} -> ${sp_g_ssh_user}@${sp_g_ssh_fqdn}:${sp_p_sshfs_remote}"
   echo "sshfs opts : ${sp_g_sshfs_opts}"
