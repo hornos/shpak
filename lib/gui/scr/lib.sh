@@ -1,7 +1,7 @@
 #f3--&7-9-V13------21-------------------42--------------------64------72
 
 function sp_f_scrls() {
-  screen -ls | awk \
+  ${sp_p_scr} -ls | awk \
   'BEGIN{ses="{";c=1;f=1}
   /^[[:space:]]+[0-9]+\./{
     split($0, arr, " ");
@@ -37,7 +37,7 @@ function sp_f_scr() {
   local _st
   local _f=true
 
-  ${sp_b_scr} -q -ls
+  ${sp_p_scr} -q -ls
   if test $? -lt 10 ; then
     sp_f_yesno "Open a new screen"
     if test $? -gt 0 ; then
