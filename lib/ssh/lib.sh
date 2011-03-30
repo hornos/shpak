@@ -58,7 +58,7 @@ function sp_f_sshlogin() {
   sp_f_stt "Login to ${_url}"
 
   # ssh ---------------------------------
-  if ! test ${_scrsel} == "" ; then
+  if test "${_scrsel}" != "" ; then
     ${sp_b_ssh} ${_opts} ${_url} ${_scrsel}
   else
     ${sp_b_ssh} ${_opts} ${_url}
