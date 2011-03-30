@@ -30,7 +30,7 @@ function sp_f_scr() {
   local _aa="$(sp_f_scrls)"
   local _c=0
   local _r=""
-  local _msg="${1:-Select screen}"
+  local _msg="${1:-Choose}"
   local _flt=${2:-3}
   local _ans
   local _id
@@ -66,12 +66,12 @@ function sp_f_scr() {
   done
 
   while true ; do
-    echo -en "\n${_msg} (1-$((${_c}-1)) q) [${_flt}]: "
+    echo -en "\n${_msg} (1-$((${_c}-1)) / n / q) [${_flt}]: "
     read _ans
     _ans=$(sp_f_lc ${_ans})
     case "${_ans}" in
       "q" )
-        sp_f_wrn "Abort"
+        echo -e "Abort\n"
         return 1
       ;;
       "n" )
@@ -88,7 +88,7 @@ function sp_f_scr() {
           ${sp_b_scr} -D -r "${_id}"
           return $?
         fi
-        sp_f_err "invalid answer"
+        echo -e "Invalid\n"
         _flt=$((_flt-1))
       ;;
     esac

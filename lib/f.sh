@@ -272,11 +272,11 @@ function sp_f_yesno() {
         return 0
       ;;
       "n" | "no" | "q"  )
-        sp_f_wrn "Abort"
+        echo -e "Abort\n"
         return 1
       ;;
       *)
-        sp_f_err "invalid answer"
+        echo -e "Invalid\n"
         _flt=$((_flt-1))
       ;;
     esac
