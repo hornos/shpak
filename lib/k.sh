@@ -120,6 +120,3 @@ if ! test -r "${sp_p_f}" ; then
   exit 200
 fi
 . "${sp_p_f}"
-# init kernel
-sp_g_ini=""
-sp_f_init

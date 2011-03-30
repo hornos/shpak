@@ -471,10 +471,15 @@ function sp_f_ini() {
   }'
 }
 
-function sp_f_init() {
-  local _f="${sp_p_home}/shpak.ini"
-  local _v=""
-  return 1
+function sp_f_spl() {
+  local _s=${1:-"1|2|3"}
+  local _i=${2:-1}
+  local _d=${3:-"|"}
+  echo ${_s} | awk -v d="${_d}" -v i=${_i} \
+  '{
+    split($0,arr,d);
+    print arr[i]
+  }'
 }
 
 #f3--&7-9-V13------21-------------------42--------------------64------72
