@@ -268,11 +268,11 @@ function sp_f_yesno() {
     read _ans
     _ans=$(sp_f_lc ${_ans})
     case "${_ans}" in
-      "y" )
+      "y" | "case" | "yes" )
         return 0
       ;;
-      "n" | "q" )
-        sp_f_err "abort"
+      "n" | "no" | "q"  )
+        sp_f_wrn "Abort"
         return 1
       ;;
       *)

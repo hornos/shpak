@@ -5,15 +5,25 @@ function sp_f_scrls() {
   'BEGIN{ses="{";c=1;f=1}
   /^[[:space:]]+[0-9]+\./{
     split($0, arr, " ");
+    gsub("\\(","",arr[2]);
+    gsub("\\)","",arr[2]);
     if( f )
-      ses = ses c ":" arr[1]
+      ses = ses c ":" arr[1] "|" substr(arr[2],1,1)
     else
-      ses = ses "," c ":" arr[1]
+      ses = ses "," c ":" arr[1] "|" substr(arr[2],1,1)
     ++c;
     f=0;
   }
   END{ses=ses "}"; print ses;}
   '
+}
+
+function sp_f_scrid() {
+  sp_f_spl "${1}" 1
+}
+
+function sp_f_scrst() {
+  sp_f_spl "${1}" 2
 }
 
 function sp_f_scr() {
@@ -23,6 +33,19 @@ function sp_f_scr() {
   local _msg="${1:-Select screen}"
   local _flt=${2:-3}
   local _ans
+  local _id
+  local _st
+  local _f=true
+
+  ${sp_b_scr} -q -ls
+  if test $? -lt 10 ; then
+    sp_f_yesno "Open a new screen"
+    if test $? -gt 0 ; then
+      return 1
+    fi
+    ${sp_b_scr}
+    return $?
+  fi
 
   while true; do
     _c=$((++_c))
@@ -30,7 +53,16 @@ function sp_f_scr() {
     if test $? -gt 0 ; then
       break
     fi
-    echo "${_c}: ${_r}"
+
+    _id="$(sp_f_scrid ${_r})"
+    _st="$(sp_f_scrst ${_r})"
+    if ${_f} && test "${_st}" == "D" ; then
+      _fid="${_id}"
+      _f=false
+      echo "${_c}: * ${_st} ${_id}"
+    else
+      echo "${_c}:   ${_st} ${_id}"
+    fi
   done
 
   while true ; do
@@ -38,20 +70,23 @@ function sp_f_scr() {
     read _ans
     _ans=$(sp_f_lc ${_ans})
     case "${_ans}" in
-      "y" )
-        return 0
-      ;;
       "q" )
+        sp_f_wrn "Abort"
         return 1
       ;;
       "n" )
-        return 0
-        screen
+        ${sp_b_scr}
+        return $?
+      ;;
+      "case" )
+        ${sp_b_scr} -D -r "${_fid}"
+        return $?
       ;;
       *)
         if test ${_ans} -lt ${_c} && test ${_ans} -gt 0 ; then
-          screen -D -r $(sp_f_aa "${_aa}" ${_ans})
-          return 0
+          _id=$(sp_f_scrid "$(sp_f_aa "${_aa}" ${_ans})")
+          ${sp_b_scr} -D -r "${_id}"
+          return $?
         fi
         sp_f_err "invalid answer"
         _flt=$((_flt-1))

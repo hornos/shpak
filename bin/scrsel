@@ -1,0 +1,8 @@
+#!/bin/bash
+### BEGIN HEADER
+. $(dirname ${0})/../lib/h.sh
+# load libraries
+sp_f_load gui/scr
+
+sp_f_stt "Select screen" 
+sp_f_scr
