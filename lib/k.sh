@@ -57,11 +57,11 @@ sp_p_keys="${sp_p_user}/keys"
 #/// This directory contains locks for various operations
 sp_p_lck="${sp_p_user}/lock"
 
-#/// \var sp_p_remote
+#/// \var sp_p_sshfs
 #/// \brief shpak remote directory
 #///
 #/// This directory contains mounts of remote machines
-sp_p_remote="${HOME}/remote"
+sp_p_sshfs="${HOME}/sshfs"
 
 #/// \var sp_p_encfs
 #/// \brief shpak encfs directory

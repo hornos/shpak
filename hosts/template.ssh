@@ -36,7 +36,7 @@ sp_g_ssh_proxy="-L63128:localhost:3128"
 sp_p_sshfs_remote="/"
 
 # local directory where the above remote dir is mounted
-sp_p_sshfs_local="${sp_p_remote}/${sp_g_ssh_mid}"
+sp_p_sshfs_local="${sp_p_sshfs}/${sp_g_ssh_mid}"
 
 # sshmount options
 sp_g_sshfs_opts="-C ${sp_g_ssh_copts} -o rw -o follow_symlinks -o Port=${sp_g_ssh_port}"
