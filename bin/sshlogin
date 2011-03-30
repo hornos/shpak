@@ -10,6 +10,7 @@ function __usage() {
 
 _f=false
 _m="default"
+_s=""
 
 # options -----------------------------------------------------------------------
 if test $# -eq 0 ; then
@@ -22,9 +23,10 @@ elif test $# -eq 1 ; then
   fi
   _m="${1}"
 else
-  while getopts fhm: o; do
+  while getopts fhsm: o; do
     case "$o" in
       f) _f=true;;
+      s) _s="scrsel";;
       m) _m=$OPTARG;;
       h) __usage; exit 1;;
     esac
@@ -33,4 +35,4 @@ fi
 
 # main --------------------------------------------------------------------------
 sp_f_ptt "${sp_g_bn}"
-sp_f_${sp_g_bn} "${_m}" ${_f}
+sp_f_${sp_g_bn} "${_m}" ${_f} "${_s}"
