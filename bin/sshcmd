@@ -17,8 +17,11 @@ if test $# -eq 0 ; then
   __usage
   exit 1
 elif test $# -eq 1 ; then
-  __usage
-  exit 1
+  if test "${1}" == "-h" ; then
+    __usage
+    exit 1
+  fi
+  _m="${1}"
 else
   while getopts hm:x:t o; do
     case "$o" in
