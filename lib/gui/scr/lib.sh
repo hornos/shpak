@@ -30,6 +30,7 @@ function sp_f_scrpd() {
   local _r
   ${sp_b_scr} $*
   _r=$?
+  echo $_r
   if test ${_r} -eq 129 ; then
     logout
   fi
