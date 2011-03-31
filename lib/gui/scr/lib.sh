@@ -101,7 +101,7 @@ function sp_f_scr() {
       *)
         if test ${_ans} -lt ${_c} && test ${_ans} -gt 0 ; then
           _id=$(sp_f_scrid "$(sp_f_aa "${_aa}" ${_ans})")
-          sp_f_scr_pd -D -r "${_id}"
+          sp_f_scrpd -D -r "${_id}"
           return $?
         fi
         echo -e "Invalid\n"
