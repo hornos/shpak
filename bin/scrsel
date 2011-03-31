@@ -4,5 +4,7 @@
 # load libraries
 sp_f_load gui/scr
 
-sp_f_stt "Select screen" 
+sp_f_stt "Select screen"
+echo "You can open a new screen with 'n' or ENTER. If there"
+echo "are sessions the first detached (D) screen is joined."
 sp_f_scr

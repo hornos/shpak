@@ -26,7 +26,7 @@ function sp_f_scrst() {
   sp_f_spl "${1}" 2
 }
 
-# TODO: ?
+# TODO: logout
 function sp_f_scrpd() {
   local _r
   ${sp_b_scr} $*
@@ -45,6 +45,7 @@ function sp_f_scr() {
   local _flt=${2:-3}
   local _ans
   local _id
+  local _fid=""
   local _st
   local _f=true
 
@@ -90,7 +91,11 @@ function sp_f_scr() {
         return $?
       ;;
       "case" )
-        sp_f_scrpd -D -r "${_fid}"
+        if test "${_fid}" == "" ; then
+          sp_f_scrpd
+        else
+          sp_f_scrpd -D -r "${_fid}"
+        fi
         return $?
       ;;
       *)
