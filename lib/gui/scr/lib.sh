@@ -26,6 +26,16 @@ function sp_f_scrst() {
   sp_f_spl "${1}" 2
 }
 
+function sp_f_scrpd() {
+  local _r
+  ${sp_b_scr} $*
+  _r=$?
+  if test ${_r} -eq 129 ; then
+    logout
+  fi
+  return ${_r}
+}
+
 function sp_f_scr() {
   local _aa="$(sp_f_scrls)"
   local _c=0
@@ -43,7 +53,7 @@ function sp_f_scr() {
     if test $? -gt 0 ; then
       return 1
     fi
-    ${sp_b_scr}
+    sp_f_scrpd
     return $?
   fi
 
@@ -75,17 +85,17 @@ function sp_f_scr() {
         return 1
       ;;
       "n" )
-        ${sp_b_scr}
+        sp_f_scrpd
         return $?
       ;;
       "case" )
-        ${sp_b_scr} -D -r "${_fid}"
+        sp_f_scrpd -D -r "${_fid}"
         return $?
       ;;
       *)
         if test ${_ans} -lt ${_c} && test ${_ans} -gt 0 ; then
           _id=$(sp_f_scrid "$(sp_f_aa "${_aa}" ${_ans})")
-          ${sp_b_scr} -D -r "${_id}"
+          sp_f_scr_pd -D -r "${_id}"
           return $?
         fi
         echo -e "Invalid\n"
