@@ -96,8 +96,8 @@ sp_s_lck=".lck"
 ### MISC
 
 #/// \var sp_g_awkprn
-#/// \brief ???
-sp_g_awkprn='BEGIN{p=1} /^(-){80}$/{if(!p) p=1; else p=0} {if(p) print}'
+#/// \brief supress login messages
+sp_g_awkprn='BEGIN{p=1} /^(-){70}/{if(!p) p=1; else p=0} {if(p) print}'
 
 #/// \var sp_g_debug
 #/// \brief show debug messages TODO: dip ifc
