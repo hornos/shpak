@@ -72,11 +72,18 @@ function sp_f_inarr() {
 function sp_f_load() {
   local _lib="${1}"
   local _isex=${2:-true}
+  local _sp_p_lib="${sp_p_lib}"
+
   if test -z "${_lib}" ; then
     if ${_isex} ; then exit 1; else return 1; fi
   fi
+  # check local lib
+  if sp_f_ird "${_lib}" "@" ; then
+    _lib=$(sp_f_inm "${_lib}" "@")
+    _sp_p_lib="${sp_g_dn}/../lib"
+  fi
   # check library path
-  local _p_lib="${sp_p_lib}/${_lib}/lib${sp_s_lib}"
+  local _p_lib="${_sp_p_lib}/${_lib}/lib${sp_s_lib}"
   if ! test -r "${_p_lib}" ; then
     sp_f_err_fnf "${_p_lib}";
     if ${_isex} ; then exit 2; else return 2; fi
@@ -87,14 +94,14 @@ function sp_f_load() {
     if ${_isex} ; then exit 3; else return 3; fi
   fi
   # load the library config
-  local _p_cfg="${sp_p_lib}/${_lib}/lib${sp_s_cfg}"
+  local _p_cfg="${_sp_p_lib}/${_lib}/lib${sp_s_cfg}"
   if test -r ${_p_cfg} ; then
     . "${_p_cfg}"
   else
     sp_f_wrn_fnf "${_p_cfg}"
   fi
   # load OS specific library config
-  _p_cfg="${sp_p_lib}/${_lib}/${OSTYPE}${sp_s_cfg}"
+  _p_cfg="${_sp_p_lib}/${_lib}/${OSTYPE}${sp_s_cfg}"
   if test -r ${_p_cfg} ; then
     . "${_p_cfg}"
   else

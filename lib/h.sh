@@ -9,6 +9,8 @@
 #/// \brief basename of the script
 sp_g_bn=$(basename "${0}")
 
+sp_g_dn=$(dirname "${0}")
+
 #/// \var sp_p_k
 #/// \brief location of the kernel
 #///
