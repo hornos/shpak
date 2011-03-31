@@ -10,7 +10,7 @@ function __usage() {
 
 # options -----------------------------------------------------------------------
 _m="default"
-_x="ls"
+_x="ls -lA xfer"
 _t=false
 
 if test $# -eq 0 ; then
