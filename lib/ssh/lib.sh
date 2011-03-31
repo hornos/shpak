@@ -349,7 +349,7 @@ function sp_f_sshlmnt() {
 
 function sp_f_sshcmd() {
   local _host="${1:-default}"
-  local _cmd="${2:-ls}"
+  local _cmd="${2:-ls -lA ${sp_p_scp_remote}}"
   local _int=${3:-false}
   local _tmp=""
 
