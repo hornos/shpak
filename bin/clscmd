@@ -11,7 +11,7 @@ function __usage() {
 
 # options -----------------------------------------------------------------------
 _c="default"
-_x=""
+_x="ls -lA xfer"
 if test $# -eq 0 ; then
   __usage
   exit 1
