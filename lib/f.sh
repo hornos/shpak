@@ -373,6 +373,31 @@ function sp_f_inm() {
   return 0
 }
 
+#/// \fn sp_f_sfx
+#/// \brief check prefix or suffix
+#///
+#/// \param 1 CHARACTER(*) string
+#/// \param 2 CHARACTER(*) prefix/suffix
+#/// \param 3 LOGICAL true:suffix false:prefix
+function sp_f_sfx() {
+  local _str="${1}"
+  local _sfx="${2:-.gz}"
+  local _end=${3:-true}
+  local _nfx=""
+
+  if ${_end} ; then
+    _nfx="${_str%%${_sfx}}"
+  else
+    _nfx="${_str##${_sfx}}"
+  fi
+  if test "${_nfx}" == "${_str}" ; then
+    echo "${_nfx}"
+    return 1
+  fi
+  echo "${_nfx}"
+  return 0
+}
+
 
 #f3--&7-9-V13------21-------------------42--------------------64------72
 # PYTHON
