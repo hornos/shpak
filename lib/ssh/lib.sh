@@ -194,8 +194,9 @@ function sp_f_sshpull() {
   local _h="${1:-default}"
   local _m="${2:-1}"
   local _s="${3}"
+  local _x=${4:-false}
   _m=$((_m%10+10))
-  sp_f_sshtx "${_h}" ${_m} "${_s}"
+  sp_f_sshtx "${_h}" ${_m} "${_s}" ${_x}
 }
 
 
