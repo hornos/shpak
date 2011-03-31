@@ -75,7 +75,9 @@ function sp_f_sshtx() {
   local _host="${1:-default}"
   local _m="${2:-1}"
   local _src="${3}"
+  local _xd=${4:-false}
   local _r=0
+  local _dst="./"
 
   # mode select -------------------------
   local _push=true
@@ -87,7 +89,9 @@ function sp_f_sshtx() {
   # init --------------------------------
   sp_f_ssh_init "${_host}"
 
-  local _dst="${sp_p_scp_local}"
+  if ${_xd} ; then
+    _dst="${sp_p_scp_local}"
+  fi
   local _src_url="${sp_g_ssh_user}@${sp_g_ssh_fqdn}:${sp_p_scp_remote}"
   if ${_push} ; then
     if ! test -r "${_src}" ; then
@@ -96,7 +100,9 @@ function sp_f_sshtx() {
     fi
   else
     local _src_url="${_src_url}/${_src}"
-    sp_f_mkdir "${sp_p_scp_local}"
+    if ${_xd} ; then
+      sp_f_mkdir "${sp_p_scp_local}"
+    fi
   fi
 
   # mode --------------------------------
