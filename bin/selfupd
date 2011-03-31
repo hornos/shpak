@@ -15,7 +15,7 @@ function local_update() {
 }
 
 function remote_update() {
-  sshcmd -m "${_m}" -x "selfupd" 2> /dev/null | awk "${sp_g_awkprn}"
+  sshcmd -m "${_m}" -x "selfupd"
 }
 
 function __usage() {

@@ -11,7 +11,7 @@ function remote_myqstat() {
     sp_g_cluster=""
     . ${_hi}
     if test "${sp_g_cluster}" = "${_c}" ; then
-      sshcmd -m "${_hibn}" -x "myqstat ${_start}" 2> /dev/null | awk "${sp_g_awkprn}"
+      sshcmd -m "${_hibn}" -x "myqstat ${_start}"
       echo
       echo
     fi
