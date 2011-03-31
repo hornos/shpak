@@ -18,7 +18,7 @@ function sp_f_clscmd() {
     sp_g_cluster=""
     . ${_hi}
     if test "${sp_g_cluster}" = "${_c}" ; then
-      sshcmd -m "${_hibn}" -x "${_cmd}" 2> /dev/null | awk "${sp_g_awkprn}"
+      sshcmd -m "${_hibn}" -x "${_cmd}"
       echo
       echo
     fi
