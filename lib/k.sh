@@ -96,7 +96,7 @@ sp_s_lck=".lck"
 ### MISC
 
 #/// \var sp_g_awkprn
-#/// \brief supress login messages
+#/// \brief supress login messages of sshcmd
 sp_g_awkprn='BEGIN{p=1} /^(-){70}/{if(!p) p=1; else p=0} {if(p) print}'
 
 #/// \var sp_g_debug

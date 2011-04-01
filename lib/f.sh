@@ -391,10 +391,8 @@ function sp_f_sfx() {
     _nfx="${_str##${_sfx}}"
   fi
   if test "${_nfx}" == "${_str}" ; then
-    echo "${_nfx}"
     return 1
   fi
-  echo "${_nfx}"
   return 0
 }
 
