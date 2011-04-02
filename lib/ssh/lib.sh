@@ -203,6 +203,7 @@ function sp_f_sshpull() {
 # ssh misc ----------------------------------------------------------------------
 function sp_f_sshkeychg() {
   local _host="${1:-default}"
+  local _mode="${2:-rsa}"
 
   sp_f_ssh_init "${_host}"
 
