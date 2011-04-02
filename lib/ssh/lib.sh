@@ -201,6 +201,19 @@ function sp_f_sshpull() {
 
 
 # ssh misc ----------------------------------------------------------------------
+function sp_f_sshkeychg() {
+  local _host="${1:-default}"
+
+  sp_f_ssh_init "${_host}"
+
+  cd "${sp_p_keys}"
+  local _key="${_host}.id_${_mode}"
+  if ! test -r "${_key}" ; then
+    return 1
+  fi
+  ${sp_b_sshkey} -p -f "${_key}"
+}
+
 function sp_f_sshkeygen() {
   local _host="${1:-default}"
   local _mode="${2:-rsa}"

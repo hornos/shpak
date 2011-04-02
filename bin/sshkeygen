@@ -10,6 +10,7 @@ function __usage() {
 
 # options -----------------------------------------------------------------------
 _m="default"
+_p=false
 
 if test $# -eq 0 ; then
   __usage
@@ -21,9 +22,10 @@ elif test $# -eq 1 ; then
   fi
   _m="${1}"
 else
-  while getopts hm: o; do
+  while getopts hpm: o; do
     case "$o" in
       m) _m=$OPTARG;;
+      p) _p=true;;
       h) __usage; exit 1;;
     esac
   done
@@ -31,4 +33,8 @@ fi
 
 # main --------------------------------------------------------------------------
 sp_f_ptt "${sp_g_bn}"
-sp_f_${sp_g_bn} "${_m}"
+if ${_p} ; then
+  sp_f_sshkeychg "${_m}"
+else
+  sp_f_${sp_g_bn} "${_m}"
+fi
