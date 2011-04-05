@@ -34,7 +34,7 @@ fi
 # main --------------------------------------------------------------------------
 sp_f_ptt "${sp_g_bn}"
 if ${_p} ; then
-  sp_f_sshkeychg "${_m}"
+  sp_f_sshchg "${_m}"
 else
   sp_f_${sp_g_bn} "${_m}"
 fi

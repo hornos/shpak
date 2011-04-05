@@ -15,12 +15,12 @@ function sp_f_ssh_init() {
 } # end sp_f_sshinit
 
 
-#/// \fn sp_f_sshlogin
+#/// \fn sp_f_sshto
 #/// \brief ssh login
 #///
 #/// \param 1 CHARACTER(*) host MID
 #/// \param 2 LOGICAL prevent lock checking
-function sp_f_sshlogin() {
+function sp_f_sshto() {
   local _host="${1:-default}"
   local _force="${2:-false}"
   local _scrsel="${3}"
@@ -68,7 +68,7 @@ function sp_f_sshlogin() {
     sp_f_rmlck "${_lck}"
   fi
   return ${_r}
-} # end sp_f_sshlogin
+}
 
 
 function sp_f_sshtx() {
@@ -201,7 +201,7 @@ function sp_f_sshpull() {
 
 
 # ssh misc ----------------------------------------------------------------------
-function sp_f_sshkeychg() {
+function sp_f_sshchg() {
   local _host="${1:-default}"
   local _mode="${2:-rsa}"
 
@@ -215,7 +215,7 @@ function sp_f_sshkeychg() {
   ${sp_b_sshkey} -p -f "${_key}"
 }
 
-function sp_f_sshkeygen() {
+function sp_f_sshkey() {
   local _host="${1:-default}"
   local _mode="${2:-rsa}"
   local _size="${3:-2048}"
@@ -243,10 +243,10 @@ function sp_f_sshkeygen() {
 
   echo ""
   return ${_r}
-} # end sp_f_sshkeygen
+}
 
 
-function sp_f_sshinfo() {
+function sp_f_sshinf() {
   local _host="${1:-default}"
 
   sp_f_ssh_init "${_host}"
