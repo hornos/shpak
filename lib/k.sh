@@ -41,7 +41,7 @@ sp_p_hosts="${sp_p_user}/hosts"
 #///
 #/// This directory contains queue descriptors (see examples therein)
 #/// You need this for batch processing
-sp_p_queues="${sp_p_user}/queues"
+sp_p_queues="${sp_p_user}/ques"
 
 #/// \var sp_p_keys
 #/// \brief shpak keys directory
@@ -55,7 +55,7 @@ sp_p_keys="${sp_p_user}/keys"
 #/// \brief shpak lock directory
 #///
 #/// This directory contains locks for various operations
-sp_p_lck="${sp_p_user}/lock"
+sp_p_lck="${sp_p_user}/lck"
 
 #/// \var sp_p_sshfs
 #/// \brief shpak remote directory
