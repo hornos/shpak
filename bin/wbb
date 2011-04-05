@@ -1,5 +1,5 @@
 #!/bin/bash
-#/// \file gbbl
+#/// \file wbb
 #/// \brief Google Translator Interface
 #///
 #/// \param [-h] LOGICAL show help
@@ -45,4 +45,3 @@ fi
 #f3--&7-9-V13------21-------------------42--------------------64------72
 ### MAIN
 sp_f_${sp_g_bn} "${_s}" "${_f}" "${_t}"
-exit $?

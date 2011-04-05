@@ -398,7 +398,7 @@ function sp_f_sshcmd() {
 }
 
 # encfs -------------------------------------------------------------------------
-function sp_f_efskeygen() {
+function sp_f_efskey() {
   local _host="${1:-default}"
   local _force="${2:-false}"
 
@@ -459,7 +459,7 @@ function sp_f_efskeygen() {
 
   echo ""
   return ${_r}
-} # end sp_f_efskeygen
+}
 
 
 function sp_f_efsmnt() {

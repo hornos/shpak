@@ -1,35 +1,36 @@
 #!/bin/bash
 
-# header ------------------------------------------------------------------------
+# header
+# ------------------------------------------------
 . $(dirname ${0})/../lib/h.sh
-
 sp_f_load cls
 
+# usage
+# ------------------------------------------------
 function __usage() {
   echo "Usage: ${sp_g_bn} -c cluster -s source [-t mode]"
+  echo "Mode: 1 - scp; 2 - tar; 3 - rsync"
 }
 
-# options -----------------------------------------------------------------------
+# options
+# ------------------------------------------------
 _c="default"
 _s=""
 _t=3
 
-if test $# -eq 0 ; then
+if test $# -lt 3 ; then
   __usage
   exit 1
-elif test $# -eq 1 ; then
-  __usage
-  exit 1
-else
-  while getopts c:s:h o; do
-    case "$o" in
-      c) _c=$OPTARG;;
-      s) _s=$OPTARG;;
-      t) _t=$OPTARG;;
-      h) __usage; exit 1;;
-    esac
-  done
 fi
+while getopts c:s:h o; do
+  case "$o" in
+    c) _c=$OPTARG;;
+    s) _s=$OPTARG;;
+    t) _t=$OPTARG;;
+    h) __usage; exit 1;;
+  esac
+done
 
-# main --------------------------------------------------------------------------
+# main
+# ------------------------------------------------
 sp_f_${sp_g_bn} "${_c}" "${_s}" ${_t}

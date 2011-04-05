@@ -15,7 +15,7 @@ function local_update() {
 }
 
 function remote_update() {
-  sshcmd -m "${_m}" -x "selfupd"
+  sshcmd -m "${_m}" -x "spupd"
 }
 
 function __usage() {
