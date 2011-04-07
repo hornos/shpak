@@ -559,5 +559,5 @@ function sp_f_uc() {
 #f3--&7-9-V13------21-------------------42--------------------64------72
 # OS
 function sp_f_osx() {
-  test "${OSTYPE##darwin}" = "${OSTYPE}"
+  test "${OSTYPE##darwin}" != "${OSTYPE}"
 }
