@@ -361,9 +361,9 @@ function sp_f_sshumnt() {
 
 
 function sp_f_sshlmnt() {
-  sp_f_ptt "${sp_g_bn}: remote volumes"
+  sp_f_ptt "${sp_g_bn}: sshfs volumes"
 
-  if test -z "${OSTYPE#darwin}"; then
+  if sp_f_osx ; then
     mount | grep sshfs | awk '{printf "%-32s => %s\n",$3,$1}'
   else
     mount | grep fusefs | awk '{printf "%-32s => %s\n",$3,$1}'
