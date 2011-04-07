@@ -555,3 +555,9 @@ function sp_f_lc() {
 function sp_f_uc() {
   sp_f__c "${*}"
 }
+
+#f3--&7-9-V13------21-------------------42--------------------64------72
+# OS
+function sp_f_osx() {
+  test "${OSTYPE##darwin}" = "${OSTYPE}"
+}

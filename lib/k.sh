@@ -51,6 +51,8 @@ sp_p_queues="${sp_p_user}/ques"
 #/// In case of encfs the key file (.encfs5) is used to encrypt the stream
 sp_p_keys="${sp_p_user}/keys"
 
+sp_p_icos="${sp_p_user}/icos"
+
 #/// \var sp_p_lock
 #/// \brief shpak lock directory
 #///

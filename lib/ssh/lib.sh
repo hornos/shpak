@@ -296,6 +296,7 @@ function sp_f_sshmnt() {
   local _dst="${sp_p_sshfs_local}"
 
   if ${_mnt} ; then
+    # mount
     if ! sp_f_mklck "${_lck}" ; then
       sp_f_err "${_host} is already mounted"
       return 1
@@ -313,6 +314,11 @@ function sp_f_sshmnt() {
     sp_f_mkdir "${_dst}"
 
     sp_f_stt "${_dst} -> ${_url}"
+    # osx specific
+    if sp_f_osx ; then
+      _opts="${_opts} -o volname=${sp_g_ssh_mid}"
+      _opts="${_opts} -o volicon=${sp_g_icos}/${sp_g_sshfs_ico}"
+    fi
     ${sp_b_sshmnt} ${_url} ${_dst} ${_opts} 2>/dev/null
     _r=$?
     if test ${_r} -gt 0 ; then
