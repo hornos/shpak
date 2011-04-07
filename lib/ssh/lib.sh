@@ -316,10 +316,11 @@ function sp_f_sshmnt() {
     sp_f_stt "${_dst} -> ${_url}"
     # osx specific
     if sp_f_osx ; then
-      _opts="${_opts} -o volname=${sp_g_ssh_user}@${sp_g_ssh_fqdn}"
-      local _ico="${sp_p_icos}/${sp_g_sshfs_ico}"
-      if test -r "${_ico}" ; then
-        _opts="${_opts} -o modules=volicon -o volicon=${_ico}"
+      local _vnam="${sp_g_ssh_mid}/${sp_g_ssh_user}@${sp_g_ssh_fqdn}"
+      _opts="${_opts} -o volname=${_vnam}"
+      local _vico="${sp_p_icos}/${sp_g_sshfs_ico}"
+      if test -r "${_vico}" ; then
+        _opts="${_opts} -o modules=volicon -o volicon=${_vico}"
       fi
     fi
     ${sp_b_sshmnt} ${_url} ${_dst} ${_opts} 2>/dev/null
