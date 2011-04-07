@@ -317,8 +317,9 @@ function sp_f_sshmnt() {
     # osx specific
     if sp_f_osx ; then
       _opts="${_opts} -o volname=${sp_g_ssh_mid}"
-      if test -n "${sp_g_sshfs_ico}" ; then
-        _opts="${_opts} -o modules=volicon -o volicon=${sp_p_icos}/${sp_g_sshfs_ico}"
+      local _ico="${sp_p_icos}/${sp_g_sshfs_ico}"
+      if test -r "${_ico}" ; then
+        _opts="${_opts} -o modules=volicon -o volicon=${_ico}"
       fi
     fi
     ${sp_b_sshmnt} ${_url} ${_dst} ${_opts} 2>/dev/null
