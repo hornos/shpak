@@ -23,11 +23,12 @@ elif test $# -eq 1 ; then
   fi
   _m="${1}"
 else
-  while getopts fhm: o; do
+  while getopts hm:fd o; do
     case "$o" in
+      h) __usage;;
       m) _m=$OPTARG;;
       f) _f=true;;
-      h) __usage;;
+      d) spg_debug=true;;
     esac
   done
 fi

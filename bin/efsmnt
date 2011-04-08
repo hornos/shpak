@@ -31,12 +31,13 @@ elif test $# -eq 1 ; then
   fi
   _m="${1}"
 else
-  while getopts lfhm: o; do
+  while getopts hlm:fd o; do
     case "$o" in
-      m) _m=$OPTARG;;
-      f) _f=true;;
       h) __usage; exit 1;;
       l) __list; exit 0;;
+      m) _m=$OPTARG;;
+      f) _f=true;;
+      d) sp_g_debug=true;;
     esac
   done
 fi

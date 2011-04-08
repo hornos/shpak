@@ -508,7 +508,7 @@ function sp_f_efsmnt() {
 
     sp_f_stt "${_dst} -> ${_url}"
     if ! ${sp_g_debug} ; then
-      ENCFS5_CONFIG="${_p_key}" ${sp_b_encfs} ${_opts} ${_url} ${_dst} # 2>/dev/null
+      ENCFS5_CONFIG="${_p_key}" ${sp_b_encfs} ${_opts} ${_url} ${_dst} 2>/dev/null
     else
       ENCFS5_CONFIG="${_p_key}" ${sp_b_encfs} ${_opts} ${_url} ${_dst}
     fi
