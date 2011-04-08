@@ -323,7 +323,12 @@ function sp_f_sshmnt() {
         _opts="${_opts} -o modules=volicon -o volicon=${_vico}"
       fi
     fi
-    ${sp_b_sshmnt} ${_url} ${_dst} ${_opts} 2>/dev/null
+    if ${sp_g_debug} ; then
+      sp_f_deb "${sp_b_sshmnt} ${_url} ${_dst} ${_opts}"
+      ${sp_b_sshmnt} ${_url} ${_dst} ${_opts}
+    else
+      ${sp_b_sshmnt} ${_url} ${_dst} ${_opts} 2>/dev/null
+    fi
     _r=$?
     if test ${_r} -gt 0 ; then
       sp_f_err "sshfs failure (might run sshreset)"
@@ -338,10 +343,11 @@ function sp_f_sshmnt() {
       sp_f_err "${_host} is not mounted"
       return 2
     fi
-    if ! ${sp_g_debug} ; then
-      ${sp_b_sshumnt} ${_dst} 2>/dev/null
-    else
+    if ${sp_g_debug} ; then
+      sp_f_deb "${sp_b_sshumnt} ${_dst}"
       ${sp_b_sshumnt} ${_dst}
+    else
+      ${sp_b_sshumnt} ${_dst} 2>/dev/null
     fi
     _r=$?
     if ! test ${_r} -gt 0 ; then
@@ -507,10 +513,11 @@ function sp_f_efsmnt() {
     sp_f_mkdir "${_url}"
 
     sp_f_stt "${_dst} -> ${_url}"
-    if ! ${sp_g_debug} ; then
-      ENCFS5_CONFIG="${_p_key}" ${sp_b_encfs} ${_opts} ${_url} ${_dst} 2>/dev/null
-    else
+    if ${sp_g_debug} ; then
+      sp_f_deb "ENCFS5_CONFIG=\"${_p_key}\" ${sp_b_encfs} ${_opts} ${_url} ${_dst}"
       ENCFS5_CONFIG="${_p_key}" ${sp_b_encfs} ${_opts} ${_url} ${_dst}
+    else
+      ENCFS5_CONFIG="${_p_key}" ${sp_b_encfs} ${_opts} ${_url} ${_dst} 2>/dev/null
     fi
     _r=$?
     if test ${_r} -gt 0 ; then
@@ -525,10 +532,11 @@ function sp_f_efsmnt() {
       sp_f_err "${_host} is not mounted"
       return 2
     fi
-    if ! ${sp_g_debug} ; then
-      ${sp_b_sshumnt} ${_dst} 2>/dev/null
-    else
+    if ${sp_g_debug} ; then
+      sp_f_deb "${sp_b_sshumnt} ${_dst}"
       ${sp_b_sshumnt} ${_dst}
+    else
+      ${sp_b_sshumnt} ${_dst} 2>/dev/null
     fi
     _r=$?
     if ! test ${_r} -gt 0 ; then

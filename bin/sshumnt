@@ -28,7 +28,7 @@ else
       h) __usage;;
       m) _m=$OPTARG;;
       f) _f=true;;
-      d) spg_debug=true;;
+      d) sp_g_debug=true;;
     esac
   done
 fi

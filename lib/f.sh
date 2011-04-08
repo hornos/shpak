@@ -26,6 +26,10 @@ function sp_f_err_cac() {
   sp_f_err "Cannot create $*"
 }
 
+function sp_f_deb() {
+  echo -e "\nDEBUG:\n$*\n"
+}
+
 #/// \fn sp_f_wrn
 #/// \brief print warning message
 #///
