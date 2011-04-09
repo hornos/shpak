@@ -1,5 +1,5 @@
 #f3--&7-9-V13------21-------------------42--------------------64------72
-#/// Credit to B. Aradi for the original versions
+#/// Credit to B. A. for the original versions
 
 #/// \fn sp_f_zbn
 #/// \brief basename with or without z suffix
@@ -9,9 +9,8 @@
 function sp_f_zbn() {
   local _bn=$(basename "${1}")
   local _zn=${2:-true}
-  if ${_zn} ; then 
-    _bn=${_bn%%${sp_s_z}}
-  fi
+  if ${_zn} ; then _bn=${_bn%%${sp_s_z}}; fi
+
   echo "${_bn}"
 }
 
@@ -29,17 +28,14 @@ function sp_f_zcpumv() {
  local _src_n=$(sp_f_zbn "${_src}")
  local _src_bn=$(sp_f_zbn "${_src}" false)
 
- if test -z "${_src}" || test -z "${_dir}" ; then
-   return ${_FALSE_}
- fi
- # copy
+ # copy ----------------------------------------------------------------
  cp "${_src}" "${_dir}"
  if test $? -gt 0 ; then
    sp_f_err "file $src can't be copied"
-   return ${_FALSE_}
+   return 10
  fi
 
- # uncompress
+ # uncompress ----------------------------------------------------------
  if test "${_src_bn}" != "${_src_n}" ; then
    ${sp_b_uz} "${_dir}/${_src_bn}"
  fi
@@ -51,13 +47,13 @@ function sp_f_zcpumv() {
    mv "${_p_src_n}" "${_p_dst}"
    if test $? -gt 0 ; then
      sp_f_err "file ${_p_src_n} can't be renamed"
-     return ${_FALSE_}
+     return 11
    fi
    chmod u+w "${_p_dst}"
  else
    chmod u+w "${_p_src_n}"
  fi
- return ${_TRUE_}
+ return 0
 }
 
 function sp_f_zcput() {
@@ -75,14 +71,11 @@ function sp_f_svzmv() {
   local _p_dst="${2}"
   local _p_sav="${_p_dst%%${sp_s_z}}${sp_s_oz}"
 
-  if test -z "${_rs}" || test -z "${_p_dst}" ; then
-    return ${_FALSE_}
-  fi
   if test -f "${_p_dst}" ; then
     mv -f "${_p_dst}" "${_p_sav}"
     if test $? -gt 0 ; then
       sp_f_err "file ${_p_dst} can't be renamed"
-      return ${_FALSE_}
+      return 20
     fi
   fi
 
@@ -91,15 +84,15 @@ function sp_f_svzmv() {
   cp -f "${_zrs}" "${_p_dst}"
   if test $? -gt 0 ; then
     sp_f_err "file ${_zrs} can't be copied"
-    return ${_FALSE_}
+    return 21
   fi
   chmod u-w "${_p_dst}"
   rm -f "${_zrs}"
   if test $? -gt 0 ; then
     sp_f_err "file ${_zrs} can't be deleted"
-    return ${_FALSE_}
+    return 22
   fi
-  return ${_TRUE_}
+  return 0
 }
 
 
