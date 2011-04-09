@@ -156,10 +156,10 @@ function sp_f_load() {
 function sp_f_lck() {
   local _lck="${1:-tmp}"
   local _p_lck="${sp_p_lck}/${_lck}${sp_s_lck}"
-  if test -w "${_p_lck}" ; then 
+  if test -w "${_p_lck}" ; then
     return ${_TRUE_}
   fi
-  return ${_FALSE}
+  return ${_FALSE_}
 }
 
 #/// \fn sp_f_mklck
