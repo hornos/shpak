@@ -1,33 +1,50 @@
 #/// \file f.sh
-#/// \brief shpak kernel functions
+#/// \brief shpak kernel
 #///
-#/// Defines common kernel functions
-
 #f3--&7-9-V13------21-------------------42--------------------64------72
+#f3 SHPAK KERNEL V1.0
+#f3 WHERE WE HAVE BASH WE HAVE EVERYTHING
+#f3
+#f3--&7-9-V13------21-------------------42--------------------64------72
+
+_TRUE_=0
+_FALSE_=1
+
 #/// \var sp_g_libs
 #/// \brief internal array for loaded libraries
 sp_g_libs=()
 
 
-#f3--&7-9-V13------21-------------------42--------------------64------72
 #/// \fn sp_f_err
 #/// \brief print error message
 #///
 #/// \param * CHARACTER(*) error text
 function sp_f_err() {
-  echo -e "\nERROR ($(basename "${0}")) $*\n" >&2
+  echo -e "\nERROR ($(basename "${0}")) $*" >&2
 }
 
+#/// \fn sp_f_err_fnf
+#/// \brief print error message
+#///
+#/// \param * CHARACTER(*) error text
 function sp_f_err_fnf() {
   sp_f_err "Not found $*"
 }
 
+#/// \fn sp_f_err_cac
+#/// \brief print error message
+#///
+#/// \param * CHARACTER(*) error text
 function sp_f_err_cac() {
   sp_f_err "Cannot create $*"
 }
 
-function sp_f_deb() {
-  echo -e "\nDEBUG:\n$*\n"
+#/// \fn sp_f_err_cad
+#/// \brief print error message
+#///
+#/// \param * CHARACTER(*) error text
+function sp_f_err_cad() {
+  sp_f_err "Cannot delete $*"
 }
 
 #/// \fn sp_f_wrn
@@ -36,10 +53,14 @@ function sp_f_deb() {
 #/// \param * CHARACTER(*) warning text
 function sp_f_wrn() {
   if ${sp_g_debug} ; then
-    echo -e "\nWARN ($(basename "${0}")) $*\n" >&2
+    echo -e "\nWARN ($(basename "${0}")) $*" >&2
   fi
 }
 
+#/// \fn sp_f_wrn_fnf
+#/// \brief print warning message
+#///
+#/// \param * CHARACTER(*) warning text
 function sp_f_wrn_fnf() {
   sp_f_wrn "Not found $*"
 }
@@ -49,7 +70,7 @@ function sp_f_wrn_fnf() {
 #///
 #/// \param * CHARACTER(*) text
 function sp_f_msg() {
-  echo -e "\n${*}\n" >&2
+  echo -e "\n${*}" >&2
 }
 
 #/// \fn sp_f_inarr
@@ -60,9 +81,11 @@ function sp_f_msg() {
 function sp_f_inarr() {
   local _k
   for _k in ${2} ; do
-    if test "${_k}" = "${1}" ; then return 0; fi
+    if test "${_k}" = "${1}" ; then 
+      return ${_TRUE_}
+    fi
   done
-  return 1
+  return ${_FALSE_}
 }
 
 
@@ -115,7 +138,7 @@ function sp_f_load() {
   . "${_p_lib}"
   local _nx=${#sp_g_libs[@]}
   sp_g_libs[${_nx}]="${_lib}"
-  return 0
+  return ${_TRUE_}
 } # end sp_f_load
 
 
@@ -131,14 +154,12 @@ function sp_f_load() {
 #///   this part runs when the LOCK is there
 #/// fi
 function sp_f_lck() {
-  if test -z "${1}" ; then return 1; fi
-
-  local _lck="${1}"
+  local _lck="${1:-tmp}"
   local _p_lck="${sp_p_lck}/${_lck}${sp_s_lck}"
   if test -w "${_p_lck}" ; then 
-    return 0
+    return ${_TRUE_}
   fi
-  return 2
+  return ${_FALSE}
 }
 
 #/// \fn sp_f_mklck
@@ -151,16 +172,15 @@ function sp_f_lck() {
 #///   this part runs when LOCK is created
 #/// fi
 function sp_f_mklck() {
-  if test -z "${1}" ; then return 1; fi
-
-  local _lck="${1}"
+  local _lck="${1:-tmp}"
   local _p_lck="${sp_p_lck}/${_lck}${sp_s_lck}"
-  if sp_f_lck "${_lck}" ; then return 2; fi
-
+  if sp_f_lck "${_lck}" ; then
+    return ${_FALSE_}
+  fi
   local _now=`date +"%Y-%m-%d[%H:%M:%S]"`
-  echo "_lck=\"${_lck}\""   >  "${_p_lck}"
-  echo "_date=\"${_now}\""  >> "${_p_lck}"
-  return 0
+  echo "__lck=\"${_lck}\""   >  "${_p_lck}"
+  echo "__date=\"${_now}\""  >> "${_p_lck}"
+  return ${_TRUE_}
 }
 
 #/// \fn sp_f_rmlck
@@ -173,16 +193,13 @@ function sp_f_mklck() {
 #///   this part runs when LOCK is deleted
 #/// fi
 function sp_f_rmlck() {
-  if test -z "${1}" ; then return 1; fi
-
-  local _lck="${1}"
+  local _lck="${1:-tmp}"
   local _p_lck="${sp_p_lck}/${_lck}${sp_s_lck}"
-
   if sp_f_lck "${_lck}" ; then
     rm -f "${_p_lck}"
     return $?
   fi
-  return 2
+  return ${_FALSE_}
 }
 
 
@@ -193,9 +210,7 @@ function sp_f_rmlck() {
 #///
 #/// \param 1 CHARACTER(*) name of the directory
 function sp_f_mkdir() {
-  if test -z "${1}" ; then return 1; fi
-
-  local _dir="${1}"
+  local _dir="${1:-tmp}"
   if ! test -d "${_dir}" ; then
     mkdir -p "${_dir}"
     local _r=$?
@@ -204,7 +219,7 @@ function sp_f_mkdir() {
     fi
     return ${_r}
   fi
-  return 0
+  return ${_FALSE_}
 }
 
 #/// \fn sp_f_rmdir
@@ -212,18 +227,16 @@ function sp_f_mkdir() {
 #///
 #/// \param 1 CHARACTER(*) name of the directory
 function sp_f_rmdir() {
-  if test -z "${1}" ; then return 1; fi
-
   local _dir="${1}"
   if test -d "${_dir}" ; then
     rm -fR "${_dir}"
     local _r=$?
     if test ${_r} -gt 0 ; then
-      sp_f_err "directory ${_dir} can't be deleted"
+      sp_f_err_cad "${_dir}"
     fi
     return ${_r}
   fi
-  return 0
+  return ${_FALSE_}
 }
 
 
@@ -235,15 +248,13 @@ function sp_f_rmdir() {
 #/// \param 1 CHARACTER(*) name of the link (what)
 #/// \param 2 CHARACTER(*) target (where)
 function sp_f_mklnk() {
-  if test -z "${1}" || test -z "${2}" ; then return 1; fi
-
-  local _src="${1}"
-  local _dst="${2}"
+  local _src="${1:-lnk}"
+  local _dst="${2:-tmp}"
   if ! test -L "${_dst}" ; then
     ln -s "${_src}" "${_dst}"
     return $?
   fi
-  return 0
+  return ${_FALSE_}
 }
 
 #/// \fn sp_f_rmlnk
@@ -251,14 +262,12 @@ function sp_f_mklnk() {
 #///
 #/// \param 1 CHARACTER(*) name of the link
 function sp_f_rmlnk() {
-  if test -z "${1}" ; then return 1; fi
-  local _lnk="${1}"
-
+  local _lnk="${1:-lnk}"
   if test -L "${_lnk}" ; then
     rm -f "${_lnk}"
     return $?
   fi
-  return 0
+  return ${_FALSE_}
 }
 
 
@@ -272,7 +281,7 @@ function sp_f_rmlnk() {
 function sp_f_yesno() {
   local _msg="${1:-Answer}"
   local _flt=${2:-3}
-  local _ans
+  local _ans=0
 
   while true ; do
     echo -en "\n${_msg} (y / n / q) [${_flt}]: "
@@ -280,11 +289,11 @@ function sp_f_yesno() {
     _ans=$(sp_f_lc ${_ans})
     case "${_ans}" in
       "y" | "case" | "yes" )
-        return 0
+        return ${_TRUE_}
       ;;
       "n" | "no" | "q"  )
         echo -e "Abort\n"
-        return 1
+        return ${_FALSE_}
       ;;
       *)
         echo -e "Invalid\n"
@@ -292,7 +301,7 @@ function sp_f_yesno() {
       ;;
     esac
     if test ${_flt} -lt 1 ; then
-      return 2
+      return ${_FALSE_}
     fi
   done
 }
@@ -356,9 +365,10 @@ function sp_f_ptt() {
 function sp_f_ird() {
   local _s="${1}"
   local _p="${2:-<}"
-  if test "${_s:0:1}" = "${_p}" ; then return 0; fi
-
-  return 1
+  if test "${_s:0:1}" = "${_p}" ; then
+    return ${_TRUE_}
+  fi
+  return ${_FALSE_}
 }
 
 #/// \fn sp_f_inm
@@ -374,7 +384,6 @@ function sp_f_inm() {
   else
     echo "${_s}"
   fi
-  return 0
 }
 
 #/// \fn sp_f_sfx
@@ -394,10 +403,10 @@ function sp_f_sfx() {
   else
     _nfx="${_str##${_sfx}}"
   fi
-  if test "${_nfx}" == "${_str}" ; then
-    return 1
+  if test "${_nfx}" != "${_str}" ; then
+    return ${_TRUE_}
   fi
-  return 0
+  return ${_FALSE_}
 }
 
 
