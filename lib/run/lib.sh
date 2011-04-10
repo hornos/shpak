@@ -226,12 +226,11 @@ function sp_f_runprg() {
   _r=$?
 
   sp_f_stt "Temporary directory in case of"
-  local _oemsg=""
+  local _oemsg=" error: not saved   success: saved"
   case "${ONERR}" in 
     "clean") _oemsg=" error: cleaned     success: saved";;
     "save")  _oemsg=" error: saved       success: saved";;
     "leave") _oemsg=" error: not saved   success: not saved";;
-    "*")     _oemsg=" error: not saved   success: saved";;
   esac
   echo "${_oemsg}"
 
