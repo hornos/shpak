@@ -12,8 +12,7 @@ function __usage() {
 }
 
 function __list() {
-  # sp_f_efslmnt
-  echo "Not implemented"
+  sp_f_efslmnt
 }
 
 # options

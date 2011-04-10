@@ -368,13 +368,8 @@ function sp_f_sshumnt() {
 
 function sp_f_sshlmnt() {
   sp_f_ptt "${sp_g_bn}: sshfs volumes"
-
-  if sp_f_osx ; then
-    mount | grep sshfs | awk '{printf "%-32s => %s\n",$3,$1}'
-  else
-    mount | grep fusefs | awk '{printf "%-32s => %s\n",$3,$1}'
-  fi
-  return 0
+  mount | grep fusefs | grep -v encfs | awk '{printf "%-32s => %s\n",$3,$1}'
+  return ${_TRUE_}
 }
 
 
@@ -553,4 +548,11 @@ function sp_f_efsumnt() {
   local _host="${1:-default}"
   local _force="${2:-false}"
   sp_f_efsmnt "${_host}" "${_force}" false
+}
+
+
+function sp_f_efslmnt() {
+  sp_f_ptt "${sp_g_bn}: encfs volumes"
+  mount | grep fusefs | grep encfs | awk '{printf "%-32s => %s\n",$3,$1}'
+  return ${_TRUE_}
 }
