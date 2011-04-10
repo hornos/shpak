@@ -553,6 +553,6 @@ function sp_f_efsumnt() {
 
 function sp_f_efslmnt() {
   sp_f_ptt "${sp_g_bn}: encfs volumes"
-  mount | grep fusefs | grep encfs | awk '{printf "%-32s => %s\n",$3,$1}'
+  mount | grep fusefs | grep encfs | awk '{printf "%-32s\n",$3}'
   return ${_TRUE_}
 }

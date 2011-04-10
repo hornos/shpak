@@ -13,6 +13,7 @@ function __usage() {
 
 function __list() {
   sp_f_efslmnt
+  echo
 }
 
 # options
