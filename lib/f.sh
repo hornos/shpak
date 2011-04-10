@@ -26,6 +26,10 @@ function sp_f_err() {
   echo -e "\nERROR ($(basename "${0}")) $*\n" >&2
 }
 
+function sp_f_deb() {
+  echo -e "\n$*\n"
+}
+
 function sp_f_err_fnf() {
   sp_f_err "Not found $*"
 }
