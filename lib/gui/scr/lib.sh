@@ -53,7 +53,7 @@ function sp_f_scr() {
   if test $? -lt 10 ; then
     sp_f_yesno "Open a new screen"
     if test $? -gt 0 ; then
-      return 1
+      return ${_FALSE_}
     fi
     sp_f_scrpd
     return $?
@@ -84,7 +84,7 @@ function sp_f_scr() {
     case "${_ans}" in
       "q" )
         echo -e "Abort\n"
-        return 1
+        return ${_FALSE_}
       ;;
       "n" )
         sp_f_scrpd
@@ -109,7 +109,7 @@ function sp_f_scr() {
       ;;
     esac
     if test ${_flt} -lt 1 ; then
-      return 1
+      return ${_FALSE_}
     fi
   done
 }

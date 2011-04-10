@@ -82,7 +82,7 @@ function sp_f_dtxt() {
   local _c=""
   _c=$(sp_f_aa "${sp_g_edb}" "${_k}")
   if test $? -gt 0 ; then
-    return 1
+    return ${_FALSE_}
   fi
   for((i=0;i<_s;++i)) ; do
     sp_f_btxt "${_c}"

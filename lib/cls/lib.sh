@@ -39,7 +39,7 @@ function sp_f_clspush() {
   local _hibn
   if ! test -r "${_s}" ; then
     sp_f_err "missing: ${_s}"
-    return 10
+    return ${_FALSE_}
   fi
   for _hi in ${sp_p_hosts}/* ; do
     _hibn=$(basename ${_hi})

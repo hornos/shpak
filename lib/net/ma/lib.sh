@@ -12,7 +12,7 @@ function sp_f_mail() {
   local _msg="${3}"
 
   if test -z "${_sub}" || test -z "${_msg}" || test -z "${_mto}" ; then
-    return 1
+    return ${_FALSE_}
   fi
 
   sp_f_stt "Sending mail:"

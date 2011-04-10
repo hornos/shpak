@@ -30,8 +30,8 @@ sp_f_wbb() {
   | ${sp_b_sede} -n 's/[[:alnum:]": {}]+"translatedText":"([^"]+)".*/\1/p' \
   | sed s/\u0026//g | sed s/\\\\quot\;//g )
   if test "${_r}" = "" ; then
-    return 1
+    return ${_FALSE_}
   fi
   echo $(sp_f_lc "${_r}")
-  return 0
+  return ${_TRUE_}
 }
