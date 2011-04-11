@@ -1,31 +1,40 @@
-               __                 __    __              __
-    ____ ___  / /_  ____  _____  / /_  / /___  ____ _  / /_  __  __
-   / __ `__ \/ __ \/ __ \/ ___/ / __ \/ / __ \/ __ `/ / __ \/ / / /
-  / / / / / / / / / /_/ / /___ / /_/ / / /_/ / /_/ / / / / / /_/ /
- /_/ /_/ /_/_/ /_/ .___/\____/o_.___/_/\____/\__, /o/_/ /_/\__,_/
-                /_/                         /____/P/AX NOBISCUM/
-          __                __
-    _____/ /_  ____  ____ _/ /__
-   / ___/ __ \/ __ \/ __ `/ //_/
-  (__  ) / / / /_/ / /_/ / ,<
- /____/_/ /_/ .___/\__,_/_/|_|
-           /_/
+=========
+shpak 1.X
+=========
 
- +--------------------------------------------------------------------+
+**shpak** is a general purpose shell library package intended for 
+hardcore bash users. It is not perfect nor optimal, it is just 
+my collection of useful bash functions I use everyday on some 
+machines. It sports a simple library mechnism to load functions 
+on the-fly.
 
- Copyright (C) Tom Hornos (tom.hornos@gmail.com)
 
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- any later version.
+Example shpak script
+====================
+#!/bin/bash
+. $(dirname ${0})/../lib/h.sh
+sp_f_load gui/scr
+sp_f_stt "Select screen"
+sp_f_scr
 
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- GNU General Public License for more details.
+Install
+=======
+1. Clone the github repo to your $HOME
+2. Put $HOME/shapk/bin to $PATH
 
- You should have received a copy of the GNU General Public License
- along with this program. If not, see http://www.gnu.org/licenses
+License
+=======
+Copyright (C) Tom Hornos (tom.hornos@gmail.com)
 
- +--------------------------------------------------------------------+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see http://www.gnu.org/licenses
