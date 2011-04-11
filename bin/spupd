@@ -15,8 +15,8 @@ function local_update() {
   for _ip in shpak; do
     _p_loc="${HOME}/${_ip}"
     if test -d ${_p_loc} ; then
-      chmod g-rwx "${_p_loc}"
-      chmod o-rwx "${_p_loc}"
+      chmod -R g-rwx "${_p_loc}"
+      chmod -R o-rwx "${_p_loc}"
     fi
   done
 }
