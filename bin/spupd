@@ -5,11 +5,18 @@
 
 # functions ---------------------------------------------------------------------
 function local_update() {
-  local p_loc=""
-  for ip in shpak qcpak pypak; do
-    p_loc="${HOME}/${ip}"
-    if test -d ${p_loc} ; then
-      cd ${p_loc}; getit
+  local _p_loc=""
+  for _ip in shpak qcpak pypak; do
+    _p_loc="${HOME}/${_ip}"
+    if test -d ${_p_loc} ; then
+      cd ${_p_loc}; getit
+    fi
+  done
+  for _ip in shpak; do
+    _p_loc="${HOME}/${_ip}"
+    if test -d ${_p_loc} ; then
+      chmod g-rwx "${_p_loc}"
+      chmod o-rwx "${_p_loc}"
     fi
   done
 }
