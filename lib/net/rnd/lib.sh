@@ -57,11 +57,17 @@ function sp_f_rstr() {
   fi
   # string from a multi-query
   local _il=$((${_len}/${sp_g_rnd_msl}))
+  local _ir=$((${_il}+1))
   local _rl=$((${_len}%${sp_g_rnd_msl}))
-  echo "Required random.org queries: $((${_il}+1))"
+  local _rq=$(sp_f_rquo)
+  if test ${_rq} -lt ${_ir} ; then
+    sp_f_err "Not enough quota"
+    return ${_FALSE_}
+  fi
+  echo "Required random.org queries: ${_ir}"
+  echo "Curent quota: ${_rq}"
   sp_f_yesno "Continue?"
   if test $? -gt 0 ; then
-    echo "2"
     return ${_FALSE_}
   fi
   local _rstr=""
@@ -71,7 +77,7 @@ function sp_f_rstr() {
   done
   # residue
   _rstr="${_rstr}$(sp_f__rstr ${_rl} ${_num} ${_dig} ${_ual} ${_lal} ${_uni} ${_x} 2> /dev/null)"
-  echo -e "\n${_rstr}\n"
+  echo -e "${_rstr}"
 }
 
 function sp_f_rquo() {

@@ -1,0 +1,27 @@
+#!/bin/bash
+### BEGIN HEADER
+. $(dirname ${0})/../lib/h.sh
+# load libraries
+sp_f_load net/rnd
+
+function __usage() {
+  echo "Usage: ${sp_g_bn} -l length"
+}
+
+_l=20
+
+if test "${1}" = "-h" ; then
+  __usage
+  return ${_FALSE_}
+else
+  _l=${1}
+fi
+
+while getopts l:h opt; do
+  case "$opt" in
+    h) __usage; exit 1;;
+    l) _l=$OPTARG;;
+  esac
+done
+
+sp_f_rstr ${_l}
