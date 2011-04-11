@@ -10,13 +10,13 @@ function sp_f_vasp_check() {
   if test "${GW}" = "on" ; then
     _sarr="${_sarr} ${sp_s_qkpts}"
   fi
-      
-  # check main inputs  
+
+  # check main inputs
   for _s in  ${_sarr}; do
     _p_if="${INPUTDIR}/${_inp}${_s}"
     if ! test -r "${_p_if}" ; then
-      sp_f_err "missing: ${_p_if}"
-      return 35
+      sp_f_err_fnf "${_p_if}"
+      return ${_FALSE_}
     fi
   done
 
@@ -24,14 +24,14 @@ function sp_f_vasp_check() {
   for _lib in ${LIBS}; do
     _p_lib="${LIBDIR}/${_lib}/POTCAR${sp_s_z}"
     if ! test -f "${_p_lib}" ; then
-      sp_f_err "missing: ${_p_lib}"
-      return 31
+      sp_f_err_fnf "${_p_lib}"
+      return ${_FALSE_}
     fi
     if test "${GW}" = "on" ; then
       _p_lib="${LIBDIR}/${_lib}/POTSIC${sp_s_z}"
       if ! test -f "${_p_lib}" ; then
-        sp_f_err "missing: ${_p_lib}"
-        return 31
+        sp_f_err_fnf "${_p_lib}"
+        return ${_FALSE_}
       fi
     fi
   done
@@ -42,8 +42,8 @@ function sp_f_vasp_check() {
   if test ${_r} -gt 0 ; then
     return ${_r}
   fi
-  
-  return 0
+
+  return ${_TRUE_}
 }
 
 function sp_f_vasp_prepare() {
@@ -54,9 +54,11 @@ function sp_f_vasp_prepare() {
   local _p_sdir="${STAGEDIR}"
   local _isd=false
 
-  if sp_f_ird "${WORKDIR}" "@" ; then _isd=true; fi
+  if sp_f_ird "${WORKDIR}" "@" ; then 
+    _isd=true
+  fi
 
-  # prepare inputs --------------------------------------------------------------
+  # prepare inputs
   _p_if="${INPUTDIR}/${_inp}${sp_s_vcntl}"
   _dst="INCAR"
   sp_f_run_bcast ${_isd} "${_p_wdir}" "${_p_sdir}" "${_p_if}" "${_dst}"
@@ -87,18 +89,18 @@ function sp_f_vasp_prepare() {
     fi
   fi
 
-  # prepare libs ----------------------------------------------------------------
+  # prepare libs
   if ! test -d "${LIBDIR}" ; then
-    sp_f_wrn "directory ${LIBDIR} doesn't exist"
+    sp_f_wrn "does not exist ${LIBDIR}"
   fi
 
-  # begin bcast -------------------------
+  # begin bcast
   local _lib=""
   local _p_lib=""
   local _p_dst=""
   local _p_idir="${INPUTDIR}"
   if ! test -z "${LIBS}" ; then
-    # begin POTCAR ----------------------
+    # begin POTCAR
     _p_if="${_p_idir}/input.POTCAR"
     # clean
     if test -f "${_p_if}" ; then
@@ -109,15 +111,15 @@ function sp_f_vasp_prepare() {
       # build potcar
       _p_lib="${LIBDIR}/${_lib}/POTCAR${sp_s_z}"
       if ! test -f "${_p_lib}" ; then
-        sp_f_err "projectorfile ${_p_lib} not found"
-        return 31
+        sp_f_err_fnf "${_p_lib}"
+        return ${_FALSE_}
       fi
       _dst="${_lib}.POTCAR"
       sp_f_zcpumv "${_p_lib}" "${_p_idir}" "${_dst}"
       _p_dst="${_p_idir}/${_dst}"
       if ! test -f "${_p_dst}" ; then
-        sp_f_err "projectorfile ${_p_dst} not found"
-        return 32
+        sp_f_err_fnf "${_p_dst}"
+        return ${_FALSE_}
       fi
       cat "${_p_dst}" >> "${_p_if}"
       rm -f "${_p_dst}"
@@ -130,10 +132,10 @@ function sp_f_vasp_prepare() {
     fi
     # clean
     rm -f "${_p_if}"
-    # end POTCAR ------------------------
+    # end POTCAR
 
     # build potsic for GW calcs
-    # begin POTSIC ----------------------
+    # begin POTSIC
     if test "${GW}" = "on" ; then
       _p_if="${_p_idir}/input.POTSIC"
       # clean
@@ -144,15 +146,15 @@ function sp_f_vasp_prepare() {
       for _lib in ${LIBS}; do
         _p_lib="${LIBDIR}/${_lib}/POTSIC${sp_s_z}"
         if ! test -f "${_p_lib}" ; then
-          sp_f_err "projectorfile ${_p_lib} not found"
-          return 33
+          sp_f_err_fnf "${_p_lib}"
+          return ${_FALSE_}
         fi
         _dst="${_lib}.POTSIC"
         sp_f_zcpumv "${_p_lib}" "${_p_idir}" "${_dst}"
         _p_dst="${_p_idir}/${_dst}"
         if ! test -f "${_p_dst}" ; then
-          sp_f_err "projectorfile ${_p_dst} not found"
-          return 34
+          sp_f_err_fnf "${_p_dst}"
+          return ${_FALSE_}
         fi
         cat "${_p_dst}" >> "${_p_if}"
         rm -f "${_p_dst}"
@@ -166,31 +168,29 @@ function sp_f_vasp_prepare() {
       # clean
       rm -f "${_p_if}"
     fi # end GW
-    # end POTSIC ------------------------
+    # end POTSIC
   fi # end LIBS
-  # end bcast ---------------------------
+  # end bcast
 
-  # prepare others --------------------------------------------------------------
+  # prepare others
   local _pfx="${MAININPUT}."
   local _oin=""
   for _oin in ${OTHERINPUTS}; do
     _p_if="${INPUTDIR}/${_oin}"
     if ! test -f "${_p_if}" ; then
-      sp_f_err "file ${_p_if} not found"
-      return 35
+      sp_f_err_fnf "${_p_if}"
+      return ${_FALSE_}
     fi
     _dst=${_oin##${_pfx}}
     _dst=${_dst%%${sp_s_z}}
      sp_f_run_bcast ${_isd} "${_p_wdir}" "${_p_sdir}" "${_p_if}" "${_dst}"
   done
-  return 0
+  return ${_TRUE_}
 }
-
 
 function sp_f_vasp_finish() {
-  return 0
+  return ${_TRUE_}
 }
-
 
 function sp_f_vasp_collect() {
   local _inp=$(sp_f_inm "${MAININPUT}")
@@ -220,7 +220,7 @@ function sp_f_vasp_collect() {
     done
   fi
 
-  return 0
+  return ${_TRUE_}
 }
 
 function sp_f_vasp_summary() {
@@ -232,8 +232,8 @@ function sp_f_vasp_summary() {
 
   local _p_out="${_inp}.OSZICAR${sp_s_z}"
   if ! test -r "${_p_out}" ; then
-    sp_f_err "missing: ${_p_out}"
-    return 10
+    sp_f_err_fnf "${_p_out}"
+    return ${_FALSE_}
   fi
   local _etot=$(${sp_b_zc} "${_p_out}" | \
                 awk 'BEGIN{etot=0.0}

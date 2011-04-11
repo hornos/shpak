@@ -11,7 +11,7 @@ function sp_f_sge() {
 
   if test "${_mode}" = "login" ; then
     sp_f_err "Login is not implemented"
-    return 1
+    return ${_FALSE_}
   fi
 
   echo "#${sp_g_qsub} -N ${NAME}"                     >> "${_p_qbat}"

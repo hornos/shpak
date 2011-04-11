@@ -54,7 +54,7 @@ function sp_f_slurm() {
       _qlogin="${_qlogin} --account=${QUEUE_PROJECT}"
     fi
     echo "${_qlogin}" >> "${_p_qbat}"
-    return 
+    return ${_TRUE_}
   fi # end login
 
   # submit

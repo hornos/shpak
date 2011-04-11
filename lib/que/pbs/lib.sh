@@ -50,7 +50,7 @@ function sp_f_pbs() {
       _qlogin="${_qlogin} -q ${QUEUE_QUEUE}"
     fi
     echo "${_qlogin}" >> "${_p_qbat}"
-    return
+    return ${_TRUE_}
   fi
 
   # submit

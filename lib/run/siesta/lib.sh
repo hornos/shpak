@@ -4,10 +4,10 @@ function sp_f_siesta_check() {
   local _r
 
   if ! test -r "${_p_if}" ; then
-    sp_f_err "missing: ${_p_if}"
-    return 30
+    sp_f_err_fnf "${_p_if}"
+    return ${_FALSE_}
   fi
-  
+
   sp_f_run_check_libs
   _r=$?
   if test ${_r} -gt 0 ; then
@@ -20,7 +20,7 @@ function sp_f_siesta_check() {
     return ${_r}
   fi
 
-  return 0
+  return ${_TRUE_}
 }
 
 function sp_f_siesta_prepare() {
@@ -32,11 +32,13 @@ function sp_f_siesta_prepare() {
   local _p_sdir="${STAGEDIR}"
   local _isd=false
 
-  if sp_f_ird "${WORKDIR}" "@" ; then _isd=true; fi
+  if sp_f_ird "${WORKDIR}" "@" ; then
+    _isd=true
+  fi
 
   _inp=${_inp%%${sp_s_scntl}}
 
-  # prepare inputs --------------------------------------------------------------
+  # prepare inputs
   _dst="${_inp}${sp_s_scntl}"
   _p_if="${INPUTDIR}/${_dst}"
   sp_f_run_bcast ${_isd} "${_p_wdir}" "${_p_sdir}" "${_p_if}" "${_dst}"
@@ -44,21 +46,21 @@ function sp_f_siesta_prepare() {
     return $?
   fi
 
-  # prepare libs ----------------------------------------------------------------
+  # prepare libs
   if ! test -d "${LIBDIR}" ; then
     sp_f_wrn "directory ${LIBDIR} doesn't exist"
   fi
   sp_f_run_prepare_libs ${_isd} "${_p_wdir}" "${_p_sdir}"
 
-  # prepare others --------------------------------------------------------------
+  # prepare others
   sp_f_run_prepare_others ${_isd} "${_p_wdir}" "${_p_sdir}"
 
-  return 0
+  return ${_TRUE_}
 }
 
 
 function sp_f_siesta_finish() {
-  return 0
+  return ${_TRUE_}
 }
 
 

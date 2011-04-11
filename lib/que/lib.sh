@@ -22,8 +22,8 @@ function sp_f_jobsub() {
   if test -f "${_ji}" ; then
     . ${_ji}
   else
-    sp_f_err "not found ${_ji}"
-    return 1
+    sp_f_err_fnf "${_ji}"
+    return ${_FALSE_}
   fi
 
 # MODE: summary
@@ -39,8 +39,8 @@ function sp_f_jobsub() {
   if test -r "${_p_qi}" ; then
     . ${_p_qi}
   else
-    sp_f_err "not found ${_p_qi}"
-    return 2
+    sp_f_err_fnf "${_p_qi}"
+    return ${_FALSE_}
   fi
 
 # MODE: submit / login
@@ -83,12 +83,12 @@ function sp_f_jobsub() {
 # common checks
   if test -z "${COMMAND}" ; then
     sp_f_err "no command"
-    return 10
+    return ${_FALSE_}
   fi
 
   if test -z "${NAME}" ; then
     sp_f_err "no job name"
-    return 11
+    return ${_FALSE_}
   fi
 
 # scheduler specific
