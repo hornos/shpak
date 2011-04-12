@@ -108,12 +108,20 @@ function sp_f_load() {
   local _p_lib="${_sp_p_lib}/${_lib}/lib${sp_s_lib}"
   if ! test -r "${_p_lib}" ; then
     sp_f_err_fnf "${_p_lib}";
-    if ${_isex} ; then exit 2; else return 2; fi
+    if ${_isex} ; then
+      exit ${_FALSE_}
+    else
+      return ${_FALSE_}
+    fi
   fi
   # check loaded libraries
   if sp_f_inarr "${_lib}" ${sp_g_libs} ; then
     sp_f_err "loaded ${_lib}"
-    if ${_isex} ; then exit 3; else return 3; fi
+    if ${_isex} ; then
+      exit ${_FALSE_}
+    else
+      return ${_FALSE_}
+    fi
   fi
   # load the library config
   local _p_cfg="${_sp_p_lib}/${_lib}/lib${sp_s_cfg}"
@@ -579,4 +587,17 @@ function sp_f_uc() {
 # OS
 function sp_f_osx() {
   test "${OSTYPE##darwin}" != "${OSTYPE}"
+}
+
+#f3--&7-9-V13------21-------------------42--------------------64------72
+# MID reader
+#/// \fn sp_f_mid_init
+#/// \brief common init
+function sp_f_mid_init() {
+  local _p_host="${sp_p_hosts}/${1}"
+  if ! test -r "${_p_host}" ; then
+    sp_f_err_fnf "${_p_host}"
+    exit ${_FALSE_}
+  fi
+  . "${_p_host}"
 }
