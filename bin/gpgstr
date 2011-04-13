@@ -1,0 +1,34 @@
+#!/bin/bash
+### BEGIN HEADER
+. $(dirname ${0})/../lib/h.sh
+# load libraries
+sp_f_load enc/gpg
+
+function __usage() {
+  echo "Usage: ${sp_g_bn} -d -s string"
+}
+
+_s="secret"
+_d=false
+
+if test "${1}" = "-h" ; then
+  __usage
+  return ${_FALSE_}
+fi
+if test -n "${1}" ; then
+  _s=${1}
+fi
+
+while getopts s:dh opt; do
+  case "$opt" in
+    h) __usage; exit 1;;
+    d) _d=true;;
+    s) _s=$OPTARG;;
+  esac
+done
+
+if ${_d} ; then
+  sp_f_gpgdec "${_s}"
+else
+  sp_f_gpgenc "${_s}"
+fi
