@@ -44,12 +44,13 @@ function sp_f__rstr() {
 
 function sp_f_rstr() {
   local _len=${1:-13}
-  local _num=${2:-1}
-  local _dig=${3:-on}
-  local _ual=${4:-on}
-  local _lal=${5:-on}
-  local _uni=${6:-on}
-  local _x=${7:-7}
+  local _ask=${2:-true}
+  local _num=${3:-1}
+  local _dig=${4:-on}
+  local _ual=${5:-on}
+  local _lal=${6:-on}
+  local _uni=${7:-on}
+  local _x=${8:-7}
 
   if test ${_len} -lt ${sp_g_rnd_msl} ; then
     sp_f__rstr ${_len} ${_num} ${_dig} ${_ual} ${_lal} ${_uni} ${_x}
@@ -64,11 +65,14 @@ function sp_f_rstr() {
     sp_f_err "Not enough quota"
     return ${_FALSE_}
   fi
-  echo "Required random.org queries: ${_ir}"
-  echo "Curent quota: ${_rq}"
-  sp_f_yesno "Continue?"
-  if test $? -gt 0 ; then
-    return ${_FALSE_}
+
+  if ${_ask} ; then
+    echo "Required random.org queries: ${_ir}"
+    echo "Curent quota: ${_rq}"
+    sp_f_yesno "Continue?"
+    if test $? -gt 0 ; then
+      return ${_FALSE_}
+    fi
   fi
   local _rstr=""
   # full
