@@ -2,7 +2,7 @@
 function sp_f_bXX() {
   local _d=${1:-false}
   local _b=${2:-64}
-  local _s=${3}
+  local _s="${3}"
   local _dir=$(dirname $BASH_SOURCE)
   local _awk="${_dir}/b${_b}.awk"
   if ! test -r "${_awk}" ; then

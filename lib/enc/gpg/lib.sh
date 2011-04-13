@@ -5,6 +5,7 @@ function sp_f_gpg___() {
   local _s="${1}"
   local _d=${2:-false}
   local _es=""
+
   if ${_d} ; then
     _es=$(sp_f_b64dec "${_s}" | ${sp_b_gpg} -d 2>/dev/null)
     sp_f_b64dec "${_es}"

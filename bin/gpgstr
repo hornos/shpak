@@ -16,7 +16,7 @@ if test "${1}" = "-h" ; then
   return ${_FALSE_}
 fi
 if test -n "${1}" ; then
-  _s=${1}
+  _s="${1}"
 fi
 
 while getopts s:dh opt; do
