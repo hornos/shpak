@@ -1,9 +1,5 @@
 #f3--&7-9-V13------21-------------------42--------------------64------72
 
-sp_g_rnd_url="http://www.random.org"
-sp_g_rnd_opts="&format=plain&rnd=new"
-sp_g_rnd_msl=21
-
 function sp_f_rint() {
   local _num=${1:-1}
   local _min=${2:-1}
