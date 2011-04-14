@@ -16,6 +16,7 @@ function sp_f_passkey() {
   local _r=""
   local _q=""
   local _m=""
+  local _date=$(date +%Y-%m-%d)
 
   if ! test -r "${sp_p_db}/${sp_g_accdb}${sp_s_sqlite}" ; then
     sp_f_err "database"
@@ -99,7 +100,7 @@ function sp_f_passkey() {
 
     echo -e "\n${_m} - Set new key password (${_l})"
     _er=$(gpgstr -s "$(rndstr -q -l ${_l})") #"
-    _q="UPDATE ${sp_g_acctab} SET pass=\"${_er}\" WHERE ${sp_g_acctab}=\"${_a}\""
+    _q="UPDATE ${sp_g_acctab} SET pass=\"${_er}\",mtime=\"${_date}\" WHERE ${sp_g_acctab}=\"${_a}\""
 
     # query
     sp_f_slquery "${sp_g_accdb}" "${_q}"
@@ -120,7 +121,7 @@ function sp_f_passkey() {
 
   echo -e "\n${_m} - Set new key password (${_l})"
   _er=$(gpgstr -s "$(rndstr -q -l ${_l})") #"
-  _q="INSERT INTO ${sp_g_acctab} (${sp_g_acctab},pass) VALUES (\"${_a}\",\"${_er}\")"
+  _q="INSERT INTO ${sp_g_acctab} (${sp_g_acctab},pass,ctime,mtime) VALUES (\"${_a}\",\"${_er}\",\"${_date}\",\"${_date}\")"
 
   sp_f_slquery "${sp_g_accdb}" "${_q}"
   if test $? -gt 0 ; then
