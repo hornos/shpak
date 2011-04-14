@@ -75,8 +75,7 @@ sp_p_encfs="${HOME}/encfs"
 #/// \brief shpak database directory
 #///
 #/// This directory contains sqlite databases
-sp_p_dbs="${HOME}/sqls"
-
+sp_p_db="${sp_p_user}/db"
 
 #f3--&7-9-V13------21-------------------42--------------------64------72
 ### SUFFIXES

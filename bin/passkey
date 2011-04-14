@@ -1,0 +1,41 @@
+#!/bin/bash
+### BEGIN HEADER
+. $(dirname ${0})/../lib/h.sh
+# load libraries
+sp_f_load enc/pass
+
+function __usage() {
+  echo "Usage: ${sp_g_bn} -p -l length -a account"
+}
+
+_l=60
+_a=""
+_p="s";
+
+if test $# -eq 0 ; then
+  __usage
+  exit 1
+elif test $# -eq 1 ; then
+  if test "${1}" == "-h" ; then
+    __usage
+    exit 1
+  fi
+  if test "${1}" == "-c" ; then
+    sp_f_passdb
+    exit $?
+  fi
+  _a="${1}"
+else
+  while getopts a:l:hpd o; do
+    case "$o" in
+      a) _a=$OPTARG;;
+      l) _l=$OPTARG;;
+      p) _p="u";;
+      d) _p="d";;
+      h) __usage; exit 1;;
+    esac
+  done
+fi
+
+sp_f_ptt "${sp_g_bn} (${_a})"
+sp_f_${sp_g_bn} ${_p} "${_a}" ${_l}
