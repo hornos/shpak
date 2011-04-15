@@ -137,6 +137,11 @@ function sp_f_load() {
   else
     sp_f_wrn_fnf "${_p_cfg}"
   fi
+  # user specific library config
+  _p_cfg="${_sp_p_lib}/${_lib}/usr${sp_s_cfg}"
+  if test -r ${_p_cfg} ; then
+    . "${_p_cfg}"
+  fi
   # load the library
   . "${_p_lib}"
   local _nx=${#sp_g_libs[@]}
