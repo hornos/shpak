@@ -34,14 +34,14 @@ sp_p_lib="${sp_p_home}/lib"
 #/// \brief shpak hosts directory
 #///
 #/// This directory contains host descriptors (see template therein)
-sp_p_hosts="${sp_p_user}/hosts"
+sp_p_hosts="${sp_p_user}/host"
 
 #/// \var sp_p_queues
 #/// \brief shpak queues directory
 #///
 #/// This directory contains queue descriptors (see examples therein)
 #/// You need this for batch processing
-sp_p_queues="${sp_p_user}/ques"
+sp_p_queues="${sp_p_user}/que"
 
 #/// \var sp_p_keys
 #/// \brief shpak keys directory
@@ -49,9 +49,9 @@ sp_p_queues="${sp_p_user}/ques"
 #/// This directory contains keys for ssh and encfs
 #/// In case of ssh the key file (.key) is a symlink of the private key
 #/// In case of encfs the key file (.encfs5) is used to encrypt the stream
-sp_p_keys="${sp_p_user}/keys"
+sp_p_keys="${sp_p_user}/key"
 
-sp_p_icos="${sp_p_user}/icos"
+sp_p_icos="${sp_p_user}/ico"
 
 #/// \var sp_p_lock
 #/// \brief shpak lock directory
