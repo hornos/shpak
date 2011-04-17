@@ -113,10 +113,11 @@ function sp_f_efsmnt() {
     fi
 
     if ${sp_g_debug} ; then
-      sp_f_deb "ENCFS5_CONFIG=\"${_p_key}\" ${sp_b_efs} ${_opts} ${_url} ${_dst}"
-      ENCFS5_CONFIG="${_p_key}" ${sp_b_efs} ${_opts} ${_url} ${_dst} ${_fopts}
+      # old: ENCFS5_CONFIG
+      sp_f_deb "ENCFS6_CONFIG=\"${_p_key}\" ${sp_b_efs} ${_opts} ${_url} ${_dst}"
+      ENCFS6_CONFIG="${_p_key}" ${sp_b_efs} ${_opts} ${_url} ${_dst} ${_fopts}
     else
-      ENCFS5_CONFIG="${_p_key}" ${sp_b_efs} ${_opts} ${_url} ${_dst} ${_fopts} 2>/dev/null
+      ENCFS6_CONFIG="${_p_key}" ${sp_b_efs} ${_opts} ${_url} ${_dst} ${_fopts} 2>/dev/null
     fi
     _r=$?
     if test ${_r} -gt 0 ; then
