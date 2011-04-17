@@ -9,7 +9,7 @@ function sp_f_efskey() {
 
   local _r=$?
   local _key="${_host}${sp_s_ekey}"
-  local _p_key="${sp_p_keys}/${_key}"
+  local _p_key="${sp_p_keys}/${sp_p_efs_keys}${_key}"
 
   echo ""
 
@@ -40,7 +40,7 @@ function sp_f_efskey() {
   done
   mkdir -p "${_etmp}" "${_utmp}"
 
-  ${sp_b_encfs} ${sp_g_efs_opts} "${_etmp}" "${_utmp}"
+  ${sp_b_efs} ${sp_g_efs_opts} "${_etmp}" "${_utmp}"
   _r=$?
   if test ${_r} -gt 0 ; then
     rm -fR "${_etmp}"
@@ -90,7 +90,7 @@ function sp_f_efsmnt() {
     fi
     local _opts="${sp_g_efs_opts}"
     # key -----------------------------
-    local _p_key="${sp_p_keys}/${_host}${sp_s_ekey}"
+    local _p_key="${sp_p_keys}/${sp_p_efs_keys}${_host}${sp_s_ekey}"
     if ! test -r "${_p_key}" ; then
       sp_f_err_fnf "${_p_key}"
       return ${_FALSE_}
@@ -101,10 +101,10 @@ function sp_f_efsmnt() {
 
     sp_f_stt "${_dst} -> ${_url}"
     if ${sp_g_debug} ; then
-      sp_f_deb "ENCFS5_CONFIG=\"${_p_key}\" ${sp_b_encfs} ${_opts} ${_url} ${_dst}"
-      ENCFS5_CONFIG="${_p_key}" ${sp_b_encfs} ${_opts} ${_url} ${_dst}
+      sp_f_deb "ENCFS5_CONFIG=\"${_p_key}\" ${sp_b_efs} ${_opts} ${_url} ${_dst}"
+      ENCFS5_CONFIG="${_p_key}" ${sp_b_efs} ${_opts} ${_url} ${_dst}
     else
-      ENCFS5_CONFIG="${_p_key}" ${sp_b_encfs} ${_opts} ${_url} ${_dst} 2>/dev/null
+      ENCFS5_CONFIG="${_p_key}" ${sp_b_efs} ${_opts} ${_url} ${_dst} 2>/dev/null
     fi
     _r=$?
     if test ${_r} -gt 0 ; then
