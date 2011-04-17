@@ -100,11 +100,23 @@ function sp_f_efsmnt() {
     sp_f_mkdir "${_url}"
 
     sp_f_stt "${_dst} -> ${_url}"
+
+    # osx specific
+    local _fopts=""
+    if sp_f_osx ; then
+      local _vnam="${sp_g_efs_mid}"
+      _fopts="-- -o volname=${_vnam}"
+      local _vico="${sp_p_icos}/${sp_g_efs_ico}"
+      if test -r "${_vico}" ; then
+        _fopts="${_fopts} -o modules=volicon -o volicon=${_vico}"
+      fi
+    fi
+
     if ${sp_g_debug} ; then
       sp_f_deb "ENCFS5_CONFIG=\"${_p_key}\" ${sp_b_efs} ${_opts} ${_url} ${_dst}"
-      ENCFS5_CONFIG="${_p_key}" ${sp_b_efs} ${_opts} ${_url} ${_dst}
+      ENCFS5_CONFIG="${_p_key}" ${sp_b_efs} ${_opts} ${_url} ${_dst} ${_fopts}
     else
-      ENCFS5_CONFIG="${_p_key}" ${sp_b_efs} ${_opts} ${_url} ${_dst} 2>/dev/null
+      ENCFS5_CONFIG="${_p_key}" ${sp_b_efs} ${_opts} ${_url} ${_dst} ${_fopts} 2>/dev/null
     fi
     _r=$?
     if test ${_r} -gt 0 ; then
