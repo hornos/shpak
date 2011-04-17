@@ -1,272 +1,71 @@
 #f3--&7-9-V13------21-------------------42--------------------64------72
 
-
-#/// \fn sp_f_sshto
-#/// \brief ssh login
-#///
-#/// \param 1 CHARACTER(*) host MID
-#/// \param 2 LOGICAL prevent lock checking
-function sp_f_sshto() {
+# encfs -------------------------------------------------------------------------
+function sp_f_efskey() {
   local _host="${1:-default}"
   local _force="${2:-false}"
-  local _scrsel="${3}"
 
   sp_f_mid_init "${_host}"
 
-  # lock
-  local _lck="${_host}.${sp_g_bn}"
+  local _r=$?
+  local _key="${_host}${sp_s_ekey}"
+  local _p_key="${sp_p_keys}/${sp_p_efs_keys}${_key}"
+
+  echo ""
+
   if ${_force} ; then
-    sp_f_rmlck "${_lck}"
-  fi
-
-  # proxy
-  local _proxy=false
-  local _opts="${sp_g_ssh_opts}"
-  if ! test -z "${sp_g_ssh_proxy}" ; then
-    if sp_f_mklck "${_lck}" ; then
-      _proxy=true
-      _opts="${_opts} ${sp_g_ssh_proxy}"
-      sp_f_msg "connect proxies: ${sp_g_ssh_proxy}"
-    else
-      sp_f_wrn "active proxies: ${sp_g_ssh_proxy}"
+    if test -r "${_p_key}" ; then
+      echo "${_p_key}"
+      sp_f_yesno "Delete key?"
+      _r=$?
+      if test ${_r} -gt 0 ; then
+        return ${_r}
+      else
+        rm -f "${_p_key}"
+      fi
     fi
   fi
 
-  # ssh key -----------------------------
-  local _p_key="${sp_p_keys}/${_host}${sp_s_key}"
   if test -r "${_p_key}" ; then
-    _opts="${_opts} -i ${_p_key}"
-  else
-    sp_f_wrn_fnf "${_p_key}"
+    sp_f_err_fnf "${_p_key}"
+    return ${_FALSE_}
   fi
-
-  local _url="${sp_g_ssh_user}@${sp_g_ssh_fqdn}"
-  sp_f_stt "Login to ${_url}"
-
-  # ssh ---------------------------------
-  # TODO: screen
-  if test "${_scrsel}" != "" ; then
-    ${sp_b_ssh} ${_opts} ${_url} ${_scrsel}
-  else
-    ${sp_b_ssh} ${_opts} ${_url}
-  fi
-  local _r=$?
-  if ${_proxy} ; then
-    sp_f_rmlck "${_lck}"
-  fi
-  return ${_r}
-}
-
-
-function sp_f_sshtx() {
-  local _host="${1:-default}"
-  local _m="${2:-1}"
-  local _src="${3}"
-  local _xd=${4:-false}
-  local _r=0
-  local _dst="./"
-
-  # mode select -------------------------
-  local _push=true
-  local _mode=$((_m%10))
-  if test $((_m/10)) -gt 0 ; then
-    _push=false
-  fi
-
-  # init --------------------------------
-  sp_f_mid_init "${_host}"
-
-  if ${_xd} ; then
-    _dst="${sp_p_scp_local}"
-  fi
-  local _src_url="${sp_g_ssh_user}@${sp_g_ssh_fqdn}:${sp_p_scp_remote}"
-  if ${_push} ; then
-    if ! test -r "${_src}" ; then
-      sp_f_err_fnf "${_src}"
-      return 2
+  local _etmp="${sp_p_encfs}/.__etmp"
+  local _utmp="${sp_p_encfs}/.__utmp"
+  for _d in  "{_etmp}" "${_utmp}" ; do
+    if test -d "{_d}" ; then
+      sp_f_err_fnf "${_d}"
+      return ${_FALSE_}
     fi
-  else
-    local _src_url="${_src_url}/${_src}"
-    if ${_xd} ; then
-      sp_f_mkdir "${sp_p_scp_local}"
-    fi
-  fi
+  done
+  mkdir -p "${_etmp}" "${_utmp}"
 
-  # mode --------------------------------
-  case ${_mode} in
-    1)
-      local _opts="${sp_g_scp_opts}"
-      local _url="${_src_url}"
-      local _mtxt="scp"
-    ;;
-    2)
-      local _opts="-p ${sp_g_ssh_port}"
-      local _url="${sp_g_ssh_user}@${sp_g_ssh_fqdn}"
-      local _mtxt="tar/ssh"
-    ;;
-    3)
-      local _opts="-p ${sp_g_ssh_port}"
-      local _url="${_src_url}"
-      local _mtxt="rsync/ssh"
-    ;;
-    *) sp_f_err "invalid mode"
-       return ${_FALSE_}
-    ;;
-  esac
-
-  # ssh key -----------------------------
-  local _p_key="${sp_p_keys}/${_host}${sp_s_key}"
-  if test -r "${_p_key}" ; then
-    _opts="${_opts} -i ${_p_key}"
-  else
-    sp_f_wrn_fnf "${_p_key}"
-  fi
-
-  # title -------------------------------
-  local _dtxt="\n From: ${_src}\n   To: ${_url}"
-  if ! ${_push} ; then
-    _dtxt="\n From: ${_src_url}\n   To: ${_dst}"
-  fi
-  sp_f_stt "Transfer (${_mtxt})\n${_dtxt}\n"
-
-  echo ""
-  sp_f_yesno "Start?"
+  ${sp_b_efs} ${sp_g_efs_opts} "${_etmp}" "${_utmp}"
   _r=$?
-  echo ""
-  sp_f_sln
-  if test ${_r} -gt 0 ; then return ${_r}; fi
+  if test ${_r} -gt 0 ; then
+    rm -fR "${_etmp}"
+    rm -fR "${_utmp}"
+    return ${_r}
+  fi
 
-  # transfer ----------------------------
-  case ${_mode} in
-    1)
-      if ${_push} ; then
-        ${sp_b_scp} ${_opts} "${_src}" ${_url}
-      else
-        ${sp_b_scp} ${_opts} ${_url} "${_dst}"
-      fi
-    ;;
-    2)
-      if ${_push} ; then
-        ${sp_b_tar} cvf - "${_src}" | ${sp_b_ssh} ${_opts} ${_url} "(cd \"${sp_p_scp_remote}\";tar xvf -)"
-      else
-        ${sp_b_ssh} ${_opts} ${_url} "(cd \"${sp_p_scp_remote}\";tar cvf - \"${_src}\")" | (cd "${_dst}"; ${sp_b_tar} xvf -)
-      fi
-    ;;
-    3)
-      if ${_push} ; then
-        ${sp_b_rsync} -a -z -v --partial --progress -e "${sp_b_ssh} ${_opts}" "${_src}" ${_url}
-      else
-        ${sp_b_rsync} -a -z -v --partial --progress -e "${sp_b_ssh} ${_opts}" ${_url} "${_dst}"
-      fi
-    ;;
-  esac
+  echo "Generating key..."
+  sleep 2
+  ${sp_b_fsumnt} "${_utmp}"
   _r=$?
-  sp_f_sln
-  echo ""
-
-  return ${_r}
-} # end sp_f_sshtx
-
-
-function sp_f_sshpush() {
-  local _h="${1:-default}"
-  local _m="${2:-1}"
-  local _s="${3}"
-  _m=$((_m%10))
-  sp_f_sshtx "${_h}" ${_m} "${_s}"
-}
-
-
-function sp_f_sshpull() {
-  local _h="${1:-default}"
-  local _m="${2:-1}"
-  local _s="${3}"
-  local _x=${4:-false}
-  _m=$((_m%10+10))
-  sp_f_sshtx "${_h}" ${_m} "${_s}" ${_x}
-}
-
-
-# ssh misc ----------------------------------------------------------------------
-function sp_f_sshchg() {
-  local _host="${1:-default}"
-  local _mode="${2:-rsa}"
-
-  sp_f_mid_init "${_host}"
-
-  cd "${sp_p_keys}"
-  local _key="${_host}.id_${_mode}"
-  if ! test -r "${_key}" ; then
-    return 1
+  if test ${_r} -gt 0 ; then
+    return ${_r}
   fi
-  ${sp_b_sshkey} -p -f "${_key}"
-}
 
-function sp_f_sshkey() {
-  local _host="${1:-default}"
-  local _mode="${2:-rsa}"
-  local _size="${3:-2048}"
-
-  sp_f_mid_init "${_host}"
-
-  cd "${sp_p_keys}"
-  local _key="${_host}.id_${_mode}"
-  local _key_lnk="${_host}${sp_s_key}"
-
-  local _pkey="${_key}.pub"
-  local _pkey_lnk="${_host}${sp_s_pkey}"
-
-  echo ""
-  ${sp_b_sshkey} -b ${_size} -t "${_mode}" -f "${_key}"
-  local _r=$?
-
-  if test ${_r} -eq 0 ; then
-    chmod go-rwx "${_key}"
-    sp_f_mklnk "${_key}" "${_key_lnk}"
-
-    chmod go-rwx "${_pkey}"
-    sp_f_mklnk "${_pkey}" "${_pkey_lnk}"
-  fi
+  mv "${_etmp}/${sp_s_ekey}" "${_p_key}"
+  rm -fR "${_etmp}"
+  rm -fR "${_utmp}"
 
   echo ""
   return ${_r}
 }
 
 
-function sp_f_sshinf() {
-  local _host="${1:-default}"
-
-  sp_f_mid_init "${_host}"
-
-  sp_f_stt "${_host} (${sp_g_ssh_fqdn})"
-  echo "ssh url    : ${sp_g_ssh_user}@${sp_g_ssh_fqdn}"
-  echo "ssh opts   : ${sp_g_ssh_opts}"
-  if ! test -z "${sp_g_ssh_proxy}" ; then
-    echo "ssh proxy  : ${sp_g_ssh_proxy}"
-  fi
-  echo ""
-  echo "ssh local  : ${sp_p_scp_local}"
-  echo "ssh remote : ${sp_p_scp_remote}"
-  echo ""
-  echo "sshfs mnt  : ${sp_p_sshfs_local} -> ${sp_g_ssh_user}@${sp_g_ssh_fqdn}:${sp_p_sshfs_remote}"
-  echo "sshfs opts : ${sp_g_sshfs_opts}"
-  echo ""
-
-  # ssh key -----------------------------
-  local _p_pkey="${sp_p_keys}/${_host}${sp_s_pkey}"
-
-  if test -r "${_p_pkey}" ; then
-    ${sp_b_sshkey} -v -l -f "${_p_pkey}"
-  else
-    sp_f_wrn_fnf "${_p_pkey}"
-  fi
-
-  return ${_TRUE_}
-}
-
-
-# mount -------------------------------------------------------------------------
-function sp_f_sshmnt() {
+function sp_f_efsmnt() {
   local _host="${1:-default}"
   local _force="${2:-false}"
   local _mnt="${3:-true}"
@@ -275,53 +74,43 @@ function sp_f_sshmnt() {
   sp_f_mid_init "${_host}"
 
   # lock --------------------------------
-  local _lck="${_host}.sshmnt"
+  local _lck="${_host}.efsmnt"
   if ${_force} ; then
     sp_f_rmlck "${_lck}"
   fi
 
-  local _dst="${sp_p_sshfs_local}"
+  local _dst="${sp_p_efs_udir}"
+  local _url="${sp_p_efs_edir}"
+  local _pre=""
 
   if ${_mnt} ; then
-    # mount
     if ! sp_f_mklck "${_lck}" ; then
       sp_f_err "${_host} is already mounted"
-      return 1
+      return ${_FALSE_}
     fi
-    local _opts="${sp_g_sshfs_opts}"
-    # ssh key -----------------------------
-    local _p_key="${sp_p_keys}/${_host}${sp_s_key}"
-    if test -r "${_p_key}" ; then
-      _opts="${_opts} -o IdentityFile=${_p_key}"
-    else
-      sp_f_wrn_fnf "${_p_key}"
+    local _opts="${sp_g_efs_opts}"
+    # key -----------------------------
+    local _p_key="${sp_p_keys}/${sp_p_efs_keys}${_host}${sp_s_ekey}"
+    if ! test -r "${_p_key}" ; then
+      sp_f_err_fnf "${_p_key}"
+      return ${_FALSE_}
     fi
-    local _url="${sp_g_ssh_user}@${sp_g_ssh_fqdn}:${sp_p_sshfs_remote}"
 
     sp_f_mkdir "${_dst}"
+    sp_f_mkdir "${_url}"
 
     sp_f_stt "${_dst} -> ${_url}"
-    # osx specific
-    if sp_f_osx ; then
-      local _vnam="${sp_g_ssh_mid}/${sp_g_ssh_user}@${sp_g_ssh_fqdn}"
-      _opts="${_opts} -o volname=${_vnam}"
-      local _vico="${sp_p_icos}/${sp_g_sshfs_ico}"
-      if test -r "${_vico}" ; then
-        _opts="${_opts} -o modules=volicon -o volicon=${_vico}"
-      fi
-    fi
     if ${sp_g_debug} ; then
-      sp_f_deb "${sp_b_sshmnt} ${_url} ${_dst} ${_opts}"
-      ${sp_b_sshmnt} ${_url} ${_dst} ${_opts}
+      sp_f_deb "ENCFS5_CONFIG=\"${_p_key}\" ${sp_b_efs} ${_opts} ${_url} ${_dst}"
+      ENCFS5_CONFIG="${_p_key}" ${sp_b_efs} ${_opts} ${_url} ${_dst}
     else
-      ${sp_b_sshmnt} ${_url} ${_dst} ${_opts} 2>/dev/null
+      ENCFS5_CONFIG="${_p_key}" ${sp_b_efs} ${_opts} ${_url} ${_dst} 2>/dev/null
     fi
     _r=$?
     if test ${_r} -gt 0 ; then
-      sp_f_err "sshfs failure (might run sshreset)"
       sp_f_rmlck "${_lck}"
     else
-      sp_f_msg "host mounted"
+      sp_f_msg "encfs mounted"
     fi
   else
     # unmount
@@ -331,66 +120,30 @@ function sp_f_sshmnt() {
       return ${_FALSE_}
     fi
     if ${sp_g_debug} ; then
-      sp_f_deb "${sp_b_sshumnt} ${_dst}"
-      ${sp_b_sshumnt} ${_dst}
+      sp_f_deb "${sp_b_fsumnt} ${_dst}"
+      ${sp_b_fsumnt} ${_dst}
     else
-      ${sp_b_sshumnt} ${_dst} 2>/dev/null
+      ${sp_b_fsumnt} ${_dst} 2>/dev/null
     fi
     _r=$?
     if ! test ${_r} -gt 0 ; then
       sp_f_rmlck "${_lck}"
-      sp_f_msg "host unmounted"
+      sp_f_msg "encfs unmounted"
     fi
   fi
+
   return ${_r}
 }
 
-
-function sp_f_sshumnt() {
+function sp_f_efsumnt() {
   local _host="${1:-default}"
   local _force="${2:-false}"
-  sp_f_sshmnt "${_host}" "${_force}" false
+  sp_f_efsmnt "${_host}" "${_force}" false
 }
 
 
-function sp_f_sshlmnt() {
-  sp_f_ptt "${sp_g_bn}: sshfs volumes"
-  mount | grep fusefs | grep -v encfs | awk '{printf "%-32s => %s\n",$3,$1}'
+function sp_f_efslmnt() {
+  sp_f_ptt "${sp_g_bn}: encfs volumes"
+  mount | grep fusefs | grep encfs | awk '{printf "%-32s\n",$3}'
   return ${_TRUE_}
-}
-
-
-function sp_f_sshcmd() {
-  local _host="${1:-default}"
-  local _cmd="${2:-ls -lA ${sp_p_scp_remote}}"
-  local _int=${3:-false}
-  local _tmp=""
-
-  sp_f_mid_init "${_host}"
-
-  local _opts="${sp_g_ssh_opts}"
-
-  # ssh interactive ---------------------
-  if ${_int} ; then
-    _opts="-t ${_opts}"
-  fi
-
-  # ssh key -----------------------------
-  local _p_key="${sp_p_keys}/${_host}${sp_s_key}"
-  if test -r "${_p_key}" ; then
-    _opts="${_opts} -i ${_p_key}"
-  else
-    sp_f_wrn_fnf "${_p_key}"
-  fi
-
-  local _url="${sp_g_ssh_user}@${sp_g_ssh_fqdn}"
-  sp_f_stt "Run ${_cmd} on ${_url}"
-
-  # ssh ---------------------------------
-  if ! test -z "${sp_g_ssh_env}" ; then
-    _tmp="source \${HOME}/${sp_g_ssh_env};"
-    _tmp="${_tmp}echo ${sp_g_nruler};"
-    _cmd="${_tmp}${_cmd}"
-  fi
-  ${sp_b_ssh} ${_opts} ${_url} ${_cmd}
 }
