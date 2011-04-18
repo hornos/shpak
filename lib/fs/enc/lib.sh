@@ -6,14 +6,18 @@ function sp_f_efs_p_key() {
 # encfs -------------------------------------------------------------------------
 function sp_f_efskey() {
   local _host="${1:-default}"
-  local _force="${2:-false}"
+  local _force=${2:-false}
+  local _p=${3:-false}
 
   sp_f_mid_init "${sp_p_efs_key}${_host}"
 
   local _r=$?
-  # local _key="${_host}${sp_s_ekey}"
-  # local _p_key="${sp_p_key}/${sp_p_efs_key}${_host}${sp_s_ekey}"
   local _p_key="$(sp_f_efs_p_key ${_host})"
+
+  if ! test -r "${_p_key}" ; then
+    sp_f_err_fnf "${_p_key}"
+    return ${_FALSE_}
+  fi
 
   echo ""
 
@@ -30,20 +34,29 @@ function sp_f_efskey() {
     fi
   fi
 
-  if test -r "${_p_key}" ; then
-    sp_f_err_fnf "${_p_key}"
-    return ${_FALSE_}
-  fi
   local _etmp="${sp_p_encfs}/.__etmp"
   local _utmp="${sp_p_encfs}/.__utmp"
+  mkdir -p "${_etmp}" "${_utmp}"
+
   for _d in  "{_etmp}" "${_utmp}" ; do
     if test -d "{_d}" ; then
       sp_f_err_fnf "${_d}"
       return ${_FALSE_}
     fi
   done
-  mkdir -p "${_etmp}" "${_utmp}"
 
+  # change key
+  if ${_p} && ! ${_force}; then
+    ENCFS6_CONFIG="${_p_key}" ${sp_b_efsctl} "${_etmp}"
+    ENCFS6_CONFIG="${_p_key}" ${sp_b_efsctl} passwd "${_etmp}"
+    _r=$?
+    rm -fR "${_etmp}"
+    rm -fR "${_utmp}"
+    echo ""
+    return ${_r}
+  fi
+
+  # generate new
   ${sp_b_efs} ${sp_g_efs_opts} "${_etmp}" "${_utmp}"
   _r=$?
   if test ${_r} -gt 0 ; then
@@ -63,7 +76,6 @@ function sp_f_efskey() {
   mv "${_etmp}/${sp_s_ekey}" "${_p_key}"
   rm -fR "${_etmp}"
   rm -fR "${_utmp}"
-
   echo ""
   return ${_r}
 }
@@ -95,7 +107,6 @@ function sp_f_efsmnt() {
     fi
     local _opts="${sp_g_efs_opts}"
     # key -----------------------------
-    # local _p_key="${sp_p_key}/${sp_p_efs_key}${_host}${sp_s_ekey}"
     local _p_key="$(sp_f_efs_p_key ${_host})"
     if ! test -r "${_p_key}" ; then
       sp_f_err_fnf "${_p_key}"
