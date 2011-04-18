@@ -13,7 +13,7 @@ function sp_f_clscmd() {
   local _cmd="${2:-ls}"
   local _hi
   local _hibn
-  for _hi in ${sp_p_hosts}/* ; do
+  for _hi in ${sp_p_mid}/ssh/* ; do
     _hibn=$(basename ${_hi})
     sp_g_cluster=""
     . ${_hi}
@@ -41,7 +41,7 @@ function sp_f_clspush() {
     sp_f_err "missing: ${_s}"
     return ${_FALSE_}
   fi
-  for _hi in ${sp_p_hosts}/* ; do
+  for _hi in ${sp_p_mid}/ssh/* ; do
     _hibn=$(basename ${_hi})
     sp_g_cluster=""
     . ${_hi}
