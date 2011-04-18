@@ -34,7 +34,7 @@ fi
 
 # main
 # ------------------------------------------------
-for hi in ${sp_p_hosts}/ssh/* ; do
+for hi in ${sp_p_mid}/ssh/* ; do
   hibn=$(basename ${hi})
   sp_g_cluster=""
   . ${hi}
