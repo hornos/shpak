@@ -1,0 +1,10 @@
+# id
+sp_g_efs_mid="sshmid"
+
+# full path to the encrypted dir
+sp_p_efs_edir="${sp_p_mid}/.ssh"
+
+# full path of the unencrypted dir
+sp_p_efs_udir="${sp_p_mid}/ssh"
+
+sp_g_efs_opts=""

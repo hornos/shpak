@@ -1,5 +1,5 @@
 # id
-sp_g_efs_mid="encrypted"
+sp_g_efs_mid="template"
 
 # full path to the encrypted dir
 sp_p_efs_edir="${sp_p_encfs}/${sp_g_efs_mid}.edir"
