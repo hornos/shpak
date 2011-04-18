@@ -1,6 +1,6 @@
 #f3--&7-9-V13------21-------------------42--------------------64------72
 function sp_f_ssh_p_key() {
-  echo "${sp_p_keys}/${sp_p_ssh_keys}${1}${sp_s_key}"
+  echo "${sp_p_key}/${sp_p_ssh_key}${1}${sp_s_key}"
 }
 
 #/// \fn sp_f_sshto
@@ -13,7 +13,7 @@ function sp_f_sshto() {
   local _force="${2:-false}"
   local _scrsel="${3}"
 
-  sp_f_mid_init "${_host}"
+  sp_f_mid_init "${sp_p_ssh_key}${_host}"
 
   # lock
   local _lck="${_host}.${sp_g_bn}"
@@ -35,7 +35,6 @@ function sp_f_sshto() {
   fi
 
   # ssh key -----------------------------
-  # local _p_key="${sp_p_keys}/${_host}${sp_s_key}"
   local _p_key="$(sp_f_ssh_p_key ${_host})"
   if test -r "${_p_key}" ; then
     _opts="${_opts} -i ${_p_key}"
@@ -77,7 +76,8 @@ function sp_f_sshtx() {
   fi
 
   # init --------------------------------
-  sp_f_mid_init "${_host}"
+  # sp_f_mid_init "${_host}"
+  sp_f_mid_init "${sp_p_ssh_key}${_host}"
 
   if ${_xd} ; then
     _dst="${sp_p_scp_local}"
@@ -118,7 +118,6 @@ function sp_f_sshtx() {
   esac
 
   # ssh key -----------------------------
-  # local _p_key="${sp_p_keys}/${_host}${sp_s_key}"
   local _p_key="$(sp_f_ssh_p_key ${_host})"
   if test -r "${_p_key}" ; then
     _opts="${_opts} -i ${_p_key}"
@@ -196,9 +195,10 @@ function sp_f_sshchg() {
   local _host="${1:-default}"
   local _mode="${2:-rsa}"
 
-  sp_f_mid_init "${_host}"
+  # sp_f_mid_init "${_host}"
+  sp_f_mid_init "${sp_p_ssh_key}${_host}"
 
-  cd "${sp_p_keys}/${sp_p_ssh_keys}"
+  cd "${sp_p_key}/${sp_p_ssh_key}"
   local _key="${_host}.id_${_mode}"
   if ! test -r "${_key}" ; then
     return 1
@@ -211,9 +211,10 @@ function sp_f_sshkey() {
   local _mode="${2:-rsa}"
   local _size="${3:-2048}"
 
-  sp_f_mid_init "${_host}"
+  # sp_f_mid_init "${_host}"
+  sp_f_mid_init "${sp_p_ssh_key}${_host}"
 
-  cd "${sp_p_keys}/${sp_p_ssh_keys}"
+  cd "${sp_p_key}/${sp_p_ssh_key}"
   local _key="${_host}.id_${_mode}"
   local _key_lnk="${_host}${sp_s_key}"
 
@@ -240,7 +241,8 @@ function sp_f_sshkey() {
 function sp_f_sshinf() {
   local _host="${1:-default}"
 
-  sp_f_mid_init "${_host}"
+  # sp_f_mid_init "${_host}"
+  sp_f_mid_init "${sp_p_ssh_key}${_host}"
 
   sp_f_stt "${_host} (${sp_g_ssh_fqdn})"
   echo "ssh url    : ${sp_g_ssh_user}@${sp_g_ssh_fqdn}"
@@ -257,7 +259,6 @@ function sp_f_sshinf() {
   echo ""
 
   # ssh key -----------------------------
-  # local _p_pkey="${sp_p_keys}/${_host}${sp_s_pkey}"
   local _p_key="$(sp_f_ssh_p_key ${_host})"
 
   if test -r "${_p_pkey}" ; then
@@ -277,7 +278,8 @@ function sp_f_sshmnt() {
   local _mnt="${3:-true}"
   local _r=0
 
-  sp_f_mid_init "${_host}"
+  # sp_f_mid_init "${_host}"
+  sp_f_mid_init "${sp_p_ssh_key}${_host}"
 
   # lock --------------------------------
   local _lck="${_host}.sshmnt"
@@ -295,7 +297,6 @@ function sp_f_sshmnt() {
     fi
     local _opts="${sp_g_sshfs_opts}"
     # ssh key -----------------------------
-    # local _p_key="${sp_p_keys}/${_host}${sp_s_key}"
     local _p_key="$(sp_f_ssh_p_key ${_host})"
     if test -r "${_p_key}" ; then
       _opts="${_opts} -o IdentityFile=${_p_key}"
@@ -311,7 +312,7 @@ function sp_f_sshmnt() {
     if sp_f_osx ; then
       local _vnam="${sp_g_ssh_mid}/${sp_g_ssh_user}@${sp_g_ssh_fqdn}"
       _opts="${_opts} -o volname=${_vnam}"
-      local _vico="${sp_p_icos}/${sp_g_sshfs_ico}"
+      local _vico="${sp_p_ico}/${sp_g_sshfs_ico}"
       if test -r "${_vico}" ; then
         _opts="${_opts} -o modules=volicon -o volicon=${_vico}"
       fi
@@ -372,7 +373,8 @@ function sp_f_sshcmd() {
   local _int=${3:-false}
   local _tmp=""
 
-  sp_f_mid_init "${_host}"
+  # sp_f_mid_init "${_host}"
+  sp_f_mid_init "${sp_p_ssh_key}${_host}"
 
   local _opts="${sp_g_ssh_opts}"
 
@@ -382,7 +384,6 @@ function sp_f_sshcmd() {
   fi
 
   # ssh key -----------------------------
-  # local _p_key="${sp_p_keys}/${_host}${sp_s_key}"
   local _p_key="$(sp_f_ssh_p_key ${_host})"
   if test -r "${_p_key}" ; then
     _opts="${_opts} -i ${_p_key}"

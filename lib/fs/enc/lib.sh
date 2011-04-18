@@ -1,15 +1,19 @@
 #f3--&7-9-V13------21-------------------42--------------------64------72
+function sp_f_efs_p_key() {
+  echo "${sp_p_key}/${sp_p_efs_key}${1}${sp_s_ekey}"
+}
 
 # encfs -------------------------------------------------------------------------
 function sp_f_efskey() {
   local _host="${1:-default}"
   local _force="${2:-false}"
 
-  sp_f_mid_init "${_host}"
+  sp_f_mid_init "${sp_p_efs_key}${_host}"
 
   local _r=$?
-  local _key="${_host}${sp_s_ekey}"
-  local _p_key="${sp_p_keys}/${sp_p_efs_keys}${_key}"
+  # local _key="${_host}${sp_s_ekey}"
+  # local _p_key="${sp_p_key}/${sp_p_efs_key}${_host}${sp_s_ekey}"
+  local _p_key="$(sp_f_efs_p_key ${_host})"
 
   echo ""
 
@@ -71,7 +75,8 @@ function sp_f_efsmnt() {
   local _mnt="${3:-true}"
   local _r=0
 
-  sp_f_mid_init "${_host}"
+  # sp_f_mid_init "${_host}"
+  sp_f_mid_init "${sp_p_efs_key}${_host}"
 
   # lock --------------------------------
   local _lck="${_host}.efsmnt"
@@ -90,7 +95,8 @@ function sp_f_efsmnt() {
     fi
     local _opts="${sp_g_efs_opts}"
     # key -----------------------------
-    local _p_key="${sp_p_keys}/${sp_p_efs_keys}${_host}${sp_s_ekey}"
+    # local _p_key="${sp_p_key}/${sp_p_efs_key}${_host}${sp_s_ekey}"
+    local _p_key="$(sp_f_efs_p_key ${_host})"
     if ! test -r "${_p_key}" ; then
       sp_f_err_fnf "${_p_key}"
       return ${_FALSE_}
@@ -106,7 +112,7 @@ function sp_f_efsmnt() {
     if sp_f_osx ; then
       local _vnam="${sp_g_efs_mid}"
       _fopts="-- -o volname=${_vnam}"
-      local _vico="${sp_p_icos}/${sp_g_efs_ico}"
+      local _vico="${sp_p_ico}/${sp_g_efs_ico}"
       if test -r "${_vico}" ; then
         _fopts="${_fopts} -o modules=volicon -o volicon=${_vico}"
       fi

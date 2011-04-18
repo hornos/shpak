@@ -35,7 +35,7 @@ function sp_f_jobsub() {
 
 # read queue info
 #f3--&7-9-V13------21-------------------42--------------------64------72
-  local _p_qi="${sp_p_queues}/${QUEUE:-default}"
+  local _p_qi="${sp_p_que}/${QUEUE:-default}"
   if test -r "${_p_qi}" ; then
     . ${_p_qi}
   else

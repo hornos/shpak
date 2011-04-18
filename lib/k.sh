@@ -30,31 +30,31 @@ sp_p_user="${HOME}/shpak"
 #/// This directory contains libraries that can be loaded by sp_f_load
 sp_p_lib="${sp_p_home}/lib"
 
-#/// \var sp_p_hosts
+#/// \var sp_p_mid
 #/// \brief shpak hosts directory
 #///
 #/// This directory contains host descriptors (see template therein)
-sp_p_hosts="${sp_p_user}/host"
+sp_p_mid="${sp_p_user}/mid"
 
-#/// \var sp_p_queues
+#/// \var sp_p_que
 #/// \brief shpak queues directory
 #///
 #/// This directory contains queue descriptors (see examples therein)
 #/// You need this for batch processing
-sp_p_queues="${sp_p_user}/que"
+sp_p_que="${sp_p_user}/que"
 
-#/// \var sp_p_keys
+#/// \var sp_p_key
 #/// \brief shpak keys directory
 #///
 #/// This directory contains keys for ssh and encfs
 #/// In case of ssh the key file (.key) is a symlink of the private key
 #/// In case of encfs the key file (.encfs5) is used to encrypt the stream
-sp_p_keys="${sp_p_user}/key"
+sp_p_key="${sp_p_user}/key"
 
-sp_p_icos="${sp_p_user}/ico"
+sp_p_ico="${sp_p_user}/ico"
 
-#/// \var sp_p_lock
-#/// \brief shpak lock directory
+#/// \var sp_p_lck
+#/// \brief shpak lck directory
 #///
 #/// This directory contains locks for various operations
 sp_p_lck="${sp_p_user}/lck"

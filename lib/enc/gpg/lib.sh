@@ -1,7 +1,7 @@
 
-sp_f_load enc/base
-
 function sp_f_gpg___() {
+  sp_f_load enc/base
+
   local _s="${1}"
   local _d=${2:-false}
 

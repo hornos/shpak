@@ -599,10 +599,10 @@ function sp_f_osx() {
 #/// \fn sp_f_mid_init
 #/// \brief common init
 function sp_f_mid_init() {
-  local _p_host="${sp_p_hosts}/${1}"
-  if ! test -r "${_p_host}" ; then
-    sp_f_err_fnf "${_p_host}"
+  local _p_mid="${sp_p_mid}/${1}"
+  if ! test -r "${_p_mid}" ; then
+    sp_f_err_fnf "${_p_mid}"
     exit ${_FALSE_}
   fi
-  . "${_p_host}"
+  . "${_p_mid}"
 }
