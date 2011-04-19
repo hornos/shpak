@@ -1,0 +1,10 @@
+# id
+sp_g_efs_mid="wuala"
+
+# full path to the encrypted dir
+sp_p_efs_edir="/Volumes/WualaDrive/myfiles"
+
+# full path of the unencrypted dir
+sp_p_efs_udir="${HOME}/Wuala"
+
+sp_g_efs_opts=""

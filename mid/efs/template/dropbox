@@ -1,0 +1,10 @@
+# id
+sp_g_efs_mid="dropbox"
+
+# full path to the encrypted dir
+sp_p_efs_edir="${HOME}/Dropbox.client/Dropbox"
+
+# full path of the unencrypted dir
+sp_p_efs_udir="${HOME}/Dropbox"
+
+sp_g_efs_opts=""
