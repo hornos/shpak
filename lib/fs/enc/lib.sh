@@ -96,7 +96,6 @@ function sp_f_efsmnt() {
   local _mnt="${3:-true}"
   local _r=0
 
-  # sp_f_mid_init "${_host}"
   sp_f_mid_init "${sp_p_efs_key}${_host}"
 
   # lock --------------------------------
@@ -136,6 +135,8 @@ function sp_f_efsmnt() {
       if test -r "${_vico}" ; then
         _fopts="${_fopts} -o modules=volicon -o volicon=${_vico}"
       fi
+    else
+      _opts="${_opts} -o nonempty"
     fi
 
     if ${sp_g_debug} ; then
