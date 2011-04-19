@@ -14,11 +14,6 @@ function sp_f_efskey() {
   local _r=$?
   local _p_key="$(sp_f_efs_p_key ${_host})"
 
-  if ! test -r "${_p_key}" ; then
-    sp_f_err_fnf "${_p_key}"
-    return ${_FALSE_}
-  fi
-
   echo ""
 
   if ${_force} ; then
@@ -47,6 +42,10 @@ function sp_f_efskey() {
 
   # change key
   if ${_p} && ! ${_force}; then
+    if ! test -r "${_p_key}" ; then
+      sp_f_err_fnf "${_p_key}"
+      return ${_FALSE_}
+    fi
     ENCFS6_CONFIG="${_p_key}" ${sp_b_efsctl} "${_etmp}"
     ENCFS6_CONFIG="${_p_key}" ${sp_b_efsctl} passwd "${_etmp}"
     _r=$?
@@ -57,6 +56,16 @@ function sp_f_efskey() {
   fi
 
   # generate new
+  if test -r "${_p_key}" ; then
+    echo "${_p_key}"
+    sp_f_yesno "Delete key?"
+    _r=$?
+    if test ${_r} -gt 0 ; then
+      return ${_r}
+    else
+      rm -f "${_p_key}"
+    fi
+  fi
   ${sp_b_efs} ${sp_g_efs_opts} "${_etmp}" "${_utmp}"
   _r=$?
   if test ${_r} -gt 0 ; then
