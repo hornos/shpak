@@ -11,7 +11,7 @@ sp_f_ptt "${sp_g_bn}"
 
 for i in "mid" "key" ; do
   f="sp_p_${i}"
-  mf="${!f}/${sp_p_ssh_key}/SSHFS"
+  mf="${!f}/.${sp_p_ssh_key}SSHFS"
   if test -r "${mf}" ; then
     efsumnt "ssh${i}"
   else
