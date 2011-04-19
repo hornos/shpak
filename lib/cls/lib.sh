@@ -9,11 +9,12 @@
 #/// hosts can be divided into disjoint sets by setting the 
 #/// sp_g_cluster variable
 function sp_f_clscmd() {
+  sp_f_load ssh
   local _c="${1:-default}"
   local _cmd="${2:-ls}"
   local _hi
   local _hibn
-  for _hi in ${sp_p_mid}/ssh/* ; do
+  for _hi in ${sp_p_mid}/${sp_p_ssh_key}* ; do
     _hibn=$(basename ${_hi})
     sp_g_cluster=""
     . ${_hi}
@@ -32,6 +33,7 @@ function sp_f_clscmd() {
 #/// \param 2 CHARACTER(*) source (what)
 #/// \param 3 INTEGER sshpush xfer mode
 function sp_f_clspush() {
+  sp_f_load ssh
   local _c="${1:-default}"
   local _s="${2}"
   local _t=${3:-3}
@@ -41,7 +43,7 @@ function sp_f_clspush() {
     sp_f_err "missing: ${_s}"
     return ${_FALSE_}
   fi
-  for _hi in ${sp_p_mid}/ssh/* ; do
+  for _hi in ${sp_p_mid}/${sp_p_ssh_key}* ; do
     _hibn=$(basename ${_hi})
     sp_g_cluster=""
     . ${_hi}

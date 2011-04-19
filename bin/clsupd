@@ -3,6 +3,7 @@
 # header
 # ------------------------------------------------
 . $(dirname ${0})/../lib/h.sh
+sp_f_load ssh
 
 # usage
 # ------------------------------------------------
@@ -34,7 +35,7 @@ fi
 
 # main
 # ------------------------------------------------
-for hi in ${sp_p_mid}/ssh/* ; do
+for hi in ${sp_p_mid}/${sp_p_ssh_key}* ; do
   hibn=$(basename ${hi})
   sp_g_cluster=""
   . ${hi}
