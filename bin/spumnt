@@ -5,6 +5,11 @@
 . $(dirname ${0})/../lib/h.sh
 sp_f_load ssh
 
+_f=""
+if test "${1}" = "-f" ; then
+  _f="${1}"
+fi
+
 # main
 # ------------------------------------------------
 sp_f_ptt "${sp_g_bn}"
@@ -13,7 +18,7 @@ for i in "mid" "key" ; do
   f="sp_p_${i}"
   mf="${!f}/.${sp_p_ssh_key}SSHFS"
   if test -r "${mf}" ; then
-    efsumnt "ssh${i}"
+    efsumnt ${_f} -m "ssh${i}"
   else
     echo "not mounted ${mf}"
   fi
