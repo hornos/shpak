@@ -16,10 +16,10 @@ sp_f_ptt "${sp_g_bn}"
 
 for i in "mid" "key" ; do
   f="sp_p_${i}"
-  mf="${!f}/.${sp_p_ssh_key}SSHFS"
+  mf="${!f}/.${sp_p_ssh_key}.noenc"
   if test -r "${mf}" ; then
-    efsumnt ${_f} -m "ssh${i}"
-  else
     echo "not mounted ${mf}"
+  else
+    efsumnt ${_f} -m "ssh${i}"
   fi
 done

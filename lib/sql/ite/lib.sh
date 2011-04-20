@@ -1,8 +1,12 @@
 
+function sp_f_sl_p_db() {
+  echo "${sp_p_sql}/${sp_p_sqlite}${_db}${sp_s_sqlite}"
+}
+
 function sp_f_slinit() {
   local _db="${1:-temp}"
-  local _p_si="${sp_p_db}/${_db}.sql"
-  local _p_db="${sp_p_db}/${_db}${sp_s_sqlite}"
+  local _p_db="$(sp_f_sl_p_db)"
+  local _p_si="${sp_p_db%%${sp_s_sqlite}}.sql"
   local _r
   if ! test -r "${_p_db}" ; then
     touch "${_p_db}"
@@ -18,7 +22,7 @@ function sp_f_slinit() {
 function sp_f_slquery() {
   local _db="${1:-temp}"
   local _q="${2:-SELECT time()}"
-  local _p_db="${sp_p_db}/${_db}${sp_s_sqlite}"
+  local _p_db="$(sp_f_sl_p_db)"
   if ! test -r "${_p_db}" ; then
     return ${_FALSE_}
   fi
@@ -31,7 +35,7 @@ function sp_f_slqchk() {
   local _pk="${3}"
   local _pv="${4}"
   local _r=""
-  local _p_db="${sp_p_db}/${_db}${sp_s_sqlite}"
+  local _p_db="$(sp_f_sl_p_db)"
   if ! test -r "${_p_db}" ; then
     return ${_FALSE_}
   fi

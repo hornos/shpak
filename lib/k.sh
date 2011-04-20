@@ -71,11 +71,11 @@ sp_p_sshfs="${HOME}/sshfs"
 #/// This directory contains mounts of encfs directories
 sp_p_encfs="${HOME}/encfs"
 
-#/// \var sp_p_dbs
+#/// \var sp_p_sql
 #/// \brief shpak database directory
 #///
-#/// This directory contains sqlite databases
-sp_p_db="${sp_p_user}/db"
+#/// This directory contains databases
+sp_p_sql="${sp_p_user}/sql"
 
 #f3--&7-9-V13------21-------------------42--------------------64------72
 ### SUFFIXES
