@@ -1,0 +1,10 @@
+# id
+sp_g_efs_mid="sqlite"
+
+# full path to the encrypted dir
+sp_p_efs_edir="${sp_p_sql}/.ite"
+
+# full path of the unencrypted dir
+sp_p_efs_udir="${sp_p_sql}/ite"
+
+sp_g_efs_opts=""
