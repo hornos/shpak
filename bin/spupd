@@ -6,7 +6,7 @@
 # functions ---------------------------------------------------------------------
 function local_update() {
   sp_f_yesno "Unmount encrypted directories?"
-  if ! test $? -gt 0 ; then
+  if ! test $? -gt 0 ; then
     spumnt
   fi
   local _p_loc=""
