@@ -26,6 +26,7 @@ Donation
 ========
 If you find it useful and want to donate for shpak
 Bitcoin address: 17mtnUyAoR8yXuRRB57eGSRNjDkgQRaVA2
+
 License
 =======
 Copyright (C) Tom Hornos (tom.hornos@gmail.com)
