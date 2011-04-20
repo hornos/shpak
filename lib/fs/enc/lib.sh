@@ -130,7 +130,7 @@ function sp_f_efsmnt() {
     local _fopts=""
     if sp_f_osx ; then
       local _vnam="${sp_g_efs_mid}"
-      _fopts="-- -o volname=shpak/${_vnam}"
+      _fopts="-- -o volname=encfs/${_vnam}"
       local _vico="${sp_p_ico}/${sp_g_efs_ico}"
       if test -r "${_vico}" ; then
         _fopts="${_fopts} -o modules=volicon -o volicon=${_vico}"
