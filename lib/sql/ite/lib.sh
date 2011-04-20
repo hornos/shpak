@@ -6,7 +6,7 @@ function sp_f_sl_p_db() {
 function sp_f_slinit() {
   local _db="${1:-temp}"
   local _p_db="$(sp_f_sl_p_db)"
-  local _p_si="${sp_p_db%%${sp_s_sqlite}}.sql"
+  local _p_si="${sp_p_sql}/${_db}.sql"
   local _r
   if ! test -r "${_p_db}" ; then
     touch "${_p_db}"
