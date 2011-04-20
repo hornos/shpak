@@ -23,3 +23,11 @@ for i in "mid" "key" ; do
     efsumnt ${_f} -m "ssh${i}"
   fi
 done
+
+f="sp_p_sql"
+mf="${!f}/${sp_p_sqlite}.noenc"
+if test -r "${mf}" ; then
+  echo "not mounted ${mf}"
+else
+  efsumnt ${_f} -m "sqlite"
+fi

@@ -4,7 +4,7 @@
 # ------------------------------------------------
 . $(dirname ${0})/../lib/h.sh
 sp_f_load ssh
-
+sp_f_load sql/ite
 
 _f=""
 if test "${1}" = "-f" ; then
@@ -24,3 +24,11 @@ for i in "mid" "key" ; do
     echo "mounted ${mf}"
   fi
 done
+
+f="sp_p_sql"
+mf="${!f}/${sp_p_sqlite}.noenc"
+if test -r "${mf}" ; then
+  efsmnt ${_f} -m "sqlite"
+else
+  echo "mounted ${mf}"
+fi

@@ -18,7 +18,7 @@ function sp_f_passkey() {
   local _m=""
   local _date=$(date +%Y-%m-%d)
 
-  if ! test -r "${sp_p_db}/${sp_p_sqlite}${sp_g_accdb}${sp_s_sqlite}" ; then
+  if ! test -r "${sp_p_sql}/${sp_p_sqlite}${sp_g_accdb}${sp_s_sqlite}" ; then
     sp_f_err "database"
     return ${_FALSE_}
   fi
