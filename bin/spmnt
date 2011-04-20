@@ -21,7 +21,7 @@ for i in "mid" "key" ; do
   if test -r "${mf}" ; then
     efsmnt ${_f} -m "ssh${i}"
   else
-    echo "mounted ${mf}"
+    echo "mounted ${mf%%.noenc}"
   fi
 done
 
@@ -30,5 +30,5 @@ mf="${!f}/${sp_p_sqlite}.noenc"
 if test -r "${mf}" ; then
   efsmnt ${_f} -m "sqlite"
 else
-  echo "mounted ${mf}"
+  echo "mounted ${mf%%.noenc}"
 fi
