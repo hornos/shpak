@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# header
+# ------------------------------------------------
+. $(dirname ${0})/../lib/h.sh
+
+# usage
+# ------------------------------------------------
+function __usage() {
+  echo "Usage: ${sp_g_bn} -s src"
+}
+
+# options
+# ------------------------------------------------
+_src=""
+
+if test $# -eq 0 ; then
+  __usage
+  exit 1
+fi
+
+if test "${1}" = "-h" ; then
+  __usage
+  exit 1
+fi
+
+while getopts hs: opt; do
+  case "$opt" in
+    s) _src=$OPTARG;;
+    h) __usage; exit 1;;
+  esac
+done
+
+# main
+_rm=false
+if test "${_src##http}" != "${_src}" ; then
+  _rm=true
+fi
+
+_csum=( md5 sha1 rmd160 )
+
+if ! test -z "${_src}" ; then
+  if ${_rm} ; then
+    _bn_src=$(basename "${_src}")
+  else
+    _bn_src="${_src}"
+  fi
+
+  if ${_rm} ; then
+    wget -q -O "${_bn_src}" "${_src}"
+  fi
+
+  for i in "${_csum[@]}" ; do
+    openssl ${i} "${_bn_src}"
+  done
+
+  if ${_rm} ; then
+    rm -f "${_bn_src}"
+  fi
+  exit 0
+fi
