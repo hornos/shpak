@@ -23,6 +23,16 @@ function sp_f_passkey() {
     return ${_FALSE_}
   fi
 
+  ### list
+  _m="List"
+  if test "${_p}" = "l" ; then
+    _q=$(sp_f_slquery "${sp_g_accdb}" "SELECT acc FROM ${sp_g_acctab}" | sort)
+    for _i in ${_q} ; do
+      echo ${_i}
+    done
+    return ${_TRUE_}
+  fi
+
   if test -z "${_a}" ; then
     return ${_FALSE_}
   fi

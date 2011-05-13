@@ -24,14 +24,18 @@ elif test $# -eq 1 ; then
     sp_f_passdb
     exit $?
   fi
+  if test "${1}" == "-s" ; then
+    _p="l"
+  fi
   _a="${1}"
 else
-  while getopts a:l:hpd o; do
+  while getopts a:l:hpds o; do
     case "$o" in
       a) _a=$OPTARG;;
       l) _l=$OPTARG;;
       p) _p="u";;
       d) _p="d";;
+      s) _p="l";;
       h) __usage; exit 1;;
     esac
   done
