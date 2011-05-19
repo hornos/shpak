@@ -13,7 +13,7 @@ _q=true
 
 if test "${1}" = "-h" ; then
   __usage
-  return ${_FALSE_}
+  exit ${_FALSE_}
 fi
 if test -n "${1}" ; then
   _l=${1}
