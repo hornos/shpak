@@ -235,6 +235,15 @@ function sp_f_runprg() {
   sp_f_stt "Running: ${_prg}"
   echo "${_program}"
 
+  # set ld libs
+  if ! test -z "${LDLIB}" ; then
+    if test -z "${LD_LIBRARY_PATH}" ; then
+      export LD_LIBRARY_PATH=${LDLIB}
+    else
+      export LD_LIBRARY_PATH=${LDLIB}:${LD_LIBRARY_PATH}
+    fi
+  fi
+
   local _inp=$(sp_f_inm "${MAININPUT}")
   if sp_f_ird "${MAININPUT}" ; then
     ${_program} < "${_inp}" >& "${_out}"
