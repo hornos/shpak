@@ -246,9 +246,17 @@ function sp_f_runprg() {
 
   local _inp=$(sp_f_inm "${MAININPUT}")
   if sp_f_ird "${MAININPUT}" ; then
-    ${_program} < "${_inp}" >& "${_out}"
+    if ! test -z "${PRELOAD}" ; then
+      LD_PRELOAD="${PRELOAD}" ${_program} < "${_inp}" >& "${_out}"
+    else
+      ${_program} < "${_inp}" >& "${_out}"
+    fi
   else
-    ${_program} >& "${_out}"
+    if ! test -z "${PRELOAD}" ; then
+      LD_PRELOAD="${PRELOAD}" ${_program} >& "${_out}"
+    else
+      ${_program} >& "${_out}"
+    fi
   fi
   _r=$?
 
