@@ -110,6 +110,13 @@ function sp_f_jobsub() {
       echo "export QUEUE_MAIL_TO=${QUEUE_MAIL_TO}" >> "${_p_qbat}"
     fi
 
+# modules
+    if ! test -z "${MODULES}" ; then
+      for m in ${MODULES} ; do
+        echo "module load ${m}" >> "${_p_qbat}"
+      done
+    fi
+
 # MPI
     if test "${HYBMPI}" = "on" ; then
       echo "export HYBMPI_MPIRUN_OPTS=\"-np ${_sockets} -npernode ${_sckts}\"" >> "${_p_qbat}"
