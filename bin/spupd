@@ -35,6 +35,7 @@ function __usage() {
 
 # options -----------------------------------------------------------------------
 _m="default"
+_f=false
 if test $# -eq 0 ; then
   local_update
 elif test $# -eq 1 ; then
@@ -42,12 +43,19 @@ elif test $# -eq 1 ; then
     __usage
     exit 1
   fi
+  if test "${1}" = "-f" ; then
+    _f=true
+    local_update
+    exit $?
+  fi
   _m=${1}
   remote_update
+  exit $?
 else
   while getopts hm:c: o; do
     case "$o" in
       m) _m=$OPTARG;;
+      f) _f=true;;
       h) __usage; exit 1;;
     esac
   done
