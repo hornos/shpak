@@ -6,7 +6,7 @@
 function remote_myqstat() {
   local _hi
   local _hibn
-  for _hi in ${sp_p_mid}/${sp_p_ssh_key}** ; do
+  for _hi in ${sp_p_mid}/${sp_p_ssh_key}* ; do
     _hibn=$(basename ${_hi})
     sp_g_cluster=""
     . ${_hi}
