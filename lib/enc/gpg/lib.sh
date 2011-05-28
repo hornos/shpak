@@ -20,3 +20,29 @@ function sp_f_gpgdec() {
   sp_f_gpg___ "${1}" true
 }
 
+function sp_f_gpgfp() {
+  local _u="${1}"
+  ${sp_b_gpg} --fingerprint "${_u}"
+}
+
+function sp_f_gpgfpe() {
+  local _u="${1}"
+  local _e=$(sp_f_gpgfp "${_u}" | awk '/uid/{print}')
+  _e=${_e%%>*}
+  _e=${_e##*<}
+  echo "${_e}"
+}
+
+function sp_f_gpghnc() {
+  local _s="${1}"
+  local _e="${2}"
+  local _h=${3:-false}
+  local _r=""
+  if ! test -r "${_s}" || test -z "${_e}" ; then
+    return 1
+  fi
+  if ${_h} ; then
+    _r="hidden-"
+  fi
+  ${sp_b_gpg} -o - --armor --encrypt --${_r}recipient "${_e}" "${_s}"
+}

@@ -1,0 +1,90 @@
+#!/bin/bash
+
+# header ------------------------------------------------------------------------
+. $(dirname ${0})/../lib/h.sh
+sp_f_load ssh
+sp_f_load enc/gpg
+
+function __usage() {
+  echo "Usage: ${sp_g_bn} -r your@mail.address -n \"Your Name\" -m host -k \"GPG Key\""
+}
+
+_r=
+_m="default"
+_k=""
+_f=false
+
+# options -----------------------------------------------------------------------
+while getopts r:n:m:k:hf o; do
+  case "$o" in
+    r) _r=$OPTARG;;
+    m) _m=$OPTARG;;
+    k) _k=$OPTARG;;
+    n) _n=$OPTARG;;
+    f) _f=true;;
+    h) __usage; exit 1;;
+  esac
+done
+
+# main --------------------------------------------------------------------------
+if test -z "${_r}" || test -z "${_m}" || test -z "${_k}" || test -z "${_n}" ; then
+  __usage
+  exit 1
+fi
+sp_f_ptt "${sp_g_bn}"
+
+_host="${_m}"
+_mid="${sp_p_mid}/${sp_p_ssh_key}${_host}"
+if ! ${_f} ; then
+  if test -r "${_mid}" ; then
+    echo "Delete ${_mid} manually!"
+    exit 1
+  fi
+fi
+
+sp_f_yesno "Create request for ${_host}?"
+if test $? -gt 0 ; then
+  exit 1
+fi
+echo > "${_mid}"
+
+sp_f_stt "1. Creating your keypair"
+echo "A private/public keypair will be created for you. The private part "
+echo "is your password. Do not share!"
+sshkey -m "${_host}"
+
+sp_f_stt "2. Creating your request"
+echo "You can explicitly check our credentials."
+echo
+_e=$(sp_f_gpgfpe "${_k}")
+if test -z "${_e}" ; then
+  echo
+  exit 1
+fi
+
+_key="$(sp_f_ssh_p_key ${_host})"
+_key=${_key%%${sp_s_key}}${sp_s_pkey}
+if ! test -r "${_key}" ; then
+  echo
+  exit 1
+fi
+
+_e_key=$(sp_f_gpghnc "${_key}" "${_k}")
+if test $? -gt 0 ; then
+  echo
+  exit 1
+fi
+
+sp_f_stt "Sending your request"
+echo "Check your credentials!"
+echo
+echo "Host: ${_host}"
+echo "Public key: ${_key}"
+echo "Your Mail: ${_r}"
+echo "Your Name: ${_n}"
+sp_f_yesno "Correct?"
+if test $? -gt 0 ; then
+  exit 1
+fi
+
+echo "${_e_key}" | mail -s "SKYNET LOGIN REQUEST" "${_e}" -F "Skynet User" -f "${_r}"
