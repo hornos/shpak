@@ -117,6 +117,13 @@ function sp_f_jobsub() {
       done
     fi
 
+# jobsetup
+    if ! test -z "${SETUPS}" ; then
+      for m in ${SETUPS} ; do
+        echo "source ${m}" >> "${_p_qbat}"
+      done
+    fi
+
 # MPI
     if test "${HYBMPI}" = "on" ; then
       echo "export HYBMPI_MPIRUN_OPTS=\"-np ${_sockets} -npernode ${_sckts}\"" >> "${_p_qbat}"
