@@ -110,17 +110,17 @@ function sp_f_jobsub() {
       echo "export QUEUE_MAIL_TO=${QUEUE_MAIL_TO}" >> "${_p_qbat}"
     fi
 
-# modules
-    if ! test -z "${MODULES}" ; then
-      for m in ${MODULES} ; do
-        echo "module load ${m}" >> "${_p_qbat}"
-      done
-    fi
-
 # jobsetup
     if ! test -z "${SETUPS}" ; then
       for m in ${SETUPS} ; do
         echo "source ${m}" >> "${_p_qbat}"
+      done
+    fi
+
+# modules
+    if ! test -z "${MODULES}" ; then
+      for m in ${MODULES} ; do
+        echo "module load ${m}" >> "${_p_qbat}"
       done
     fi
 
