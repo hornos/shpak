@@ -146,7 +146,7 @@ function sp_f_jobsub() {
       _cpubind=""
     fi
     if ! test -z "${_cpubind}" ; then
-      echo "CPU Binding: ${_cpubind}"
+      echo "CPU Binding: ${CPUBIND}"
     fi
 
     # new MPIOMP option
