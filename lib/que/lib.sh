@@ -136,13 +136,14 @@ function sp_f_jobsub() {
 
     # CPU bind
     _cpubind=""
-    if test "${CPUBIND}" = "yes" ; then
-      if test "${MPIOMP}" = "yes" ; then
-        _cpubind="-bysocket -bind-to-socket"
-      else
-        _cpubind="-bycore -bind-to-core"
-      fi
+    if test "${CPUBIND}" = "socket" ; then
+      _cpubind="-bysocket -bind-to-socket"
+    elif test "${CPUBIND}" = "core" ; then
+      _cpubind="-bycore -bind-to-core"
+    else
+      _cpubind=""
     fi
+
     # new MPIOMP option
     if test "${MPIOMP}" = "yes" ; then
       echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_sockets} -npernode ${_sckts} ${_cpubind}\"" >> "${_p_qbat}"
