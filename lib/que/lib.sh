@@ -145,11 +145,14 @@ function sp_f_jobsub() {
     fi
 
     # new MPIOMP option
+    # SGI MPT needs MACHINES set by the scheduler
     if test "${MPIOMP}" = "yes" ; then
       echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_sockets} -npernode ${_sckts} ${_cpubind}\"" >> "${_p_qbat}"
+      echo "export MPIOMP_MPT_OPTS=\" \${MACHINES} ${_sckts}\"" >> "${_p_qbat}"
     else
       _threads=${_thrds}
       echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_slots} -npernode ${_tasks} ${_cpubind}\""   >> "${_p_qbat}"
+      echo "export MPIOMP_MPT_OPTS=\" \${MACHINES} ${_tasks}\"" >> "${_p_qbat}"
     fi
 
     # openMP & Intel MKL
