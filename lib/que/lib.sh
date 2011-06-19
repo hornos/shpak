@@ -161,6 +161,9 @@ function sp_f_jobsub() {
     fi
 
     # MPI flavor
+    if test -z "${MPIRUN}" ; then
+      MPIRUN="openmpi"
+    if
     if test "${MPIRUN}" = "sgimpt" ; then
       echo "export MPIOMP_MPIRUN_OPTS=\"MPIOMP_SGIMPT_OPTS\"" >> "${_p_qbat}"
     elif test "${MPIRUN}" = "openmpi" ; then
@@ -168,6 +171,7 @@ function sp_f_jobsub() {
     else
       echo "export MPIOMP_MPIRUN_OPTS=\"MPIOMP_OPENMPI_OPTS\"" >> "${_p_qbat}"
     fi
+    echo "MPI: ${MPIRUN}"
 
     # openMP & Intel MKL
     echo "export OMP_NUM_THREADS=${_threads}" >> "${_p_qbat}"
