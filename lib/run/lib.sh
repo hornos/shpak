@@ -237,6 +237,7 @@ function sp_f_runprg() {
 
   # set ld libs
   if ! test -z "${LDLIB}" ; then
+    echo "LD_LIBRARY_PATH: ${LDLIB}"
     if test -z "${LD_LIBRARY_PATH}" ; then
       export LD_LIBRARY_PATH=${LDLIB}
     else
@@ -247,12 +248,14 @@ function sp_f_runprg() {
   local _inp=$(sp_f_inm "${MAININPUT}")
   if sp_f_ird "${MAININPUT}" ; then
     if ! test -z "${PRELOAD}" ; then
+      echo "LD_PRELOAD: ${PRELOAD}"
       LD_PRELOAD="${PRELOAD}" ${_program} < "${_inp}" >& "${_out}"
     else
       ${_program} < "${_inp}" >& "${_out}"
     fi
   else
     if ! test -z "${PRELOAD}" ; then
+      echo "LD_PRELOAD: ${PRELOAD}"
       LD_PRELOAD="${PRELOAD}" ${_program} >& "${_out}"
     else
       ${_program} >& "${_out}"
