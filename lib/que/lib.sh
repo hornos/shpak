@@ -160,10 +160,10 @@ function sp_f_jobsub() {
       echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_tasks} \"" >> "${_p_qbat}"
     fi
 
-    # MPI flavor
+    # MPI engine
     if test -z "${MPIRUN}" ; then
       MPIRUN="openmpi"
-    if
+    fi
     if test "${MPIRUN}" = "sgimpt" ; then
       echo "export MPIOMP_MPIRUN_OPTS=\"MPIOMP_SGIMPT_OPTS\"" >> "${_p_qbat}"
     elif test "${MPIRUN}" = "openmpi" ; then
