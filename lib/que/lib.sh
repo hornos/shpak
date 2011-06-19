@@ -125,12 +125,32 @@ function sp_f_jobsub() {
     fi
 
 # MPI
+    # depricated
     if test "${HYBMPI}" = "on" ; then
+      echo "HYBMPI is depricated, use MPIOMP"
       echo "export HYBMPI_MPIRUN_OPTS=\"-np ${_sockets} -npernode ${_sckts}\"" >> "${_p_qbat}"
     else
       _threads=${_thrds}
       echo "export HYBMPI_MPIRUN_OPTS=\"-np ${_slots} -npernode ${_tasks}\""   >> "${_p_qbat}"
     fi
+
+    # CPU bind
+    _cpubind=""
+    if test "${CPUBIND}" = "yes" ; then
+      if test "${MPIOMP}" = "yes" ; then
+        _cpubind="-bysocket -bind-to-socket"
+      else
+        _cpubind="-bycore -bind-to-core"
+      fi
+    fi
+    # new MPIOMP option
+    if test "${MPIOMP}" = "yes" ; then
+      echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_sockets} -npernode ${_sckts} ${_cpubind}\"" >> "${_p_qbat}"
+    else
+      _threads=${_thrds}
+      echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_slots} -npernode ${_tasks} ${_cpubind}\""   >> "${_p_qbat}"
+    fi
+
     # openMP & Intel MKL
     echo "export OMP_NUM_THREADS=${_threads}" >> "${_p_qbat}"
     echo "export MKL_NUM_THREADS=${_threads}" >> "${_p_qbat}"
