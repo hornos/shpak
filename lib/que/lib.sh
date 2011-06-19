@@ -157,7 +157,7 @@ function sp_f_jobsub() {
     else
       _threads=${_thrds}
       echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_slots} -npernode ${_tasks} ${_cpubind}\""   >> "${_p_qbat}"
-      echo "export MPIOMP_SGIMPT_OPTS=\" \${MACHINES} ${_tasks}\"" >> "${_p_qbat}"
+      echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_tasks} \"" >> "${_p_qbat}"
     fi
 
     # MPI flavor
