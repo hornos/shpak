@@ -110,16 +110,18 @@ function sp_f_jobsub() {
       echo "export QUEUE_MAIL_TO=${QUEUE_MAIL_TO}" >> "${_p_qbat}"
     fi
 
-# jobsetup
+# setups
     if ! test -z "${SETUPS}" ; then
-      for m in ${SETUPS} ; do
-        echo "source ${m}" >> "${_p_qbat}"
+      for s in ${SETUPS} ; do
+        echo "Setup: ${s}"
+        echo "source ${s}" >> "${_p_qbat}"
       done
     fi
 
 # modules
     if ! test -z "${MODULES}" ; then
       for m in ${MODULES} ; do
+        echo "Module: ${m}"
         echo "module load ${m}" >> "${_p_qbat}"
       done
     fi
@@ -127,7 +129,7 @@ function sp_f_jobsub() {
 # MPI
     # depricated
     if test "${HYBMPI}" = "on" ; then
-      echo "HYBMPI is depricated, use MPIOMP"
+      echo "Warning: HYBMPI is depricated, use MPIOMP"
       echo "export HYBMPI_MPIRUN_OPTS=\"-np ${_sockets} -npernode ${_sckts}\"" >> "${_p_qbat}"
     else
       _threads=${_thrds}
@@ -143,16 +145,28 @@ function sp_f_jobsub() {
     else
       _cpubind=""
     fi
+    if ! test -z "${_cpubind}" ; then
+      echo "CPU Binding: ${_cpubind}"
+    fi
 
     # new MPIOMP option
     # SGI MPT needs MACHINES set by the scheduler
     if test "${MPIOMP}" = "yes" ; then
       echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_sockets} -npernode ${_sckts} ${_cpubind}\"" >> "${_p_qbat}"
-      echo "export MPIOMP_MPT_OPTS=\" \${MACHINES} ${_sckts}\"" >> "${_p_qbat}"
+      echo "export MPIOMP_SGIMPT_OPTS=\" \${MACHINES} ${_sckts}\"" >> "${_p_qbat}"
     else
       _threads=${_thrds}
       echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_slots} -npernode ${_tasks} ${_cpubind}\""   >> "${_p_qbat}"
-      echo "export MPIOMP_MPT_OPTS=\" \${MACHINES} ${_tasks}\"" >> "${_p_qbat}"
+      echo "export MPIOMP_SGIMPT_OPTS=\" \${MACHINES} ${_tasks}\"" >> "${_p_qbat}"
+    fi
+
+    # MPI flavor
+    if test "${MPIRUN}" = "sgimpt" ; then
+      echo "export MPIOMP_MPIRUN_OPTS=\"MPIOMP_SGIMPT_OPTS\""
+    elif test "${MPIRUN}" = "openmpi" ; then
+      echo "export MPIOMP_MPIRUN_OPTS=\"MPIOMP_OPENMPI_OPTS\""
+    else
+      echo "export MPIOMP_MPIRUN_OPTS=\"MPIOMP_OPENMPI_OPTS\""
     fi
 
     # openMP & Intel MKL
