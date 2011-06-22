@@ -136,8 +136,8 @@ function sp_f_jobsub() {
       echo "export HYBMPI_MPIRUN_OPTS=\"-np ${_slots} -npernode ${_tasks}\""   >> "${_p_qbat}"
     fi
 
-    # CPU bind
-    _cpubind=""
+    # Open MPI CPU bind
+    local _cpubind=""
     if test "${CPUBIND}" = "socket" ; then
       _cpubind="-bysocket -bind-to-socket"
     elif test "${CPUBIND}" = "core" ; then
@@ -146,18 +146,25 @@ function sp_f_jobsub() {
       _cpubind=""
     fi
     if ! test -z "${_cpubind}" ; then
-      echo "CPU Binding: ${CPUBIND}"
+      echo "Open MPI CPU Binding: ${CPUBIND}"
+    fi
+
+    # SGI Perfboost
+    local _pboost=""
+    if ! test -z "${PBOOST}" ; then
+      echo "SGI Perfboost: ${PBOOST}"
+      _pboost="perfboost -${PBOOST}"
     fi
 
     # new MPIOMP option
     # SGI MPT needs MACHINES set by the scheduler
     if test "${MPIOMP}" = "yes" ; then
       echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_sockets} -npernode ${_sckts} ${_cpubind}\"" >> "${_p_qbat}"
-      echo "export MPIOMP_SGIMPT_OPTS=\" \${MACHINES} ${_sckts}\"" >> "${_p_qbat}"
+      echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_sckts} ${_pboost}\"" >> "${_p_qbat}"
     else
       _threads=${_thrds}
       echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_slots} -npernode ${_tasks} ${_cpubind}\""   >> "${_p_qbat}"
-      echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_tasks} \"" >> "${_p_qbat}"
+      echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_tasks} ${_pboost}\"" >> "${_p_qbat}"
     fi
 
     # MPI engine
