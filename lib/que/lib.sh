@@ -151,7 +151,7 @@ function sp_f_jobsub() {
 
     # SGI MPT dplace
     local _dplace=""
-    if ! test -z "{DPLACE}" ; then
+    if ! test -z "${DPLACE}" ; then
       _dplace="dplace ${DPLACE}"
     fi
     if ! test -z "${_dplace}" ; then
