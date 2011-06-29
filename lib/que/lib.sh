@@ -146,7 +146,16 @@ function sp_f_jobsub() {
       _cpubind=""
     fi
     if ! test -z "${_cpubind}" ; then
-      echo "Open MPI CPU Binding: ${CPUBIND}"
+      echo "Open MPI CPU Binding: ${_cpubind}"
+    fi
+
+    # SGI MPT dplace
+    local _dplace=""
+    if ! test -z "{DPLACE}" ; then
+      _dplace="dplace ${DPLACE}"
+    fi
+    if ! test -z "${_dplace}" ; then
+      echo "SGI MPI CPU Binding: ${_dplace}"
     fi
 
     # SGI Perfboost
@@ -160,11 +169,11 @@ function sp_f_jobsub() {
     # SGI MPT needs MACHINES set by the scheduler
     if test "${MPIOMP}" = "yes" ; then
       echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_sockets} -npernode ${_sckts} ${_cpubind}\"" >> "${_p_qbat}"
-      echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_sckts} ${_pboost}\"" >> "${_p_qbat}"
+      echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_sckts} ${_dplace} ${_pboost}\"" >> "${_p_qbat}"
     else
       _threads=${_thrds}
       echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_slots} -npernode ${_tasks} ${_cpubind}\""   >> "${_p_qbat}"
-      echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_tasks} ${_pboost}\"" >> "${_p_qbat}"
+      echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_tasks} ${_dplace} ${_pboost}\"" >> "${_p_qbat}"
     fi
 
     # MPI engine
