@@ -165,22 +165,22 @@ function sp_f_jobsub() {
       _pboost="perfboost -${PBOOST}"
     fi
 
-    # SGI Perfcatch
-    local _pcatch=""
-    if ! test -z "${PCATCH}" ; then
-      echo "SGI MPI Perfcatch: ${PCATCH}"
-      _pcatch="${PCATCH}"
+    # Profiler
+    local _prof=""
+    if ! test -z "${PROFILER}" ; then
+      echo "MPI Profiler: ${PROFILER}"
+      _prof="${PROFILER}"
     fi
 
     # new MPIOMP option
     # SGI MPT needs MACHINES set by the scheduler
     if test "${MPIOMP}" = "yes" ; then
-      echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_sockets} -npernode ${_sckts} ${_cpubind}\"" >> "${_p_qbat}"
-      echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_sckts} ${_pcatch} ${_dplace} ${_pboost}\"" >> "${_p_qbat}"
+      echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_sockets} -npernode ${_sckts} ${_cpubind} ${_prof}\"" >> "${_p_qbat}"
+      echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_sckts} ${_prof} ${_dplace} ${_pboost}\"" >> "${_p_qbat}"
     else
       _threads=${_thrds}
-      echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_slots} -npernode ${_tasks} ${_cpubind}\""   >> "${_p_qbat}"
-      echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_tasks} ${_pcatch} ${_dplace} ${_pboost}\"" >> "${_p_qbat}"
+      echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_slots} -npernode ${_tasks} ${_cpubind} ${_prof}\""   >> "${_p_qbat}"
+      echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_tasks} ${_prof} ${_dplace} ${_pboost}\"" >> "${_p_qbat}"
     fi
 
     # MPI engine
