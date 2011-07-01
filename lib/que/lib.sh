@@ -58,7 +58,7 @@ function sp_f_jobsub() {
 
 # write job control file
   echo "#!${sp_p_qsh}"      > "${_p_qbat}"
-  echo "## ${_tt}"         >> "${_p_qbat}"
+  echo "### DATE ${_tt}"   >> "${_p_qbat}"
 
 # resource parameters
   local _nodes=${NODES:-1}
@@ -113,7 +113,7 @@ function sp_f_jobsub() {
 # setups
     if ! test -z "${SETUPS}" ; then
       for s in ${SETUPS} ; do
-        echo "Setup: ${s}"
+        echo "Source: ${s}"
         echo "source ${s}" >> "${_p_qbat}"
       done
     fi
@@ -161,19 +161,26 @@ function sp_f_jobsub() {
     # SGI Perfboost
     local _pboost=""
     if ! test -z "${PBOOST}" ; then
-      echo "SGI Perfboost: ${PBOOST}"
+      echo "SGI MPI Perfboost: ${PBOOST}"
       _pboost="perfboost -${PBOOST}"
+    fi
+
+    # SGI Perfcatch
+    local _pcatch=""
+    if ! test -z "${PCATCH}" ; then
+      echo "SGI MPI Perfcatch: ${PCATCH}"
+      _pcatch="${PCATCH}"
     fi
 
     # new MPIOMP option
     # SGI MPT needs MACHINES set by the scheduler
     if test "${MPIOMP}" = "yes" ; then
       echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_sockets} -npernode ${_sckts} ${_cpubind}\"" >> "${_p_qbat}"
-      echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_sckts} ${_dplace} ${_pboost}\"" >> "${_p_qbat}"
+      echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_sckts} ${pcatch} ${_dplace} ${_pboost}\"" >> "${_p_qbat}"
     else
       _threads=${_thrds}
       echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_slots} -npernode ${_tasks} ${_cpubind}\""   >> "${_p_qbat}"
-      echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_tasks} ${_dplace} ${_pboost}\"" >> "${_p_qbat}"
+      echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_tasks} ${pcatch} ${_dplace} ${_pboost}\"" >> "${_p_qbat}"
     fi
 
     # MPI engine
@@ -187,7 +194,7 @@ function sp_f_jobsub() {
     else
       echo "export MPIOMP_MPIRUN_OPTS=\"MPIOMP_OPENMPI_OPTS\"" >> "${_p_qbat}"
     fi
-    echo "MPI: ${MPIRUN}"
+    echo "Mpirun: ${MPIRUN}"
 
     # openMP & Intel MKL
     echo "export OMP_NUM_THREADS=${_threads}" >> "${_p_qbat}"
