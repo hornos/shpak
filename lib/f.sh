@@ -383,9 +383,11 @@ function sp_f_ptt() {
 function sp_f_ird() {
   local _s="${1}"
   local _p="${2:-<}"
-  if test "${_s:0:1}" = "${_p}" ; then 
-    return ${_TRUE_}
-  fi
+  for i in "${_p}" "!" "@" ; do
+    if test "${_s:0:1}" = "${i}" ; then 
+      return ${_TRUE_}
+    fi
+  done
   return ${_FALSE_}
 }
 
@@ -397,11 +399,13 @@ function sp_f_ird() {
 function sp_f_inm() {
   local _s="${1}"
   local _p="${2:-<}"
-  if sp_f_ird "${_s}" "${_p}" ; then
-    echo "${_s:1}"
-  else
-    echo "${_s}"
-  fi
+  for i in "${_p}" "!" "@" ; do
+    if sp_f_ird "${_s}" "${i}" ; then
+      echo "${_s:1}"
+      return ${_TRUE_}
+    fi
+  done
+  echo "${_s}"
   return ${_TRUE_}
 }
 

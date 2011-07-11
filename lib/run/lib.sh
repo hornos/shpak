@@ -233,7 +233,7 @@ function sp_f_runprg() {
   sp_f_run_mail "Started"
 
   sp_f_stt "Running: ${_prg}"
-  echo "${_program}"
+  # echo "${_program}"
 
   # set ld libs
   if ! test -z "${LDLIB}" ; then
@@ -249,9 +249,21 @@ function sp_f_runprg() {
   if sp_f_ird "${MAININPUT}" ; then
     if ! test -z "${PRELOAD}" ; then
       echo "LD_PRELOAD: ${PRELOAD}"
-      LD_PRELOAD="${PRELOAD}" ${_program} < "${_inp}" >& "${_out}"
+      if sp_f_ird "${MAININPUT}" "!" ; then
+        LD_PRELOAD="${PRELOAD}" ${_program} "${_inp}" >& "${_out}"
+        echo "LD_PRELOAD=${PRELOAD} ${_program} ${_inp} >& ${_out}"
+      else
+        LD_PRELOAD="${PRELOAD}" ${_program} < "${_inp}" >& "${_out}"
+        echo "LD_PRELOAD=${PRELOAD} ${_program} < ${_inp} >& ${_out}"
+      fi
     else
-      ${_program} < "${_inp}" >& "${_out}"
+      if sp_f_ird "${MAININPUT}" "!" ; then
+        ${_program} "${_inp}" >& "${_out}"
+        echo "${_program} ${_inp} >& ${_out}"
+      else
+        ${_program} < "${_inp}" >& "${_out}"
+        echo "${_program} < ${_inp} >& ${_out}"
+      fi
     fi
   else
     if ! test -z "${PRELOAD}" ; then
@@ -405,6 +417,7 @@ function sp_f_run_prepare_libs() {
   local _isd=${1}
   local _p_wdir="${2}"
   local _p_sdir="${3}"
+  local _s_l="${4}"
   local _p_if=""
   local _dst=""
   local _lib=""
@@ -421,6 +434,7 @@ function sp_f_run_prepare_libs() {
       _dst=""
     else
       _dst=${__lib%%.*${_s_l##.}*}${_s_l}
+      _dst=${_dst##*/}
     fi
     sp_f_run_bcast ${_isd} "${_p_wdir}" "${_p_sdir}" "${_p_if}" "${_dst}"
   done
