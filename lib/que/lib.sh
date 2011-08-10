@@ -127,15 +127,6 @@ function sp_f_jobsub() {
     fi
 
 # MPI
-    # depricated
-    if test "${HYBMPI}" = "on" ; then
-      echo "Warning: HYBMPI is depricated, use MPIOMP"
-      echo "export HYBMPI_MPIRUN_OPTS=\"-np ${_sockets} -npernode ${_sckts}\"" >> "${_p_qbat}"
-    else
-      _threads=${_thrds}
-      echo "export HYBMPI_MPIRUN_OPTS=\"-np ${_slots} -npernode ${_tasks}\""   >> "${_p_qbat}"
-    fi
-
     # Open MPI CPU bind
     local _cpubind=""
     if test "${CPUBIND}" = "socket" ; then
