@@ -181,7 +181,8 @@ function sp_f_vasp_prepare() {
       sp_f_err_fnf "${_p_if}"
       return ${_FALSE_}
     fi
-    _dst=${_oin##${_pfx}}
+    _dst=$(basename "${_oin}")
+    _dst=${_dst##${_pfx}}
     _dst=${_dst%%${sp_s_z}}
      sp_f_run_bcast ${_isd} "${_p_wdir}" "${_p_sdir}" "${_p_if}" "${_dst}"
   done
