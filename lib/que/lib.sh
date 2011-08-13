@@ -176,11 +176,11 @@ function sp_f_jobsub() {
     # SGI MPT needs MACHINES set by the scheduler
     if test "${MPIOMP}" = "yes" ; then
       echo "export MPIOMP_OPENMPI_OPTS=\"${_verbose} -np ${_sockets} -npernode ${_sckts} ${_cpubind} ${_prof}\"" >> "${_p_qbat}"
-      echo "export MPIOMP_SGIMPT_OPTS=\"\${_verbose} ${MACHINES} ${_sckts} ${_prof} ${_place} ${_pboost}\"" >> "${_p_qbat}"
+      echo "export MPIOMP_SGIMPT_OPTS=\"${_verbose} \${MACHINES} ${_sckts} ${_prof} ${_place} ${_pboost}\"" >> "${_p_qbat}"
     else
       _threads=${_thrds}
       echo "export MPIOMP_OPENMPI_OPTS=\"${_verbose} -np ${_slots} -npernode ${_tasks} ${_cpubind} ${_prof}\""   >> "${_p_qbat}"
-      echo "export MPIOMP_SGIMPT_OPTS=\"\${_verbose} ${MACHINES} ${_tasks} ${_prof} ${_place} ${_pboost}\"" >> "${_p_qbat}"
+      echo "export MPIOMP_SGIMPT_OPTS=\"${_verbose} \${MACHINES} ${_tasks} ${_prof} ${_place} ${_pboost}\"" >> "${_p_qbat}"
     fi
 
     # MPI engine
