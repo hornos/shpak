@@ -127,6 +127,11 @@ function sp_f_jobsub() {
     fi
 
 # MPI
+    # Verbose
+    local _verbose=""
+    if test "${VERBOSE}" = "yes" ; then
+      _verbose="-v"
+    fi
     # Open MPI CPU bind
     local _cpubind=""
     if test "${CPUBIND}" = "socket" ; then
@@ -170,12 +175,12 @@ function sp_f_jobsub() {
     # new MPIOMP option
     # SGI MPT needs MACHINES set by the scheduler
     if test "${MPIOMP}" = "yes" ; then
-      echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_sockets} -npernode ${_sckts} ${_cpubind} ${_prof}\"" >> "${_p_qbat}"
-      echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_sckts} ${_prof} ${_place} ${_pboost}\"" >> "${_p_qbat}"
+      echo "export MPIOMP_OPENMPI_OPTS=\"${_verbose} -np ${_sockets} -npernode ${_sckts} ${_cpubind} ${_prof}\"" >> "${_p_qbat}"
+      echo "export MPIOMP_SGIMPT_OPTS=\"\${_verbose} ${MACHINES} ${_sckts} ${_prof} ${_place} ${_pboost}\"" >> "${_p_qbat}"
     else
       _threads=${_thrds}
-      echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_slots} -npernode ${_tasks} ${_cpubind} ${_prof}\""   >> "${_p_qbat}"
-      echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_tasks} ${_prof} ${_place} ${_pboost}\"" >> "${_p_qbat}"
+      echo "export MPIOMP_OPENMPI_OPTS=\"${_verbose} -np ${_slots} -npernode ${_tasks} ${_cpubind} ${_prof}\""   >> "${_p_qbat}"
+      echo "export MPIOMP_SGIMPT_OPTS=\"\${_verbose} ${MACHINES} ${_tasks} ${_prof} ${_place} ${_pboost}\"" >> "${_p_qbat}"
     fi
 
     # MPI engine
@@ -183,6 +188,16 @@ function sp_f_jobsub() {
       MPIRUN="openmpi"
     fi
     if test "${MPIRUN}" = "sgimpt" ; then
+      if test "${VERBOSE}" = "yes" ; then
+        echo "export MPI_VERBOSE2=1" >> "${_p_qbat}"
+        echo "export MPI_IB_VERBOSE=1" >> "${_p_qbat}"
+        echo "export MPI_IB_VERBOSE3=1" >> "${_p_qbat}"
+        echo "export MPI_SHARED_VERBOSE=1" >> "${_p_qbat}"
+        echo "export MPI_XPMEM_VERBOSE=1" >> "${_p_qbat}"
+        echo "export MPI_DSM_VERBOSE=1" >> "${_p_qbat}"
+        echo "export MPI_SHARED_VERBOSE=1" >> "${_p_qbat}"
+        echo "export MPI_COLL_OPT_VERBOSE=1" >> "${_p_qbat}"
+      fi
       echo "export MPIOMP_MPIRUN_OPTS=\"MPIOMP_SGIMPT_OPTS\"" >> "${_p_qbat}"
     elif test "${MPIRUN}" = "openmpi" ; then
       echo "export MPIOMP_MPIRUN_OPTS=\"MPIOMP_OPENMPI_OPTS\"" >> "${_p_qbat}"
