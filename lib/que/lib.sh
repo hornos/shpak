@@ -128,6 +128,8 @@ function sp_f_jobsub() {
 
 # MPI
     # Open MPI CPU bind
+    local _verbose=${VERBOSE:-0}
+
     local _cpubind=""
     if test "${CPUBIND}" = "socket" ; then
       _cpubind="-bysocket -bind-to-socket"
@@ -183,18 +185,18 @@ function sp_f_jobsub() {
       MPIRUN="openmpi"
     fi
     if test "${MPIRUN}" = "sgimpt" ; then
-      if test ${VERBOSE} -gt 0 ; then
+      if test ${_verbose} -gt 0 ; then
         echo "export MPI_VERBOSE=1"          >> "${_p_qbat}"
         echo "export MPI_DSM_VERBOSE=1"      >> "${_p_qbat}"
         echo "export MPI_DISPLAY_SETTINGS=1" >> "${_p_qbat}"
       fi
-      if test ${VERBOSE} -gt 1 ; then
+      if test ${_verbose} -gt 1 ; then
         echo "export MPI_VERBOSE2=1"         >> "${_p_qbat}"
         echo "export MPI_IB_VERBOSE=1"       >> "${_p_qbat}"
         echo "export MPI_SHARED_VERBOSE=1"   >> "${_p_qbat}"
         echo "export MPI_XPMEM_VERBOSE=1"    >> "${_p_qbat}"
       fi
-      if test ${VERBOSE} -gt 2 ; then
+      if test ${_verbose} -gt 2 ; then
         echo "export MPI_IB_VERBOSE3=1"      >> "${_p_qbat}"
         echo "export MPI_COLL_OPT_VERBOSE=1" >> "${_p_qbat}"
         echo "export MPI_STATS=1"            >> "${_p_qbat}"
