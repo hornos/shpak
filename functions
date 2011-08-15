@@ -1,0 +1,15 @@
+
+function zac() {
+  local _f="${1}"
+  local _n=${2:-25}
+  local _cat="cat"
+  if test -z "${_f}" ; then
+    return 1
+  fi
+  local _t=$(file -ib "${_f}")
+  _t=${_t##*-}
+  if test ${_t} = "gzip" ; then
+    _cat="zcat"
+  fi
+  ${_cat} "${_f}" | tail -n${_n}
+}
