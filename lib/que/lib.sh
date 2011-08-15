@@ -223,6 +223,13 @@ function sp_f_jobsub() {
       echo "export MKL_DYNAMIC=FALSE"         >> "${_p_qbat}"
     fi
 
+    # Toggle options
+    if ! test -z "${TOGGLE}" ; then
+      for i in ${TOGGLE} ; do
+        echo "export ${i}=1" >> "${_p_qbat}"
+      done
+    fi
+
 # setup command an mail
     if test "${COMMAND/*runprg*/runprg}" = "runprg" ; then
       COMMAND="${COMMAND} -s ${SCHED}"
