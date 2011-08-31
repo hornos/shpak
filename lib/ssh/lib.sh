@@ -357,8 +357,8 @@ function sp_f_sshumnt() {
 
 function sp_f_sshlmnt() {
   sp_f_ptt "${sp_g_bn}: sshfs volumes"
-  mount | grep "fusefs|fuse.sshfs" | \
-          grep -v "encfs|fuse.encfs" | \
+  mount | egrep 'fusefs|fuse.sshfs' | \
+          egrep -v 'encfs|fuse.encfs' | \
           awk '{printf "%-32s => %s\n",$3,$1}'
   return ${_TRUE_}
 }
