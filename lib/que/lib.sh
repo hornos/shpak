@@ -130,6 +130,7 @@ function sp_f_jobsub() {
     local _verbose=${VERBOSE:-0}
 
     ### Open MPI CPU bind
+    # TODO: better binding
     local _cpubind=""
     if test "${CPUBIND}" = "socket" ; then
       _cpubind="-bysocket -bind-to-socket"
@@ -140,6 +141,15 @@ function sp_f_jobsub() {
     fi
     if ! test -z "${_cpubind}" ; then
       echo "Open MPI Data Placement: ${_cpubind}"
+    fi
+
+    ### Intel MPI CPU bind
+    local _binding=""
+    if ! test -z "${BINDING}" ; then
+      _binding="-binding ${BINDING}"
+    fi
+    if ! test -z "${_binding}" ; then
+      echo "Intel MPI Data Placement: ${_binding}"
     fi
 
     ### SGI MPT dplace
@@ -175,7 +185,7 @@ function sp_f_jobsub() {
       # Open MPI
       echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_sockets} -npernode ${_sckts} ${_cpubind} ${_prof}\"" >> "${_p_qbat}"
       # Intel MPI
-      echo "export MPIOMP_INTELMPI_OPTS=\"-np ${_sockets} -perhost ${_sckts} ${_prof}\""             >> "${_p_qbat}"
+      echo "export MPIOMP_INTELMPI_OPTS=\"-np ${_sockets} -perhost ${_sckts} ${_binding} ${_prof}\"" >> "${_p_qbat}"
       # SGI MPT
       echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_sckts} ${_prof} ${_place} ${_pboost}\""      >> "${_p_qbat}"
     else
@@ -185,7 +195,7 @@ function sp_f_jobsub() {
       # Open MPI
       echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_slots} -npernode ${_tasks} ${_cpubind} ${_prof}\"" >> "${_p_qbat}"
       # Intel MPI
-      echo "export MPIOMP_INTELMPI_OPTS=\"-np ${_slots} -perhost ${_tasks} ${_prof}\""             >> "${_p_qbat}"
+      echo "export MPIOMP_INTELMPI_OPTS=\"-np ${_slots} -perhost ${_tasks} ${_binding} ${_prof}\"" >> "${_p_qbat}"
       # SGI MPT
       echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_tasks} ${_prof} ${_place} ${_pboost}\""    >> "${_p_qbat}"
     fi
@@ -223,6 +233,9 @@ function sp_f_jobsub() {
     ### Intel MPI
     elif test "${MPIRUN}" = "intelmpi" || \
          test "${MPIRUN}" = "impi"; then
+      if test ${_verbose} -gt 0 ; then
+        echo "export I_MPI_DEBUG=${_verbose}" >> "${_p_qbat}"
+      fi
       echo "export MPIOMP_MPIRUN_OPTS=\"MPIOMP_INTELMPI_OPTS\"" >> "${_p_qbat}"
     ### Fallback
     else
