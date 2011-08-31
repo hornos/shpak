@@ -126,10 +126,10 @@ function sp_f_jobsub() {
       done
     fi
 
-# MPI
-    # Open MPI CPU bind
+    ### MPI SECTION ###
     local _verbose=${VERBOSE:-0}
 
+    ### Open MPI CPU bind
     local _cpubind=""
     if test "${CPUBIND}" = "socket" ; then
       _cpubind="-bysocket -bind-to-socket"
@@ -142,12 +142,12 @@ function sp_f_jobsub() {
       echo "Open MPI Data Placement: ${_cpubind}"
     fi
 
-    # SGI MPT dplace
+    ### SGI MPT dplace
     local _place=""
     if ! test -z "${DPLACE}" ; then
       _place="dplace ${DPLACE}"
     fi
-    # SGI omplace
+    ### SGI MPT omplace
     if ! test -z "${OMPLACE}" ; then
       _place="omplace ${OMPLACE}"
     fi
@@ -155,36 +155,50 @@ function sp_f_jobsub() {
       echo "SGI MPI Data Placement: ${_place}"
     fi
 
-    # SGI Perfboost
+    ### SGI MPT Perfboost
     local _pboost=""
     if ! test -z "${PBOOST}" ; then
       echo "SGI MPI Perfboost: ${PBOOST}"
       _pboost="perfboost -${PBOOST}"
     fi
 
-    # Profiler
+    ### Profiler
     local _prof=""
     if ! test -z "${PROFILER}" ; then
       echo "MPI Profiler: ${PROFILER}"
       _prof="${PROFILER}"
     fi
 
-    # new MPIOMP option
-    # SGI MPT needs MACHINES set by the scheduler
+    # Remark: SGI MPT needs MACHINES set by the scheduler
     if test "${MPIOMP}" = "yes" ; then
+      ### MPI/OMP run
+      # Open MPI
       echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_sockets} -npernode ${_sckts} ${_cpubind} ${_prof}\"" >> "${_p_qbat}"
-      echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_sckts} ${_prof} ${_place} ${_pboost}\"" >> "${_p_qbat}"
+      # Intel MPI
+      echo "export MPIOMP_INTELMPI_OPTS=\"-np ${_sockets} -perhost ${_sckts} ${_prof}\""             >> "${_p_qbat}"
+      # SGI MPT
+      echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_sckts} ${_prof} ${_place} ${_pboost}\""      >> "${_p_qbat}"
     else
+      ### MPI-only run
+      # Default: 1 override by THRDS
       _threads=${_thrds}
-      echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_slots} -npernode ${_tasks} ${_cpubind} ${_prof}\""   >> "${_p_qbat}"
-      echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_tasks} ${_prof} ${_place} ${_pboost}\"" >> "${_p_qbat}"
+      # Open MPI
+      echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_slots} -npernode ${_tasks} ${_cpubind} ${_prof}\"" >> "${_p_qbat}"
+      # Intel MPI
+      echo "export MPIOMP_INTELMPI_OPTS=\"-np ${_slots} -perhost ${_tasks} ${_prof}\""             >> "${_p_qbat}"
+      # SGI MPT
+      echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_tasks} ${_prof} ${_place} ${_pboost}\""    >> "${_p_qbat}"
     fi
 
-    # MPI engine
+    ### MPI Rngine Selector ###
+    # Default: openmpi
     if test -z "${MPIRUN}" ; then
       MPIRUN="openmpi"
     fi
-    if test "${MPIRUN}" = "sgimpt" ; then
+
+    ### SGI MPT
+    if test "${MPIRUN}" = "sgimpt" || \
+       test "${MPIRUN}" = "sgi" ; then
       if test ${_verbose} -gt 0 ; then
         echo "export MPI_VERBOSE=1"          >> "${_p_qbat}"
         echo "export MPI_DSM_VERBOSE=1"      >> "${_p_qbat}"
@@ -202,14 +216,21 @@ function sp_f_jobsub() {
         echo "export MPI_STATS=1"            >> "${_p_qbat}"
       fi
       echo "export MPIOMP_MPIRUN_OPTS=\"MPIOMP_SGIMPT_OPTS\"" >> "${_p_qbat}"
-    elif test "${MPIRUN}" = "openmpi" ; then
+    ### Open MPI
+    elif test "${MPIRUN}" = "openmpi" || \
+         test "${MPIRUN}" = "ompi"; then
       echo "export MPIOMP_MPIRUN_OPTS=\"MPIOMP_OPENMPI_OPTS\"" >> "${_p_qbat}"
+    ### Intel MPI
+    elif test "${MPIRUN}" = "intelmpi" || \
+         test "${MPIRUN}" = "impi"; then
+      echo "export MPIOMP_MPIRUN_OPTS=\"MPIOMP_INTELMPI_OPTS\"" >> "${_p_qbat}"
+    ### Fallback
     else
       echo "export MPIOMP_MPIRUN_OPTS=\"MPIOMP_OPENMPI_OPTS\"" >> "${_p_qbat}"
     fi
-    echo "Mpirun: ${MPIRUN}"
+    echo "MPI: ${MPIRUN}"
 
-    # openMP & Intel MKL
+    ### OMP & Intel MKL Section ###
     echo "export OMP_NUM_THREADS=${_threads}" >> "${_p_qbat}"
     echo "export MKL_NUM_THREADS=${_threads}" >> "${_p_qbat}"
     if test ${_threads} -gt 1 ; then
@@ -223,7 +244,8 @@ function sp_f_jobsub() {
       echo "export MKL_DYNAMIC=FALSE"         >> "${_p_qbat}"
     fi
 
-    # Toggle options
+    ### Toggle Options ###
+    # TODO: +/-
     if ! test -z "${TOGGLE}" ; then
       for i in ${TOGGLE} ; do
         echo "export ${i}=1" >> "${_p_qbat}"
