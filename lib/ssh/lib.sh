@@ -76,7 +76,6 @@ function sp_f_sshtx() {
   fi
 
   # init --------------------------------
-  # sp_f_mid_init "${_host}"
   sp_f_mid_init "${sp_p_ssh_key}${_host}"
 
   if ${_xd} ; then
@@ -195,7 +194,6 @@ function sp_f_sshchg() {
   local _host="${1:-default}"
   local _mode="${2:-rsa}"
 
-  # sp_f_mid_init "${_host}"
   sp_f_mid_init "${sp_p_ssh_key}${_host}"
 
   cd "${sp_p_key}/${sp_p_ssh_key}"
@@ -211,7 +209,6 @@ function sp_f_sshkey() {
   local _mode="${2:-rsa}"
   local _size="${3:-2048}"
 
-  # sp_f_mid_init "${_host}"
   sp_f_mid_init "${sp_p_ssh_key}${_host}"
 
   cd "${sp_p_key}/${sp_p_ssh_key}"
@@ -241,7 +238,6 @@ function sp_f_sshkey() {
 function sp_f_sshinf() {
   local _host="${1:-default}"
 
-  # sp_f_mid_init "${_host}"
   sp_f_mid_init "${sp_p_ssh_key}${_host}"
 
   sp_f_stt "${_host} (${sp_g_ssh_fqdn})"
@@ -278,7 +274,6 @@ function sp_f_sshmnt() {
   local _mnt="${3:-true}"
   local _r=0
 
-  # sp_f_mid_init "${_host}"
   sp_f_mid_init "${sp_p_ssh_key}${_host}"
 
   # lock --------------------------------
@@ -362,7 +357,9 @@ function sp_f_sshumnt() {
 
 function sp_f_sshlmnt() {
   sp_f_ptt "${sp_g_bn}: sshfs volumes"
-  mount | grep fusefs | grep -v encfs | awk '{printf "%-32s => %s\n",$3,$1}'
+  mount | grep "fusefs|fuse.sshfs" | \
+          grep -v "encfs|fuse.encfs" | \
+          awk '{printf "%-32s => %s\n",$3,$1}'
   return ${_TRUE_}
 }
 
@@ -373,7 +370,6 @@ function sp_f_sshcmd() {
   local _int=${3:-false}
   local _tmp=""
 
-  # sp_f_mid_init "${_host}"
   sp_f_mid_init "${sp_p_ssh_key}${_host}"
 
   local _opts="${sp_g_ssh_opts}"
