@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Arguments
+if test $# -lt 1 ; then
+  exit 1
+fi
+
+_job=${1}
+_out="job_${_job}.nodes"
+
+echo "Start to monitor job:"
+scontrol show job ${_job}
+if test $? -gt 0 ; then
+  exit 1
+fi
+
+# Nodelist
+scontrol show hostnames $(scontrol show job ${_job} | \
+                           egrep "^ *NodeList" | \
+                           sed s/\ *NodeList=//) > ${_out}
+if test $? -gt 0 ; then
+  exit 1
+fi
+
+# Stat
+pmstat -H ${_out}
