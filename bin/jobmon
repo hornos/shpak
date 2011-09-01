@@ -23,7 +23,7 @@ fi
 
 scontrol show hostnames ${_nodes} > ${_out}
 
+trap 'rm -f ${_out}; exit $?' INT TERM EXIT
+
 # Stat
 pmstat -H ${_out}
-
-rm -f ${_out}
