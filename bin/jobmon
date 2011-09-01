@@ -15,12 +15,11 @@ if test $? -gt 0 ; then
 fi
 
 # Nodelist
-scontrol show hostnames $(scontrol show job ${_job} | \
-                           egrep "^ *NodeList" | \
-                           sed s/\ *NodeList=//) > ${_out}
-if test $? -gt 0 ; then
+_nodes=$(scontrol show job ${_job} | egrep "^ *NodeList" | sed s/\ *NodeList=//)
+if test -z "${_nodes}" ; then
   exit 1
 fi
+scontrol show hostnames ${_nodes} > ${_out}
 
 # Stat
 pmstat -H ${_out}
