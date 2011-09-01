@@ -25,3 +25,5 @@ scontrol show hostnames ${_nodes} > ${_out}
 
 # Stat
 pmstat -H ${_out}
+
+rm -f ${_out}
