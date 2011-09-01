@@ -8,7 +8,6 @@ fi
 _job=${1}
 _out="job_${_job}.nodes"
 
-echo "Start to monitor job:"
 scontrol show job ${_job}
 if test $? -gt 0 ; then
   exit 1
@@ -16,9 +15,12 @@ fi
 
 # Nodelist
 _nodes=$(scontrol show job ${_job} | egrep "^ *NodeList" | sed s/\ *NodeList=//)
-if test -z "${_nodes}" ; then
+
+if test "${_nodes}" = "(null)" ; then
+  echo "Job not started"
   exit 1
 fi
+
 scontrol show hostnames ${_nodes} > ${_out}
 
 # Stat
