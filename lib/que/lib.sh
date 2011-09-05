@@ -64,7 +64,7 @@ function sp_f_jobsub() {
   local _nodes=${NODES:-1}
   local _cores=${CORES:-4}
   local _sckts=${SCKTS:-2}
-  local _thrds=${THRDS:-1}
+  local _thrds=${THRDS:-0}
   local _kmpaff=${KMPAFF:-0}
 
   local _sockets=$((_nodes*_sckts))
@@ -72,7 +72,7 @@ function sp_f_jobsub() {
   local _slots=$((_nodes*_tasks))
   local _threads=${_cores}
 
-  if test ${_thrds} -gt 1 ; then
+  if test ${_thrds} -gt 0 ; then
     _threads=${_thrds}
   fi
 
@@ -190,8 +190,11 @@ function sp_f_jobsub() {
       echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_sckts} ${_prof} ${_place} ${_pboost}\""      >> "${_p_qbat}"
     else
       ### MPI-only run
-      # Default: 1 override by THRDS
-      _threads=${_thrds}
+      if test ${_thrds} -gt 0 ; then
+        _threads=${_thrds}
+      else
+        _threads=1
+      fi
       # Open MPI
       echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_slots} -npernode ${_tasks} ${_cpubind} ${_prof}\"" >> "${_p_qbat}"
       # Intel MPI
