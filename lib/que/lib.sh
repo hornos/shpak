@@ -64,9 +64,12 @@ function sp_f_jobsub() {
   local _nodes=${NODES:-1}
   local _cores=${CORES:-4}
   local _sckts=${SCKTS:-2}
+  local _sltpn=${SLTPN:-0}
   local _thrds=${THRDS:-0}
   local _kmpaff=${KMPAFF:-0}
 
+  # total slots forced
+  local __slots=$((_nodes*_sltpn))
   local _sockets=$((_nodes*_sckts))
   local _tasks=$((_sckts*_cores))
   local _slots=$((_nodes*_tasks))
@@ -76,8 +79,11 @@ function sp_f_jobsub() {
     _threads=${_thrds}
   fi
 
-# global compoiund resources
+# global compoiund resources for SGE
   SLOTS=${_slots}
+  if test ${__slots} -gt 0 ; then
+    SLOTS=${__slots}
+  fi
   TASKS=${_tasks}
 
 # common checks
@@ -190,6 +196,7 @@ function sp_f_jobsub() {
       echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_sckts} ${_prof} ${_place} ${_pboost}\""      >> "${_p_qbat}"
     else
       ### MPI-only run
+      # Default: 1 override by THRDS
       if test ${_thrds} -gt 0 ; then
         _threads=${_thrds}
       else
