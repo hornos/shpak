@@ -256,15 +256,18 @@ function sp_f_jobsub() {
     ### OMP & Intel MKL Section ###
     echo "export OMP_NUM_THREADS=${_threads}" >> "${_p_qbat}"
     echo "export MKL_NUM_THREADS=${_threads}" >> "${_p_qbat}"
-    if test ${_threads} -gt 1 ; then
-      echo "export KMP_LIBRARY=turnaround"    >> "${_p_qbat}"
-      if test ${_kmpaff} -gt 0 ; then
-        echo "export KMP_AFFINITY=${sp_g_kmpaff[${_kmpaff}]}" >> "${_p_qbat}"
+
+    if test "${OMPKMP}" = "yes" ; then
+      if test ${_threads} -gt 1 ; then
+        echo "export KMP_LIBRARY=turnaround"    >> "${_p_qbat}"
+        if test ${_kmpaff} -gt 0 ; then
+          echo "export KMP_AFFINITY=${sp_g_kmpaff[${_kmpaff}]}" >> "${_p_qbat}"
+        fi
+        echo "export MKL_DYNAMIC=TRUE"          >> "${_p_qbat}"
+      else
+        echo "export KMP_LIBRARY=serial"        >> "${_p_qbat}"
+        echo "export MKL_DYNAMIC=FALSE"         >> "${_p_qbat}"
       fi
-      echo "export MKL_DYNAMIC=TRUE"          >> "${_p_qbat}"
-    else
-      echo "export KMP_LIBRARY=serial"        >> "${_p_qbat}"
-      echo "export MKL_DYNAMIC=FALSE"         >> "${_p_qbat}"
     fi
 
     ### Toggle Options ###
