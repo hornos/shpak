@@ -22,7 +22,7 @@ if test $# -lt 3 ; then
   __usage
   exit 1
 fi
-while getopts c:s:h o; do
+while getopts c:s:t:h o; do
   case "$o" in
     c) _c=$OPTARG;;
     s) _s=$OPTARG;;
