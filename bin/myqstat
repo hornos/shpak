@@ -20,7 +20,48 @@ function remote_myqstat() {
   done
 }
 
+# PBS / SGE
+function local_myqstat_qstat() {
+  qstat -u ${USER}
+  if test "${_start}" = "-s" ; then
+    local_myqstat_moab qstat
+  fi
+}
+
+# Slurm
+function local_myqstat_squeue() {
+  squeue -u ${USER}
+
+  if test "${_start}" = "-s" ; then
+    echo
+    squeue --start -u ${USER}
+    local_myqstat_moab squeue
+  fi
+}
+
+# Moab
+function local_myqstat_moab() {
+    local _q=${1:-qstat}
+    which showstart &> /dev/null
+    if test $? -eq 0 ; then
+      echo
+      for _j in $(${_q} -u ${USER} | awk '/^[0-9]+/{print $1}') ; do
+        showstart ${_j}
+      done
+    fi
+}
+
 function local_myqstat() {
+  for i in qstat squeue ; do
+    which ${i} &>/dev/null
+    if test $? -eq 0 ; then
+      local_myqstat_${i}
+    fi
+  done
+}
+
+
+function rem_local_myqstat() {
   local _r
   local _tmp
   local _qsc
@@ -37,7 +78,7 @@ function local_myqstat() {
     return 10
   fi
   ${_qsc} -u ${USER}
-  
+
   # estimate start time
   if test "${_start}" = "-s" ; then
     echo
