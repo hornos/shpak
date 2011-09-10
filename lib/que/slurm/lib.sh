@@ -104,6 +104,11 @@ function sp_f_slurm() {
     echo "#${sp_g_qsub} --account=${QUEUE_PROJECT}" >> "${_p_qbat}"
   fi
 
+  # qos
+  if ! test -z "${QUEUE_QOS}" ; then
+    echo "#${sp_g_qsub} --qos=${QUEUE_QOS}" >> "${_p_qbat}"
+  fi
+
   # exclusive?
   if test "${QUEUE_SHARE}" = "off" ; then
     echo "#${sp_g_qsub} --exclusive"                >> "${_p_qbat}"
