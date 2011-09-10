@@ -37,9 +37,21 @@ function local_myqstat() {
     return 10
   fi
   ${_qsc} -u ${USER}
-
+  
+  # estimate start time
   if test "${_start}" = "-s" ; then
     echo
+
+    # slurm
+    if test "${_qsc}" = "squeue" ; then
+      squeue --start -u ${USER}
+    fi
+
+    # maui
+    which showstart &> /dev/null
+    if test $? -gt 0 ; then
+      return
+    fi
     for _j in $(${_qsc} -u ${USER} | awk '/^[0-9]+/{print $1}') ; do
       showstart ${_j}
     done
