@@ -1,0 +1,39 @@
+#!/bin/bash
+
+function _zac() {
+  local _f="${1}"
+  local _n=${2:-25}
+  local _cat="cat"
+  if test -z "${_f}" ; then
+    return 1
+  fi
+  local _t=$(file -ib "${_f}")
+  _t=${_t##*-}
+  if test ${_t} = "gzip" ; then
+    _cat="zcat"
+  fi
+  ${_cat} "${_f}" | tail -n${_n}
+}
+
+function _tfrm() {
+  local _t=${1}
+  local _l="${2}"
+  _t=${_t/.*}
+  _t=$((_t+1))
+
+  if test -z "${_l}" ; then
+    printf "%02d:%02d:%02d\n" $((_t/3600)) $((_t/60%60)) $((_t%60))
+  else
+    printf "%7s: %02d:%02d:%02d\n" ${_l} $((_t/3600)) $((_t/60%60)) $((_t%60))
+  fi
+}
+
+_e=$(_zac ${1} | awk '/Elapsed/{print $4}')
+_u=$(_zac ${1} | awk '/User/{print $4}')
+_s=$(_zac ${1} | awk '/System/{print $4}')
+
+# TODO: percentage
+_tfrm ${_e} "Elapsed"
+_tfrm ${_u} "User"
+_tfrm ${_s} "System"
+

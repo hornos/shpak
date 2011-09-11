@@ -102,18 +102,12 @@ function sp_f_svzmv() {
   return ${_TRUE_}
 }
 
-
-#/// \fn sp_f_maco
-#/// \brief Hungarian lossy language compression
-#///
-#/// Based on the fact that vowels and consonants are not 
-#/// on the smae level in Hungarian language, that is
-#/// consonants play a more important role thus vowels
-#/// can be omitted still allowing the recovery of the world.
-function sp_f_maco() {
-  local _s="${1:-}"
-  local _ws="${2:-.}"
-  echo $(sp_f_lc "${_s}") | \
-  tr '[aáeéiíoóöőuúüű]' 'X' | \
-  sed s/X//g | sed s/\ /${_ws}/
+function sp_f_zcat() {
+  local _zsrc="${1}"
+  local _src=${_zsrc%%${sp_s_z}}
+  if test "${_zsrc}" = "${_src}" ; then
+    cat "${_zsrc}"
+  else
+    zcat "${_zsrc}"
+  fi
 }
