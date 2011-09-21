@@ -1,0 +1,6 @@
+#!/bin/bash
+
+_n=${1:-${HOSTNAME}}
+_n="./${_n}.tgz"
+cd ${HOME}
+tar cvzf "${_n}" ./local .profile
