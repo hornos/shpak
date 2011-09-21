@@ -150,7 +150,7 @@ function sp_f_jobsub() {
     ### SGI MPT CPU bind (dplace & omplace)
     local _mpt_bind=""
     if ! test -z "${MPT_BIND}" ; then
-      _impi_bind="${MPT_BIND}"
+      _mpt_bind="${MPT_BIND}"
       echo "SGI MPT Binding: ${_mpt_bind}"
     fi
     ### SGI MPT Perfboost
@@ -170,11 +170,11 @@ function sp_f_jobsub() {
     if test "${MPIOMP}" = "yes" ; then
       ### MPI/OMP run
       # Open MPI
-      echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_sockets} -npernode ${_sckts} ${_ompi_bind} ${_mpi_prof}\"" >> "${_p_qbat}"
+      echo "export MPIOMP_OMPI_OPTS=\"-np ${_sockets} -npernode ${_sckts} ${_ompi_bind} ${_mpi_prof}\"" >> "${_p_qbat}"
       # Intel MPI
-      echo "export MPIOMP_INTELMPI_OPTS=\"-np ${_sockets} -perhost ${_sckts} ${_impi_bind} ${_mpi_prof}\"" >> "${_p_qbat}"
+      echo "export MPIOMP_IMPI_OPTS=\"-np ${_sockets} -perhost ${_sckts} ${_impi_bind} ${_mpi_prof}\"" >> "${_p_qbat}"
       # SGI MPT
-      echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_sckts} ${_mpt_bind} ${_mpt_pboost} ${_mpi_prof}\""     >> "${_p_qbat}"
+      echo "export MPIOMP_MPT_OPTS=\"\${MACHINES} ${_sckts} ${_mpt_bind} ${_mpt_pboost} ${_mpi_prof}\"" >> "${_p_qbat}"
     else
       ### MPI-only run
       # Default: 1 override by THRDS
@@ -184,11 +184,11 @@ function sp_f_jobsub() {
         _threads=1
       fi
       # Open MPI
-      echo "export MPIOMP_OPENMPI_OPTS=\"-np ${_slots} -npernode ${_tasks} ${_ompi_bind} ${_mpi_prof}\"" >> "${_p_qbat}"
+      echo "export MPIOMP_OMPI_OPTS=\"-np ${_slots} -npernode ${_tasks} ${_ompi_bind} ${_mpi_prof}\""   >> "${_p_qbat}"
       # Intel MPI
-      echo "export MPIOMP_INTELMPI_OPTS=\"-np ${_slots} -perhost ${_tasks} ${_impi_bind} ${_mpi_prof}\"" >> "${_p_qbat}"
+      echo "export MPIOMP_IMPI_OPTS=\"-np ${_slots} -perhost ${_tasks} ${_impi_bind} ${_mpi_prof}\""   >> "${_p_qbat}"
       # SGI MPT
-      echo "export MPIOMP_SGIMPT_OPTS=\"\${MACHINES} ${_tasks} ${_mpt_bind} ${_mpt_pboost} ${_mpi_prof}\""    >> "${_p_qbat}"
+      echo "export MPIOMP_MPT_OPTS=\"\${MACHINES} ${_tasks} ${_mpt_bind} ${_mpt_pboost} ${_mpi_prof}\"" >> "${_p_qbat}"
     fi
 
     ### MPI Rngine Selector ###
@@ -216,21 +216,21 @@ function sp_f_jobsub() {
         echo "export MPI_COLL_OPT_VERBOSE=1" >> "${_p_qbat}"
         echo "export MPI_STATS=1"            >> "${_p_qbat}"
       fi
-      echo "export MPIOMP_MPIRUN_OPTS=\"MPIOMP_SGIMPT_OPTS\"" >> "${_p_qbat}"
+      echo "export MPIOMP_MPIRUN_OPTS=\"MPIOMP_MPT_OPTS\"" >> "${_p_qbat}"
     ### Open MPI
     elif test "${MPIRUN}" = "openmpi" || \
          test "${MPIRUN}" = "ompi"; then
-      echo "export MPIOMP_MPIRUN_OPTS=\"MPIOMP_OPENMPI_OPTS\"" >> "${_p_qbat}"
+      echo "export MPIOMP_MPIRUN_OPTS=\"MPIOMP_OMPI_OPTS\"" >> "${_p_qbat}"
     ### Intel MPI
     elif test "${MPIRUN}" = "intelmpi" || \
          test "${MPIRUN}" = "impi"; then
       if test ${_verbose} -gt 0 ; then
         echo "export I_MPI_DEBUG=${_verbose}" >> "${_p_qbat}"
       fi
-      echo "export MPIOMP_MPIRUN_OPTS=\"MPIOMP_INTELMPI_OPTS\"" >> "${_p_qbat}"
+      echo "export MPIOMP_MPIRUN_OPTS=\"MPIOMP_IMPI_OPTS\"" >> "${_p_qbat}"
     ### Fallback
     else
-      echo "export MPIOMP_MPIRUN_OPTS=\"MPIOMP_OPENMPI_OPTS\"" >> "${_p_qbat}"
+      echo "export MPIOMP_MPIRUN_OPTS=\"MPIOMP_OMPI_OPTS\"" >> "${_p_qbat}"
     fi
     echo "MPI: ${MPIRUN}"
 
