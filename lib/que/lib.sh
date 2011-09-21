@@ -174,7 +174,13 @@ function sp_f_jobsub() {
       # Intel MPI
       echo "export MPIOMP_IMPI_OPTS=\"-np ${_sockets} -perhost ${_sckts} ${_impi_bind} ${_mpi_prof}\"" >> "${_p_qbat}"
       # SGI MPT
-      echo "export MPIOMP_MPT_OPTS=\"\${MACHINES} ${_sckts} ${_mpt_bind} ${_mpt_pboost} ${_mpi_prof}\"" >> "${_p_qbat}"
+      local _machines=""
+      if test -z "${MACHINES}" ; then
+        _machines="-np ${_sockets}"
+      else
+        _machines="${MACHINES} ${_sckts}"
+      fi
+      echo "export MPIOMP_MPT_OPTS=\"\${machines} ${_mpt_bind} ${_mpt_pboost} ${_mpi_prof}\"" >> "${_p_qbat}"
     else
       ### MPI-only run
       # Default: 1 override by THRDS
@@ -188,7 +194,13 @@ function sp_f_jobsub() {
       # Intel MPI
       echo "export MPIOMP_IMPI_OPTS=\"-np ${_slots} -perhost ${_tasks} ${_impi_bind} ${_mpi_prof}\""   >> "${_p_qbat}"
       # SGI MPT
-      echo "export MPIOMP_MPT_OPTS=\"\${MACHINES} ${_tasks} ${_mpt_bind} ${_mpt_pboost} ${_mpi_prof}\"" >> "${_p_qbat}"
+      local _machines=""
+      if test -z "${MACHINES}" ; then
+        _machines="-np ${_slots}"
+      else
+        _machines="${MACHINES} ${_tasks}"
+      fi
+      echo "export MPIOMP_MPT_OPTS=\"\${_machines} ${_mpt_bind} ${_mpt_pboost} ${_mpi_prof}\"" >> "${_p_qbat}"
     fi
 
     ### MPI Rngine Selector ###
