@@ -37,6 +37,12 @@ function sp_f_sge() {
     echo "#${sp_g_qsub} -l h_vmem=${_tot}${sp_g_qms}" >> "${_p_qbat}"
   fi
 
+  # binding
+  if ! test -z "${SGE_BIND}" ; then
+    local _sge_bind="-binding ${SGE_BIND}:${SLOTS}"
+    echo "#${sp_g_qsub} ${_sge_bind}"                 >> "${_p_qbat}"
+  fi
+  
   # arch
   if ! test -z "${QUEUE_ARCH}" ; then
     echo "#${sp_g_qsub} -l arch=${QUEUE_ARCH}"        >> "${_p_qbat}"
