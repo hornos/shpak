@@ -174,11 +174,11 @@ function sp_f_jobsub() {
       # Intel MPI
       echo "export MPIOMP_IMPI_OPTS=\"-np ${_sockets} -perhost ${_sckts} ${_impi_bind} ${_mpi_prof}\"" >> "${_p_qbat}"
       # SGI MPT
-      if test -z "${MACHINES}" ; then
-        echo "export MPIOMP_MPT_OPTS=\"-np ${_sockets} ${_mpt_bind} ${_mpt_pboost} ${_mpi_prof}\"" >> "${_p_qbat}"
-      else
+#      if test -z "${MACHINES}" ; then
+#        echo "export MPIOMP_MPT_OPTS=\"-np ${_sockets} ${_mpt_bind} ${_mpt_pboost} ${_mpi_prof}\"" >> "${_p_qbat}"
+#      else
         echo "export MPIOMP_MPT_OPTS=\"\${MACHINES} ${_sckts} ${_mpt_bind} ${_mpt_pboost} ${_mpi_prof}\"" >> "${_p_qbat}"
-      fi
+#      fi
     else
       ### MPI-only run
       # Default: 1 override by THRDS
