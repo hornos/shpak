@@ -193,11 +193,11 @@ function sp_f_jobsub() {
       echo "export MPIOMP_IMPI_OPTS=\"-np ${_slots} -perhost ${_tasks} ${_impi_bind} ${_mpi_prof}\""   >> "${_p_qbat}"
       # SGI MPT
       local _machines=""
-      if test -z "${MACHINES}" ; then
-        echo "export MPIOMP_MPT_OPTS=\"-np ${_slots} ${_mpt_bind} ${_mpt_pboost} ${_mpi_prof}\"" >> "${_p_qbat}"
-      else
+ #     if test -z "${MACHINES}" ; then
+#        echo "export MPIOMP_MPT_OPTS=\"-np ${_slots} ${_mpt_bind} ${_mpt_pboost} ${_mpi_prof}\"" >> "${_p_qbat}"
+#      else
         echo "export MPIOMP_MPT_OPTS=\"\${MACHINES} ${_tasks} ${_mpt_bind} ${_mpt_pboost} ${_mpi_prof}\"" >> "${_p_qbat}"
-      fi
+#      fi
     fi
 
     ### MPI Rngine Selector ###
