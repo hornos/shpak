@@ -359,6 +359,7 @@ function sp_f_sshlmnt() {
   sp_f_ptt "${sp_g_bn}: sshfs volumes"
   mount | egrep 'fusefs|fuse.sshfs' | \
           egrep -v 'encfs|fuse.encfs' | \
+          egrep ${USER} | \
           awk '{printf "%-32s => %s\n",$3,$1}'
   return ${_TRUE_}
 }
