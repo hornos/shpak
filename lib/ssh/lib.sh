@@ -63,8 +63,9 @@ function sp_f_sshto() {
 function sp_f_sshtx() {
   local _host="${1:-default}"
   local _m="${2:-1}"
-  local _src="${3}"
-  local _xd=${4:-false}
+  local _xd=${3:-false}
+  local _rec=${4:-false}
+  local _src="${5}"
   local _r=0
   local _dst="./"
 
@@ -100,6 +101,9 @@ function sp_f_sshtx() {
       local _opts="${sp_g_scp_opts}"
       local _url="${_src_url}"
       local _mtxt="scp"
+      if ${_rec} ; then
+        _opts="-r ${_opts}"
+      fi
     ;;
     2)
       local _opts="-p ${sp_g_ssh_port}"
@@ -173,19 +177,22 @@ function sp_f_sshtx() {
 function sp_f_sshpush() {
   local _h="${1:-default}"
   local _m="${2:-1}"
-  local _s="${3}"
+  local _x=${3:-false}
+  local _r=${4:-false}
+  local _s="${5}"
   _m=$((_m%10))
-  sp_f_sshtx "${_h}" ${_m} "${_s}"
+  sp_f_sshtx "${_h}" ${_m} ${_x} ${_r} "${_s}"
 }
 
 
 function sp_f_sshpull() {
   local _h="${1:-default}"
   local _m="${2:-1}"
-  local _s="${3}"
-  local _x=${4:-false}
+  local _x=${3:-false}
+  local _r=${4:-false}
+  local _s="${5}"
   _m=$((_m%10+10))
-  sp_f_sshtx "${_h}" ${_m} "${_s}" ${_x}
+  sp_f_sshtx "${_h}" ${_m} ${_x} ${_r} "${_s}"
 }
 
 

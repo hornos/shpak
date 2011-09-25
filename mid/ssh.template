@@ -18,7 +18,7 @@ sp_g_ssh_copts="-o TCPKeepAlive=no -o ServerAliveInterval=30"
 sp_g_ssh_opts="-XC ${sp_g_ssh_copts} -p ${sp_g_ssh_port}"
 
 # options for scp operations
-sp_g_scp_opts="-r -C -P ${sp_g_ssh_port}"
+sp_g_scp_opts="-C -P ${sp_g_ssh_port}"
 
 # for remote commands
 sp_g_ssh_env=".bashrc"
