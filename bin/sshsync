@@ -4,15 +4,15 @@
 sp_f_load ssh
 
 function __usage() {
-  echo "Usage: ${sp_g_bn} -m host -s <SOURCES>"
+  echo "Usage: ${sp_g_bn} [-p] -m host -s <SOURCES>"
   exit 1
 }
 
 # options --------------------------------
+_s="local .profile"
+_p="pull"
 _m="default"
 __m="./.${sp_g_bn}"
-_s="local .profile"
-
 if test -r "${__m}" ; then
   _m=$(cat "${__m}")
 elif test $# -eq 0 ; then
@@ -23,18 +23,23 @@ if test $# -eq 1 ; then
   if test "${1}" = "-h" ; then
     __usage
   fi
-  _m="${1}"
+  if test "${1}" = "-p" ; then
+    _p="push"
+  else
+    _m="${1}"
+  fi
 else
-  while getopts hm:s: o; do
+  while getopts hm:s:p o; do
     case "$o" in
       h) __usage;;
       m) _m=$OPTARG;;
       s) _s=$OPTARG;;
+      p) _p="push";;
     esac
   done
 fi
 
 # main -----------------------------------
 for i in ${_s} ; do
-  sshpull -t3 -m${_m} -s${i}
+  ssh${_p} -t3 -m${_m} -s${i}
 done
