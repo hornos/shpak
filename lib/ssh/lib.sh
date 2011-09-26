@@ -131,7 +131,7 @@ function sp_f_sshtx() {
   # title -------------------------------
   local _dtxt="\n From: ${_src}\n   To: ${_url}"
   if ! ${_push} ; then
-    _dtxt="\n From: ${_src_url}\n   To: ${_dst}"
+    _dtxt="\n From: ${_src_url}\n   To: ${_dst} ($(pwd ${_dst}))"
   fi
   sp_f_stt "Transfer (${_mtxt})\n${_dtxt}\n"
 
