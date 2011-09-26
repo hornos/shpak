@@ -17,7 +17,7 @@ if test -r "${__m}" ; then
   _m=$(cat "${__m}")
 elif test $# -eq 0 ; then
   __usage
-if
+fi
 
 if test $# -eq 1 ; then
   if test "${1}" = "-h" ; then
