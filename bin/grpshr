@@ -1,0 +1,47 @@
+#!/bin/bash
+# header ---------------------------------
+. $(dirname ${0})/../lib/h.sh
+sp_f_load ssh
+
+function __usage() {
+  echo "Usage: ${sp_g_bn} -s <SOURCES>"
+  exit 1
+}
+
+_u=false
+
+# options --------------------------------
+if test $# -eq 0 ; then
+  __usage
+elif test $# -eq 1 ; then
+  if test "${1}" = "-h" ; then
+    __usage
+  fi
+  _s="${1}"
+else
+  while getopts hus: o; do
+    case "$o" in
+      h) __usage;;
+      u) _u=true;;
+      s) _s=$OPTARG;;
+    esac
+  done
+fi
+
+
+for i in ${_s} ; do
+  chmod -R g+rX "${i}"
+  _dn=$(pwd "${i}")
+  # echo ${_dn}
+  _hd=${_dn%%/${USER}*}
+  echo "Home directory: ${_hd}"
+  _hp=${_dn##${_hd}}
+  # echo ${_hp}
+  _hp=$(echo ${_hp} | sed s/\\//\ /g)
+  # echo ${_hp}
+  for j in ${_hp} ; do
+    _hd="${_hd}/${j}"
+    echo "X for group on: ${_hd}"
+    chmod g+x ${_hd}
+  done
+done
