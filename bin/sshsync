@@ -15,12 +15,11 @@ _s="local .profile"
 
 if test -r "${__m}" ; then
   _m=$(cat "${__m}")
-fi
-
-if test $# -eq 0 ; then
+elif test $# -eq 0 ; then
   __usage
-  exit 1
-elif test $# -eq 1 ; then
+if
+
+if test $# -eq 1 ; then
   if test "${1}" = "-h" ; then
     __usage
   fi
