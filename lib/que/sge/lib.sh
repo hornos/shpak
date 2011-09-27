@@ -68,6 +68,10 @@ function sp_f_sge() {
     echo "#${sp_g_qsub} -q ${QUEUE_QUEUE}"            >> "${_p_qbat}"
   fi
 
+  if test "${QUEUE_SHARE}" = "off" ; then
+    echo "#${sp_g_qsub} -l exclusive=true"            >> "${_p_qbat}"
+  fi
+
   echo "#${sp_g_qsub} -o ${QUEUE_STDOUT:-StdOut}"     >> "${_p_qbat}"
   echo "#${sp_g_qsub} -e ${QUEUE_ERROUT:-ErrOut}"     >> "${_p_qbat}"
 
