@@ -68,7 +68,7 @@ function sp_f_sge() {
     echo "#${sp_g_qsub} -q ${QUEUE_QUEUE}"            >> "${_p_qbat}"
   fi
 
-  if test "${QUEUE_EXCLUSIVE}" = "on" ; then
+  if test "${QUEUE_EXCLUSIVE}" = "yes" ; then
     echo "#${sp_g_qsub} -l exclusive=true"            >> "${_p_qbat}"
   fi
 
