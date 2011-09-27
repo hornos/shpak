@@ -110,7 +110,7 @@ function sp_f_slurm() {
   fi
 
   # exclusive?
-  if test "${QUEUE_SHARE}" = "off" ; then
+  if test "${QUEUE_EXCLUSIVE}" = "on" ; then
     echo "#${sp_g_qsub} --exclusive"                >> "${_p_qbat}"
   fi
 
