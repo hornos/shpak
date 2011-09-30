@@ -31,6 +31,8 @@ fi
 
 for i in ${_s} ; do
   chmod -R g+rX "${i}"
+  chmod -R o-rwx "${i}"
+
   _dn=$(pwd "${i}")
   # echo ${_dn}
   _hd=${_dn%%/${USER}*}
