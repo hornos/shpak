@@ -36,7 +36,8 @@ function sp_f_sge() {
     # local _tot=$((SLOTS*_mem))
     local _tot=$((TASKS*_mem))
     # echo "#${sp_g_qsub} -l h_vmem=${_tot}${sp_g_qms}" >> "${_p_qbat}"
-    echo "#${sp_g_qsub} -l h_vmem=${_tot}${sp_g_qms}"  >> "${_p_qbat}"
+    # echo "#${sp_g_qsub} -l h_vmem=${_tot}${sp_g_qms}"  >> "${_p_qbat}"
+    echo "#${sp_g_qsub} -l h_vmem=${MEMORY}${sp_g_qms}"  >> "${_p_qbat}"
   fi
 
   # binding
