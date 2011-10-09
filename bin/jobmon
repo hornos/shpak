@@ -1,19 +1,34 @@
 #!/bin/bash
 
-# Arguments
-if test $# -lt 1 ; then
-  exit 1
-fi
+trap 'if test -r ${_out}; then rm -f ${_out}; fi; exit $?' INT TERM EXIT
 
-_job=${1}
-_out="job_${_job}.nodes"
+function jobmon/usage() {
+  echo " Usage: "
+}
 
+### args
+_job=0
+_t=false
+_a=false
+
+while getopts htaj: o; do
+  case "$o" in
+    j) _job=$OPTARG;;
+    t) _t=true;;
+    a) _a=true;;
+    h) jobmon/usage;;
+  esac
+done
+
+_out="./.${_job}.nodes"
+
+### main
 scontrol show job ${_job}
 if test $? -gt 0 ; then
   exit 1
 fi
 
-# Nodelist
+# nodelist
 _nodes=$(scontrol show job ${_job} | egrep "^ *NodeList" | sed s/\ *NodeList=//)
 
 if test "${_nodes}" = "(null)" ; then
@@ -23,7 +38,73 @@ fi
 
 scontrol show hostnames ${_nodes} > ${_out}
 
-trap 'rm -f ${_out}; exit $?' INT TERM EXIT
+if ! ${_a} ; then
+  pmstat -H ${_out}
+fi
 
-# Stat
-pmstat -H ${_out}
+_n=$(cat ${_out} | wc -l)
+pmstat -H ${_out} | \
+awk -v t=${_t} -v n=${_n} 'BEGIN {
+  av[0]=0; # loadavg 1min
+  av[1]=0; # memory swpd
+  av[2]=0; # memory buff
+  av[3]=0; # memory cache
+  av[4]=0; # swap pi
+  av[5]=0; # swap po
+  av[6]=0; # io bi
+  av[7]=0; # io bo
+  av[8]=0; # system in
+  av[9]=0; # system cs
+  av[10]=0; # cpu us
+  av[11]=0; # cpu sy
+  av[12]=0; # cpu id
+  nc=1;
+  tc=0;
+}
+{
+  if( nc > n ) {
+    if( t == "true" ) {
+      av[1] = av[1]/1024.0;
+      av[2] = av[2]/1024.0;
+      av[3] = av[3]/1024.0;
+    }
+    for(i=0;i<13;i++) {
+      if( t == "true" ) {
+        if( i < 1 || i > 3 )
+          av[i] = av[i]/n;
+      }
+      else
+         av[i] = av[i]/n;
+    }
+    printf "Avg %3d%8.2f",n,av[0];
+    if( t == "true" )
+      printf "%6dg%6dg%6dg",av[1],av[2],av[3];
+    else
+      printf "%6dm%6dm%6dm",av[1],av[2],av[3];
+    printf "%5d%5d%5d%5d",av[4],av[5],av[6],av[7];
+    printf "%5d%5d%4d%4d%4d\n",av[8],av[9],av[10],av[11],av[12];
+
+    for(i=0;i<13;i++)
+      av[i] = 0;
+    nc=1;
+    tc=tc+1;
+  }
+
+  if(tc > 500 ) {
+    tc=0;
+  }
+
+  if( ! tc % 10 ) {
+    if( match($0,"^node") )
+      print;
+    if( match($0,"^ +1 min") )
+      print;
+  }
+
+  if( match($0,"^n[0-9]+") ) {
+    for(i=2;i<14;i++) {
+      av[i-2] = av[i-2] + $i;
+    }
+    nc=nc+1;
+  }
+}'
