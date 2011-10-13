@@ -1,0 +1,12 @@
+#!/bin/bash
+
+inp="${1}"
+if test -z "${1}" || ! test -r "${inp}" ; then
+  echo "No input: ${inp}"
+  exit 1
+fi
+
+latex "${inp}"
+bibtex "${inp}"
+latex "${inp}"
+latex "${inp}"
