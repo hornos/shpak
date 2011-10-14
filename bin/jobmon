@@ -3,7 +3,10 @@
 trap 'if test -r ${_out}; then rm -f ${_out}; fi; exit $?' INT TERM EXIT
 
 function jobmon/usage() {
-  echo " Usage: "
+  echo " Usage: ${sp_g_bn} -j <JOBID>"
+  echo "                   -a : show node average"
+  echo "                   -t : show total memory"
+  exit 0
 }
 
 ### args
