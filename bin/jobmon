@@ -23,20 +23,50 @@ done
 _out="./.${_job}.nodes"
 
 ### main
-scontrol show job ${_job}
-if test $? -gt 0 ; then
+_stat=""
+for i in "qstat" "scontrol" ; do
+  which "${i}" &> /dev/null
+  if test $? -eq 0 ; then
+    _stat="${i}"
+  fi
+done
+if test "${_stat}" = "" ; then
   exit 1
 fi
 
-# nodelist
-_nodes=$(scontrol show job ${_job} | egrep "^ *NodeList" | sed s/\ *NodeList=//)
+### SGE
+if test "${_stat}" = "qstat" ; then
+  _nodes=$(${_stat} -g t -r -u ${USER} | \
+           grep ${_job} | \
+           awk '{print $8}' | \
+           sed s/.*@// | \
+           sed s/\\..*//)
 
-if test "${_nodes}" = "(null)" ; then
-  echo "Job not started"
-  exit 1
+  if test "${_nodes}" = "(null)" ; then
+    echo "Job not started"
+    exit 1
+  fi
+
+  for i in ${_nodes} ; do
+    echo ${i} >> ${_out}
+  done
 fi
 
-scontrol show hostnames ${_nodes} > ${_out}
+### Slurm
+if test "${_stat}" = "scontrol" ; then
+  ${_stat} show job ${_job}
+  if test $? -gt 0 ; then
+    exit 1
+  fi
+  _nodes=$(${_stat} show job ${_job} | egrep "^ *NodeList" | sed s/\ *NodeList=//)
+
+  if test "${_nodes}" = "(null)" ; then
+    echo "Job not started"
+    exit 1
+  fi
+
+  ${_stat} show hostnames ${_nodes} > ${_out}
+fi
 
 if ! ${_a} ; then
   pmstat -H ${_out}
@@ -101,7 +131,7 @@ awk -v t=${_t} -v n=${_n} 'BEGIN {
       print;
   }
 
-  if( match($0,"^n[0-9]+") ) {
+  if( match($0,"^[a-z][0-9]+") ) {
     for(i=2;i<14;i++) {
       av[i-2] = av[i-2] + $i;
     }
