@@ -1,6 +1,12 @@
 #!/bin/bash
 
-trap 'if test "${_out}" != "${_n}" ; then if test -r "${_out}"; then rm -f "${_out}"; fi; fi; exit $?' INT TERM EXIT
+function jobmon/exit() {
+  if test -z "${_n}" && test -r "${_out}"; then
+    rm -f "${_out}"
+  fi
+  exit $?
+}
+trap jobmon/exit INT TERM EXIT
 
 function jobmon/usage() {
   echo " Usage: ${sp_g_bn} -j <JOBID>"
