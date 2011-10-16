@@ -6,6 +6,7 @@ function jobmon/usage() {
   echo " Usage: ${sp_g_bn} -j <JOBID>"
   echo "                   -a : show node average"
   echo "                   -t : show total memory"
+  echo "                   -n : <NODE FILE>"
   exit 0
 }
 
@@ -13,62 +14,68 @@ function jobmon/usage() {
 _job=0
 _t=false
 _a=false
-
-while getopts htaj: o; do
+_n=""
+while getopts htaj:n: o; do
   case "$o" in
     j) _job=$OPTARG;;
     t) _t=true;;
     a) _a=true;;
+    n) _n=$OPTARG;;
     h) jobmon/usage;;
   esac
 done
 
-_out="./.${_job}.nodes"
 
 ### main
 _stat=""
-for i in "qstat" "scontrol" ; do
-  which "${i}" &> /dev/null
-  if test $? -eq 0 ; then
-    _stat="${i}"
-  fi
-done
-if test "${_stat}" = "" ; then
-  exit 1
-fi
 
-### SGE
-if test "${_stat}" = "qstat" ; then
-  _nodes=$(${_stat} -g t -r -u ${USER} | \
+if -z test "${_n}" && test -r "${_n}" ; then
+  _out="${_n}"
+else
+  _out="./.${_job}.nodes"
+  for i in "qstat" "scontrol" ; do
+    which "${i}" &> /dev/null
+    if test $? -eq 0 ; then
+      _stat="${i}"
+    fi
+  done
+  if test "${_stat}" = "" ; then
+    exit 1
+  fi
+
+  ### SGE
+  if test "${_stat}" = "qstat" ; then
+    _nodes=$(${_stat} -g t -r -u ${USER} | \
            grep ${_job} | \
            awk '{print $8}' | \
            sed s/.*@// | \
            sed s/\\..*//)
 
-  if test "${_nodes}" = "(null)" ; then
-    echo "Job not started"
-    exit 1
+    if test "${_nodes}" = "(null)" ; then
+      echo "Job not started"
+      exit 1
+    fi
+
+    for i in ${_nodes} ; do
+      echo ${i} >> ${_out}
+    done
   fi
 
-  for i in ${_nodes} ; do
-    echo ${i} >> ${_out}
-  done
-fi
+  ### Slurm
+  if test "${_stat}" = "scontrol" ; then
+    ${_stat} show job ${_job}
+    if test $? -gt 0 ; then
+      exit 1
+    fi
+    _nodes=$(${_stat} show job ${_job} | egrep "^ *NodeList" | sed s/\ *NodeList=//)
 
-### Slurm
-if test "${_stat}" = "scontrol" ; then
-  ${_stat} show job ${_job}
-  if test $? -gt 0 ; then
-    exit 1
+    if test "${_nodes}" = "(null)" ; then
+      echo "Job not started"
+      exit 1
+    fi
+
+    ${_stat} show hostnames ${_nodes} > ${_out}
   fi
-  _nodes=$(${_stat} show job ${_job} | egrep "^ *NodeList" | sed s/\ *NodeList=//)
-
-  if test "${_nodes}" = "(null)" ; then
-    echo "Job not started"
-    exit 1
-  fi
-
-  ${_stat} show hostnames ${_nodes} > ${_out}
 fi
 
 if ! ${_a} ; then
