@@ -29,7 +29,7 @@ done
 ### main
 _stat=""
 
-if -z test "${_n}" && test -r "${_n}" ; then
+if ! -z test "${_n}" && test -r "${_n}" ; then
   _out="${_n}"
 else
   _out="./.${_job}.nodes"
