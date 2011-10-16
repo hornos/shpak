@@ -98,26 +98,33 @@ function sp_f_jobsub() {
   fi
 
 # scheduler specific
+  echo "### Scheduler Setup for ${_sched}"         >> "${_p_qbat}"
   sp_f_${_sched} "${_mode}" "${_p_qbat}"
 
   if test "${_mode}" != "login" ; then
 # setup
     if ! test -z "${QUEUE_SETUP}" ; then
-      echo "${QUEUE_SETUP}"                        >> "${_p_qbat}"
+      echo "### Setup by the queue"                >> "${_p_qbat}"
+      for s in ${QUEUE_SETUPS} ; do
+        echo "source ${s}" >> "${_p_qbat}"
+      done
     fi
 
 # ulimit
     if ! test -z "${QUEUE_ULIMIT}" ; then
+      echo "### Limits by the queue"               >> "${_p_qbat}"
       echo "${QUEUE_ULIMIT}"                       >> "${_p_qbat}"
     fi
 
 # mail
     if test "${QUEUE_MAIL}" = "runprg" ; then
+      echo "### Shpak will mail notifications"     >> "${_p_qbat}"
       echo "export QUEUE_MAIL_TO=${QUEUE_MAIL_TO}" >> "${_p_qbat}"
     fi
 
 # setups
     if ! test -z "${SETUPS}" ; then
+      echo "### Setup by the job"                  >> "${_p_qbat}"
       for s in ${SETUPS} ; do
         echo "Source: ${s}"
         echo "source ${s}" >> "${_p_qbat}"
@@ -126,6 +133,7 @@ function sp_f_jobsub() {
 
 # modules
     if ! test -z "${MODULES}" ; then
+      echo "### Modules by the job"                >> "${_p_qbat}"
       for m in ${MODULES} ; do
         echo "Module: ${m}"
         echo "module load ${m}" >> "${_p_qbat}"
@@ -134,6 +142,7 @@ function sp_f_jobsub() {
 
     ### MPI SECTION ###
     local _verbose=${VERBOSE:-0}
+    echo "### MPI Setup"                           >> "${_p_qbat}"
 
     ### Open MPI CPU bind
     local _ompi_bind=""
@@ -244,6 +253,7 @@ function sp_f_jobsub() {
     echo "MPI: ${MPIRUN}"
 
     ### OMP & Intel MKL Section ###
+    echo "### OMP Setup"                      >> "${_p_qbat}"
     echo "export OMP_NUM_THREADS=${_threads}" >> "${_p_qbat}"
     echo "export MKL_NUM_THREADS=${_threads}" >> "${_p_qbat}"
 
@@ -269,6 +279,7 @@ function sp_f_jobsub() {
     fi
 
 # setup command an mail
+    echo "### Job Command"                    >> "${_p_qbat}"
     if test "${COMMAND/*runprg*/runprg}" = "runprg" ; then
       COMMAND="${COMMAND} -s ${SCHED}"
       # check
