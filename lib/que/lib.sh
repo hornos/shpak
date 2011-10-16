@@ -103,7 +103,7 @@ function sp_f_jobsub() {
 
   if test "${_mode}" != "login" ; then
 # setup
-    if ! test -z "${QUEUE_SETUP}" ; then
+    if ! test -z "${QUEUE_SETUPS}" ; then
       echo "### Setup by the queue"                >> "${_p_qbat}"
       for s in ${QUEUE_SETUPS} ; do
         echo "source ${s}" >> "${_p_qbat}"
