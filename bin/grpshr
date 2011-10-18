@@ -28,6 +28,7 @@ else
   done
 fi
 
+echo "Sharing: ${_s}"
 
 for i in ${_s} ; do
   chmod -R g+rX "${i}"
