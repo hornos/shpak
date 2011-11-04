@@ -80,6 +80,7 @@ function sp_f_svzmv() {
   fi
 
   if test -d "${_rs}" ; then
+    _p_dst=${_p_dst%%${sp_s_z}}
     if test -d "${_p_dst}" ; then
       _p_sav="${_p_dst}.old"
       mv -f "${_p_dst}" "${_p_sav}"
