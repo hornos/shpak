@@ -36,10 +36,10 @@ function sp_f_espresso_prepare() {
     _isd=true
   fi
 
-  _inp=${_inp%%${sp_s_ecntl}}
-
+  # _inp=${_inp%%${sp_s_ecntl}}
   # prepare inputs
-  _dst="${_inp}${sp_s_ecntl}"
+  # _dst="${_inp}${sp_s_ecntl}"
+  _dst="${_inp}"
   _p_if="${INPUTDIR}/${_dst}"
   sp_f_run_bcast ${_isd} "${_p_wdir}" "${_p_sdir}" "${_p_if}" "${_dst}"
   if test $? -gt 0 ; then
