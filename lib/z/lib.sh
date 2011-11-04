@@ -94,7 +94,7 @@ function sp_f_svzmv() {
       sp_f_err "cannot copy ${_rs}"
       return ${_FALSE_}
     fi
-    chmod -R u-w "${_p_dst}"
+    # chmod -R u-w "${_p_dst}"
     rm -Rf "${_rs}"
     if test $? -gt 0 ; then
       sp_f_err_cad "${_rs}"
@@ -118,7 +118,7 @@ function sp_f_svzmv() {
     sp_f_err "cannot copy ${_zrs}"
     return ${_FALSE_}
   fi
-  chmod u-w "${_p_dst}"
+  # chmod u-w "${_p_dst}"
   rm -f "${_zrs}"
   if test $? -gt 0 ; then
     sp_f_err_cad "${_zrs}"
