@@ -72,10 +72,12 @@ function sp_f__d() {
     if test -d "${i}" ; then
       (sp_f__d "${i}" ${_u})
     elif test -f "${i}" ; then
-      if ! test "${i%%${sp_s_z}}" = "${i}" ; then
-        if ${_u} ; then
+      if ${_u} ; then
+        if ! test "${i%%${sp_s_z}}" = "${i}" ; then
           ${sp_b_uz} "${i}"
-        else
+        fi
+      else
+        if test "${i%%${sp_s_z}}" = "${i}" ; then
           ${sp_b_z} "${i}"
         fi
       fi
