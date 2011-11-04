@@ -106,8 +106,6 @@ function sp_f_svzmv() {
       sp_f_err "cannot rename ${_p_dst}"
       return ${_FALSE_}
     fi
-  else
-    return ${_FALSE_}
   fi
 
   local _zrs="${_rs}${sp_s_z}"
