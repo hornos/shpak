@@ -101,14 +101,13 @@ function sp_f_run_collect() {
   cd "${_p_wdir}"
 
   for _rs in ${RESULTS}; do
-    if test -f "${_rs}" ; then
+    # if test -f "${_rs}" ; then
+    if test -r "${_rs}" ; then
       sp_f_run_fsv "${_rs}" "${_inp}"
       _r=$?
       if test ${_r} -gt 0 ; then
         return ${_r}
       fi
-    elif test -d "${_rs}" ; then
-      sp_f_wrn "directory copy is not implemented"
     else
       sp_f_wrn "skipped unknown ${_rs}"
     fi
@@ -369,6 +368,14 @@ function sp_f_run_bcast() {
   local _dst="${5}"
   local _n_dst=$(sp_f_zbn "${_p_if}")
 
+  if test -d "${_p_if}" ; then
+    cp -R "${_p_if}" "${_p_wdir}"
+    return ${_TRUE_}
+  else
+    sp_f_err_fnf "${_p_if}"
+    return ${_FALSE_}
+  fi
+
   if test -f "${_p_if}" ; then
     if ${_isd} ; then
       sp_f_zcpumv "${_p_if}" "${_p_sdir}" "${_dst}"
@@ -385,6 +392,7 @@ function sp_f_run_bcast() {
   fi
   return ${_TRUE_}
 }
+
 
 #/// \fn sp_f_run_check_libs
 #/// \brief check input libraries
@@ -449,7 +457,8 @@ function sp_f_run_check_others() {
 
   for _oin in ${OTHERINPUTS}; do
     _p_if="${INPUTDIR}/${_oin}"
-    if ! test -f "${_p_if}" ; then
+    # if ! test -f "${_p_if}" ; then
+    if ! test -r "${_p_if}" ; then
       sp_f_err_fnf "${_p_if}"
       return ${_FALSE_}
     fi
@@ -472,7 +481,8 @@ function sp_f_run_prepare_others() {
 
   for _oin in ${OTHERINPUTS}; do
     _p_if="${INPUTDIR}/${_oin}"
-    if ! test -f "${_p_if}" ; then
+    # if ! test -f "${_p_if}" ; then
+    if ! test -r "${_p_if}" ; then
       sp_f_err_fnf "${_p_if}"
       return ${_FALSE_}
     fi

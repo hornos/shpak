@@ -78,12 +78,36 @@ function sp_f_svzmv() {
   if test -z "${_rs}" || test -z "${_p_dst}" ; then
     return ${_FALSE_}
   fi
+
+  if test -d "${_p_dst}" ; then
+    _p_sav="${_p_dst}.old"
+    mv -f "${_p_dst}" "${_p_sav}"
+    if test $? -gt 0 ; then
+      sp_f_err "cannot rename ${_p_dst}"
+      return ${_FALSE_}
+    fi
+    cp -fR "${_rs}" "${_p_dst}"
+    if test $? -gt 0 ; then
+      sp_f_err "cannot copy ${_rs}"
+      return ${_FALSE_}
+    fi
+    chmod -R u-w "${_p_dst}"
+    rm -Rf "${_rs}"
+    if test $? -gt 0 ; then
+      sp_f_err_cad "${_rs}"
+      return ${_FALSE_}
+    fi
+    return ${_TRUE_}
+  fi
+
   if test -f "${_p_dst}" ; then
     mv -f "${_p_dst}" "${_p_sav}"
     if test $? -gt 0 ; then
       sp_f_err "cannot rename ${_p_dst}"
       return ${_FALSE_}
     fi
+  else
+    return ${_FALSE_}
   fi
 
   local _zrs="${_rs}${sp_s_z}"
