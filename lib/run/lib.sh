@@ -214,7 +214,7 @@ function sp_f_runprg() {
   cd "${_p_wdir}"
 
   sp_f_stt "Input files in ${_p_wdir}:"
-  ls
+  ls -R
 
   # MPI & options
   local _out=${_prg}.output
@@ -284,7 +284,7 @@ function sp_f_runprg() {
   echo "${_oemsg}"
 
   sp_f_stt "Output files in\n${_p_wdir}"
-  ls
+  ls -R
 
   # check exit status
   if test ${_r} -gt 0 && ! test "${ONERR}" = "save" ; then
@@ -310,7 +310,7 @@ function sp_f_runprg() {
 
   # collect
   sp_f_stt "Saved output files:"
-  ls ${RESULTS}
+  ls -R ${RESULTS}
 
   if test "${ONERR}" != "leave" ; then
     sp_f_${_prg}_collect
