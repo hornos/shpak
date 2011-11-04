@@ -370,6 +370,7 @@ function sp_f_run_bcast() {
 
   if test -d "${_p_if}" ; then
     cp -R "${_p_if}" "${_p_wdir}"
+    sp_f_uzd "${_p_wdir}/${_p_if}"
     return ${_TRUE_}
   elif test -f "${_p_if}" ; then
     if ${_isd} ; then

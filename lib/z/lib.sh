@@ -64,6 +64,37 @@ function sp_f_zcput() {
   sp_f_zcpumv "${1}" "${sp_z_tmp}" "${2}"
 }
 
+function sp_f__d() {
+  local _dir=${1}
+  local _u=${2:-false}
+  cd "${_dir}"
+  for i in * ; do
+    if test -d "${i}" ; then
+      (sp_f__d "${i}" ${_u})
+    elif test -f "${i}" ; then
+      if ! test "${i%%${sp_s_z}}" = "${i}" ; then
+        if ${_u} ; then
+          ${sp_b_uz} "${i}"
+        else
+          ${sp_b_z} "${i}"
+        fi
+      fi
+    fi
+  done
+}
+
+function sp_f_zd() {
+  local _pwd=$(pwd)
+  sp_f__d "${1}" false
+  cd "${_pwd}"
+}
+
+function sp_f_uzd() {
+  local _pwd=$(pwd)
+  sp_f__d "${1}" true
+  cd "${_pwd}"
+}
+
 #/// \fn sp_f_svzmv
 #/// \brief save, compress, move
 #///
@@ -92,6 +123,7 @@ function sp_f_svzmv() {
         return ${_FALSE_}
       fi
     fi
+    sp_f_zd "${_rs}"
     cp -fR "${_rs}" "${_p_dst}"
     if test $? -gt 0 ; then
       sp_f_err "cannot copy ${_rs}"
