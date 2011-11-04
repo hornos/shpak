@@ -79,12 +79,14 @@ function sp_f_svzmv() {
     return ${_FALSE_}
   fi
 
-  if test -d "${_p_dst}" ; then
-    _p_sav="${_p_dst}.old"
-    mv -f "${_p_dst}" "${_p_sav}"
-    if test $? -gt 0 ; then
-      sp_f_err "cannot rename ${_p_dst}"
-      return ${_FALSE_}
+  if test -d "${_rs}" ; then
+    if test -d "${_p_dst}" ; then
+      _p_sav="${_p_dst}.old"
+      mv -f "${_p_dst}" "${_p_sav}"
+      if test $? -gt 0 ; then
+        sp_f_err "cannot rename ${_p_dst}"
+        return ${_FALSE_}
+      fi
     fi
     cp -fR "${_rs}" "${_p_dst}"
     if test $? -gt 0 ; then
