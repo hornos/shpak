@@ -371,12 +371,7 @@ function sp_f_run_bcast() {
   if test -d "${_p_if}" ; then
     cp -R "${_p_if}" "${_p_wdir}"
     return ${_TRUE_}
-  else
-    sp_f_err_fnf "${_p_if}"
-    return ${_FALSE_}
-  fi
-
-  if test -f "${_p_if}" ; then
+  elif test -f "${_p_if}" ; then
     if ${_isd} ; then
       sp_f_zcpumv "${_p_if}" "${_p_sdir}" "${_dst}"
       if test -z "${_dst}" ; then
