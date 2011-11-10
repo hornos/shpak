@@ -29,7 +29,7 @@ function sp_f_zcpumv() {
  local _src_n=$(sp_f_zbn "${_src}")
  local _src_bn=$(sp_f_zbn "${_src}" false)
 
- if test -z "${_src}" || test -z "${_dst}" ; then
+ if test -z "${_src}" ; then
    return ${_FALSE_}
  fi
  # copy
