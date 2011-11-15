@@ -217,6 +217,7 @@ function sp_f_jobsub() {
 
     ### SGI MPT
     if test "${MPIRUN}" = "sgimpt" || \
+       test "${MPIRUN}" = "mpt"    || \
        test "${MPIRUN}" = "sgi" ; then
       if test ${_verbose} -gt 0 ; then
         echo "export MPI_VERBOSE=1"          >> "${_p_qbat}"
