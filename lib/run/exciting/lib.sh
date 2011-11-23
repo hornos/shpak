@@ -48,7 +48,7 @@ function sp_f_exciting_prepare() {
   if ! test -d "${LIBDIR}" ; then
     sp_f_wrn "directory ${LIBDIR} doesn't exist"
   fi
-  sp_f_run_prepare_libs ${_isd} "${_p_wdir}" "${_p_sdir}"
+  sp_f_run_prepare_libs ${_isd} "${_p_wdir}" "${_p_sdir}" "${sp_s_ecntl}"
 
   # prepare others
   sp_f_run_prepare_others ${_isd} "${_p_wdir}" "${_p_sdir}"
