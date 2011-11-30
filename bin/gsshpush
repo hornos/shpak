@@ -1,0 +1,34 @@
+#!/bin/bash
+# header ------------------------------------------------------------------------
+. $(dirname ${0})/../lib/h.sh
+sp_f_load ssh/gsi
+
+function gsshpush/help() {
+  echo "Usage: ${sp_g_bn} [-t mode] [-m host] -s source"
+  echo " mode: 1 - scp   2 - tar/ssh   3 - rsync/ssh"
+  echo " -r  : recursive (scp will follow symlinks)"
+}
+
+_m="default"
+_t=1
+_x=false
+_r=false
+# options -----------------------------------------------------------------------
+if test $# -eq 0 ; then
+  __usage
+  exit 1
+else
+  while getopts ht:s:m: o; do
+    case "$o" in
+      m) _m=$OPTARG;;
+      t) _t=$OPTARG;;
+      s) _s=$OPTARG;;
+      r) _r=$OPTARG;;
+      h) gsshpush/help; exit 1;;
+    esac
+  done
+fi
+
+# main --------------------------------------------------------------------------
+sp_f_ptt "${sp_g_bn}"
+sp_f_${sp_g_bn} "${_m}" ${_t} ${_x} ${_r} "${_s}"

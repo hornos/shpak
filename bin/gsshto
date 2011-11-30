@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# header ------------------------------------------------------------------------
+. $(dirname ${0})/../lib/h.sh
+sp_f_load ssh/gsi
+
+function gsshto/help() {
+  echo "Usage: ${sp_g_bn} [-f] [-u] [-m host]"
+}
+
+_f=false
+_u=false
+_m="default"
+_s=""
+
+# options -----------------------------------------------------------------------
+if test $# -eq 0 ; then
+  gsshto/help
+  exit 1
+elif test $# -eq 1 ; then
+  if test "${1}" = "-h" ; then
+    gsshto/help
+    exit 1
+  fi
+  if test "${1}" = "-u" ; then
+    ssh/gsi/update
+    exit $?
+  fi
+  _m="${1}"
+else
+  while getopts fhm:u: o; do
+    case "$o" in
+      f) _f=true;;
+      m) _m=$OPTARG;;
+      u) _url=$OPTARG
+         ssh/gsi/update "${_url}"
+         exit $?
+         ;;
+      h) ${sp_g_bn}/help; exit 1;;
+    esac
+  done
+fi
+
+# main --------------------------------------------------------------------------
+sp_f_ptt "${sp_g_bn}"
+sp_f_${sp_g_bn} "${_m}" ${_f}

@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# header ------------------------------------------------------------------------
+. $(dirname ${0})/../lib/h.sh
+sp_f_load ssh/gsi
+
+function gsshkey/help() {
+  echo "Usage: ${sp_g_bn} [-m host] [-i pkcs12]"
+}
+
+# options -----------------------------------------------------------------------
+_m="default"
+_i="${_m}.p12"
+_p=false
+
+while getopts hpm:i: o; do
+  case "$o" in
+    m) _m=$OPTARG;;
+    i) _i=$OPTARG;;
+    p) _p=true;;
+    h) gsshkey/help; exit 1;;
+  esac
+done
+
+# main --------------------------------------------------------------------------
+sp_f_ptt "${sp_g_bn}"
+if ${_p} ; then
+  sp_f_gsshchg "${_m}"
+else
+  sp_f_${sp_g_bn} "${_m}" "${_i}"
+fi
+
