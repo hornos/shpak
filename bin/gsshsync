@@ -14,7 +14,7 @@ _p="pull"
 _m="default"
 __m="./.${sp_g_bn}"
 if test -r "${__m}" ; then
-  _m=$(cat "${__m}")
+  source "${__m}"
 elif test $# -eq 0 ; then
   __usage
 fi
