@@ -16,19 +16,19 @@ sp_g_gssh_valid="12:00"
 sp_g_gssh_copts="-o TCPKeepAlive=no -o ServerAliveInterval=30"
 
 # options for ssh logins
-sp_g_gssh_opts="-XC ${sp_g_ssh_copts} -p ${sp_g_ssh_port}"
+sp_g_gssh_opts="-XC ${sp_g_gssh_copts} -p ${sp_g_gssh_port}"
 
 # options for scp operations
-sp_g_gscp_opts="-C -P ${sp_g_ssh_port}"
+sp_g_gscp_opts="-C -P ${sp_g_gssh_port}"
 
 # for remote commands
 sp_g_gssh_env=".bashrc"
 
 # remote destination directory for scp
-sp_p_gscp_remote="/home/${sp_g_ssh_user}/xfer"
+sp_p_gscp_remote="/home/${sp_g_gssh_user}/xfer"
 
 # local destination for pop
-sp_p_gscp_local="${HOME}/xfer/${sp_g_ssh_mid}"
+sp_p_gscp_local="${HOME}/xfer/${sp_g_gssh_mid}"
 
 # if not null then create a proxy tunnel
 sp_g_gssh_proxy="-L63128:localhost:3128"
@@ -37,7 +37,7 @@ sp_g_gssh_proxy="-L63128:localhost:3128"
 sp_p_gsshfs_remote="/"
 
 # local directory where the above remote dir is mounted
-sp_p_gsshfs_local="${sp_p_sshfs}/${sp_g_ssh_mid}"
+sp_p_gsshfs_local="${sp_p_sshfs}/${sp_g_gssh_mid}"
 
 # sshmount options
-sp_g_gsshfs_opts="-C ${sp_g_ssh_copts} -o rw -o follow_symlinks -o Port=${sp_g_ssh_port}"
+sp_g_gsshfs_opts="-C ${sp_g_gssh_copts} -o rw -o follow_symlinks -o Port=${sp_g_gssh_port}"
