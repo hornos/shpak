@@ -270,6 +270,7 @@ function sp_f_gsshtx() {
       else
         X509_USER_PROXY=${_p_out} ${sp_b_gscp} ${_opts} ${_url} "${_dst}"
       fi
+      _r=$?
     ;;
     2)
       if ${_push} ; then
@@ -277,16 +278,19 @@ function sp_f_gsshtx() {
       else
         X509_USER_PROXY=${_p_out} ${sp_b_gssh} ${_opts} ${_url} "(cd \"${sp_p_gscp_remote}\";tar cvf - \"${_src}\")" | (cd "${_dst}"; ${sp_b_tar} xvf -)
       fi
+      _r=$?
     ;;
     3)
+      export X509_USER_PROXY=${_p_out} 
       if ${_push} ; then
-        ${sp_b_rsync} -a -z -v --partial --progress -e "X509_USER_PROXY=${_p_out} ${sp_b_gssh} ${_opts}" "${_src}" ${_url}
+        ${sp_b_rsync} -a -z -v --partial --progress -e "${sp_b_gssh} ${_opts}" "${_src}" ${_url}
       else
-        ${sp_b_rsync} -a -z -v --partial --progress -e "X509_USER_PROXY=${_p_out} ${sp_b_gssh} ${_opts}" ${_url} "${_dst}"
+        ${sp_b_rsync} -a -z -v --partial --progress -e "${sp_b_gssh} ${_opts}" ${_url} "${_dst}"
       fi
+      _r=$?
+      unset X509_USER_PROXY
     ;;
   esac
-  _r=$?
   sp_f_sln
   echo ""
 
