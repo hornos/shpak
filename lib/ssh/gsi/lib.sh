@@ -156,7 +156,9 @@ function sp_f_gsshto() {
   fi
 
   # grid proxy destroy
-  ${sp_b_gpxd} "${_p_out}"
+  if test -r "${_p_out}" ; then
+    ${sp_b_gpxd} "${_p_out}"
+  fi
   return ${_r}
 }
 
@@ -288,7 +290,10 @@ function sp_f_gsshtx() {
   sp_f_sln
   echo ""
 
-  ${sp_b_gpxd} "${_p_out}"
+  # grid proxy destroy
+  if test -r "${_p_out}" ; then
+    ${sp_b_gpxd} "${_p_out}"
+  fi
 
   return ${_r}
 } # end sp_f_sshtx
@@ -412,7 +417,10 @@ function sp_f_gsshcmd() {
     _cmd="${_tmp}${_cmd}"
   fi
   X509_USER_PROXY=${_p_out} ${sp_b_gssh} ${_opts} ${_url} ${_cmd}
+
   # grid proxy destroy
-  ${sp_b_gpxd} "${_p_out}"
+  if test -r "${_p_out}" ; then
+    ${sp_b_gpxd} "${_p_out}"
+  fi
   return ${_r}
 }
