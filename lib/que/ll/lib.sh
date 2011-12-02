@@ -35,8 +35,18 @@ function sp_f_ll() {
     echo "#${sp_g_qsub} node = ${NODES}"                   >> "${_p_qbat}"
   fi
 
-  if ! test -z "${TASKS}" ; then
+  if test "${MPIOMP}" = "yes" ; then
+    if ! test -z "${SCKTS}" ; then
+      echo "#${sp_g_qsub} tasks_per_node = ${SCKTS}"       >> "${_p_qbat}"
+    fi
+    if ! test -z "${CORES}" ; then
+      echo "#${sp_g_qsub} parallel_threads = ${CORES}"     >> "${_p_qbat}"
+      echo "#${sp_g_qsub} task_affinity = core(${CORES})"  >> "${_p_qbat}"
+    fi
+  else
+    if ! test -z "${TASKS}" ; then
       echo "#${sp_g_qsub} tasks_per_node = ${TASKS}"       >> "${_p_qbat}"
+    fi
   fi
 
   # other constraints
