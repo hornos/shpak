@@ -1,0 +1,31 @@
+#!/bin/bash
+. $(dirname ${0})/../lib/h.sh
+
+function dirsync/help() {
+  echo "Usage: ${sp_g_bn} source destination"
+  exit 1
+}
+
+_src="${1}"
+_dst="${2}"
+
+sp_f_ptt "${sp_g_bn}"
+if test -z "${_src}" || ! test -d "${_src}" ; then
+  sp_f_msg "Source not found: ${_src}"
+  exit 1
+fi
+
+if test -z "${_dst}" || ! test -d "${_dst}" ; then
+  sp_f_msg "Destination not found: ${_dst}"
+  exit 1
+fi
+
+echo "Source : ${_src}"
+echo "Dest.  : ${_dst}"
+
+sp_f_yesno "Start sync?"
+if test $? -gt 0 ; then
+  exit 1
+fi
+
+rsync -a -v --progress "${_src}" "${_dst}"
